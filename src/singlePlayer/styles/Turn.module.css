@@ -1,0 +1,98 @@
+#title {
+    border-radius: 4px;
+    font-size: 20px;
+    line-height: 24px;
+    font-family: 'Minion Pro Bold';
+    margin-bottom: 16px;
+}
+#scoreParamContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+#roundContainer {
+    display: flex;
+    gap: 8px;
+}
+#currentRoundSubContainer {
+    flex: 1;
+    border: 1px solid rgb(46, 46, 49);
+    margin-bottom: 16px;
+    border-radius: 8px;
+}
+#currentRoundTitle {
+    background: rgb(46, 46, 49);
+    border-radius: 4px 4px 0px 0px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#tacticsButton {
+    background: rgb(245, 201, 80);
+    border-width: 0px;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-family: 'Minion Pro Bold';
+    width: 100%;
+    text-align: start;
+}
+#tacticsDisabledButton {
+    background: rgb(236, 236, 236);
+    border-width: 0px;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-family: 'Minion Pro Bold';
+    width: 100%;
+    text-align: start;
+}
+#name {
+    background: rgb(46, 46, 49);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 4px 4px 0px 0px;
+}
+#subContainer {
+    padding: 0px 16px;
+    padding-top: 12px;
+}
+#scoreParamTitle {
+    color: rgb(46, 46, 49);
+    font-size: 16px;
+    line-height: 20px;
+    padding-right: 4px;
+}
+#separator {
+    height: 1px;
+    flex: 1;
+    margin: 12px 0px;
+    margin-top: 0px;
+    background: #ECECEC;
+}
+#bottomButton {
+    background-color: #ECECEC;
+    border-radius: 24px;
+    padding: 12px 16px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    border-width: 0px;
+    font-size: 18px;
+    line-height: 24px;
+    font-family: 'Minion Pro Bold';
+    width: 100%;
+}
+#disabledBottomButton {
+    background-color: #ECECEC;
+    color: #B4B4B4;
+    border-radius: 24px;
+    padding: 12px 16px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    border-width: 0px;
+    font-size: 18px;
+    line-height: 24px;
+    font-family: 'Minion Pro Bold';
+    width: 100%;
+}

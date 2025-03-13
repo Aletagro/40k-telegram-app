@@ -1,0 +1,46 @@
+#header {
+  position: sticky;
+  top: 0;
+  padding: 8px 8px;
+  background: darkred;
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+  height: 40px;
+  z-index: 2;
+}
+#title {
+  color: white;
+  margin: 0px;
+  font-family: 'Minion Pro Bold';
+  font-size: 18px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: center;
+  flex: 1;
+  overflow: hidden;
+  display: block;
+}
+#leftButton {
+  background: darkred;
+  color: white;
+  font-size: 14px;
+  border: 0;
+  padding: 0px;
+  padding-right: 12px;
+  top: 3px;
+  position: relative;
+}
+#rightButton {
+  background: darkred;
+  color: white;
+  font-size: 14px;
+  border: 0;
+  padding: 0px;
+  padding-left: 12px;
+  top: 3px;
+  position: relative;
+}
+#rightButtons {
+  display: flex;
+}

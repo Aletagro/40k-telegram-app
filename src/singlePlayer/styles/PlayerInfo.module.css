@@ -1,0 +1,93 @@
+#container {
+    flex: 1;
+    border: 1px solid rgb(46, 46, 49);
+    margin-bottom: 16px;
+    border-radius: 8px;
+}
+#titleContainer {
+    background: rgb(46, 46, 49);
+    border-radius: 4px 4px 0px 0px;
+    border-width: 0px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    text-align: start;
+    width: 100%;
+}
+#name {
+    color: white;
+    font-size: 18px;
+    line-height: 24px;
+    font-family: 'Minion Pro Bold';
+}
+#army {
+    color: white;
+    font-size: 16px;
+    line-height: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    white-space: nowrap;
+    height: 20px;
+}
+#armyIcon {
+    background: transparent;
+    border-width: 0px;
+    padding: 0px;
+    display: flex;
+    margin-left: 8px;
+}
+#content {
+    padding: 16px;
+    align-content: center;
+}
+#text {
+    text-align: center;
+    color: #525252;
+    font-size: 16px;
+    padding-bottom: 8px;
+}
+#scoreContainer {
+    margin-bottom: 12px;
+    justify-content: center;
+    display: flex;
+}
+#scoreText {
+    background: #ECECEC;
+    width: 56px;
+    height: 56px;
+    border-radius: 50px;
+    font-size: 28px;
+    line-height: 32px;
+    font-family: 'Minion Pro Bold';
+    text-align: center;
+    align-content: center;
+}
+#cpContainer {
+    justify-content: space-around;
+    padding-bottom: 16px;
+    padding-top: 8px;
+}
+#cpSubContainer {
+    background: rgb(245, 201, 80);
+    border-radius: 50px;
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 12px;
+}
+#cp {
+    font-size: 28px;
+    line-height: 32px;
+    font-family: 'Minion Pro Bold';
+    padding: 0px 8px;
+}
+#cpIcon {
+    background: transparent;
+    border-width: 0px;
+}
+#underdog {
+    color: #525252;
+    padding-top: 8px;
+    font-size: 12px;
+    text-align: center;
+}

@@ -1,0 +1,100 @@
+#container {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+#statistics {
+    font-size: 20px;
+    line-height: 24px;
+    margin-bottom: 16px;
+}
+#bottomButton {
+    background: rgb(245, 201, 80);
+    border-radius: 24px;
+    padding: 12px 16px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    border-width: 0px;
+    font-size: 18px;
+    line-height: 24px;
+    font-family: 'Minion Pro Bold';
+    width: 100%;
+}
+#content {
+    flex: 1;
+    border: 1px solid rgb(46, 46, 49);
+    border-radius: 8px;
+}
+#titleContainer {
+    background: rgb(46, 46, 49);
+    border-radius: 4px 4px 0px 0px;
+    border-width: 0px;
+    padding: 12px 16px;
+    text-align: start;
+    margin-bottom: 16px
+}
+#title {
+    color: white;
+    font-size: 18px;
+    line-height: 24px;
+    font-family: 'Minion Pro Bold';
+}
+#playerArmy {
+    color: white;
+    font-size: 16px;
+    line-height: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    white-space: nowrap;
+    height: 20px;
+}
+#playerText {
+    text-align: center;
+    color: #525252;
+    font-size: 16px;
+    padding-bottom: 8px;
+}
+#playerScoreContainer {
+    margin-bottom: 16px;
+    justify-content: center;
+    display: flex;
+}
+#playerScoreText {
+    background: #ECECEC;
+    width: 56px;
+    height: 56px;
+    border-radius: 50px;
+    font-size: 28px;
+    line-height: 32px;
+    font-family: 'Minion Pro Bold';
+    text-align: center;
+    align-content: center;
+}
+#playerWinnerScoreText {
+    background: rgb(245, 201, 80);
+    width: 56px;
+    height: 56px;
+    border-radius: 50px;
+    font-size: 28px;
+    line-height: 32px;
+    font-family: 'Minion Pro Bold';
+    text-align: center;
+    align-content: center;
+}
+#playerResult {
+    text-align: center;
+    padding-bottom: 16px;
+    font-size: 18px;
+    line-height: 24px;
+    font-family: 'Minion Pro Bold';
+}
+#statisticRound {
+    display: flex;
+    justify-content: space-between;
+    padding: 0px 12px;
+    padding-bottom: 16px;
+}
+#statisticText {
+    font-size: 18px;
+    line-height: 24px;
+}

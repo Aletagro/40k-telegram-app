@@ -1,0 +1,14 @@
+.row {
+    background-color: rgb(236, 236, 236);
+    color: black;
+    padding: 8px 8px;
+    margin-bottom: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    flex-direction: row;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 8px;
+    width: 100%;
+    border: 1px solid rgb(211, 211, 211);
+  }

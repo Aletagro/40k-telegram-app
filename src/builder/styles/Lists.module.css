@@ -1,0 +1,62 @@
+#buttonContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    width: 100%;
+    margin-bottom: 16px;
+}
+#button {
+    position: relative;
+    display: block;
+    padding: 0;
+    border: none;
+    background: none;
+    border-radius: 4px;
+    padding: 0px;
+    text-align: start;
+    overflow: hidden;
+}
+#image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+}
+#textContainer {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    padding-left: 8px;
+    padding-bottom: 4px;
+    color: white;
+    background: #00000030;
+    width: 100%;
+}
+#text {
+    color: white;
+    font-size: 18px;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    line-height: 1.5;
+    max-height: 3em;
+}
+#newRosterButton {
+    background-color: rgb(236, 236, 236);
+    color: black;
+    border-radius: 4px;
+    padding: 16px;
+    font-size: 18px;
+    margin-bottom: 16px;
+    border-width: 0px;
+    text-align: start;
+    font-family: 'Minion Pro Bold';
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+#notice {
+    background: rgb(245, 201, 80);
+    padding: 16px;
+    margin-bottom: 16px;
+    border-radius: 4px;
+}

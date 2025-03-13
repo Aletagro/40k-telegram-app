@@ -1,0 +1,84 @@
+#container {
+  background-color: rgb(236, 236, 236);
+  margin-bottom: 16px;
+  margin-left: 12px;
+  margin-right: 12px;
+  border-radius: 8px;
+}
+#rorContainer {
+  background-color: rgb(236, 236, 236);
+  margin-bottom: 16px;
+  border-radius: 8px;
+}
+.row {
+    padding: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    flex-direction: row;
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+    align-items: center;
+  }
+#name {
+  color: black;
+  margin: 0px;
+  display: block;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  overflow: hidden;
+  font-family: 'Minion Pro Bold';
+  font-size: 18px;
+  line-height: 20px;
+  max-height: 40px;
+}
+#price {
+    color: #676767;
+    font-size: 18px;
+    line-height: 20px;
+    margin: 0;
+    white-space: nowrap;
+}
+#addUnitButton {
+  background-color: transparent;
+  border-width: 0px;
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  align-items: center;
+  text-align: start;
+}
+#addUnitButtonSubContainer {
+  display: flex;
+  text-align: start;
+  flex: 1;
+}
+#generalIcon {
+  padding-right: 8px;
+}
+#enhancementsContainer {
+  display: flex;
+  margin-left: 4px;
+}
+#chooseEnhancementButton {
+  color: #525252;
+  border: 1px solid #8B8B8B;
+  margin-bottom: 12px;
+  border-radius: 24px;
+  padding: 4px 8px;
+  margin-right: 16px;
+}
+#button {
+  border-radius: 4px;
+  border-width: 0px;
+  padding: 6px;
+  margin-right: 4px;
+  position: relative;
+  top: 2px;
+}
+#infoButton {
+  border-width: 0px;
+  padding-right: 0px;
+  padding-left: 8px;
+  height: 22px;
+}

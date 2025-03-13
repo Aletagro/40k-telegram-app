@@ -1,0 +1,26 @@
+#container {
+background: transparent;
+border-width: 0px;
+text-align: start;
+padding: 0px;
+width: 100%;
+}
+#lightgreyContainer {
+  background: lightgrey;
+  border-radius: 8px;
+  padding: 8px;
+  white-space: pre-line;
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+#text {
+  white-space: pre-line;
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+#textItalic {
+  white-space: pre-line;
+  font-style: italic;
+  margin-bottom: 12px;
+  font-size: 18px;
+}

@@ -1,0 +1,22 @@
+#container {
+    background: white;
+    display: block;
+    margin-bottom: 16px;
+    padding: 0px;
+    border-radius: 8px;
+    text-align: start;
+    font-size: 1em;
+    width: 100%;
+}
+#title {
+    color: white;
+    display: flex;
+    margin: 0;
+    padding: 8px 16px;
+    border-radius: 6px 6px 0px 0px;
+}
+#text {
+    white-space: pre-line;
+    font-size: 16px;
+    padding: 12px;
+}

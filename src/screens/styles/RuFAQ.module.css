@@ -1,0 +1,13 @@
+#container {
+  padding-bottom: 24px;
+}
+#answer {
+  white-space: pre-line;
+  font-size: 18px;
+}
+#question {
+  white-space: pre-line;
+  font-style: italic;
+  padding-bottom: 4px;
+  font-size: 18px;
+}

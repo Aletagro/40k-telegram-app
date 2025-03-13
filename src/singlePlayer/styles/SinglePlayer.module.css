@@ -1,0 +1,16 @@
+#battleplan {
+    background: #ECECEC;
+    color: black;
+    border-radius: 4px;
+    padding: 16px;
+    font-size: 20px;
+    line-height: 24px;
+    margin-bottom: 20px;
+    border-width: 0px;
+    display: flex;
+    justify-content: space-between;
+}
+#infoContainer {
+    display: flex;
+    gap: 8px;
+}

@@ -1,0 +1,119 @@
+#mainInfoContainer {
+  background-color: rgb(236, 236, 236);
+  border-radius: 8px;
+  border-width: 0px;
+  padding: 12px;
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+  font-size: 20px;
+  text-align: start;
+}
+
+#text {
+  margin: 0px;
+  padding-bottom: 8px;
+  font-size: 18px;
+}
+
+#allegianceContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#allegianceInfoIcon {
+  background: transparent;
+  border-width: 0px;
+  padding: 0px;
+  padding-bottom: 8px;
+}
+
+#title {
+  background: rgb(46, 46, 49);
+  color: white;
+  border-radius: 4px;
+  padding: 16px 16px;
+  margin-bottom: 8px;
+  text-align: start;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+#addButton {
+  background: rgb(245, 201, 80);
+  color: black;
+  border-radius: 4px;
+  padding: 16px;
+  font-size: 16px;
+  margin-bottom: 8px;
+  border-width: 0px;
+  text-align: start;
+  font-family: 'Minion Pro Bold';
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#secondAddButton {
+  background-color: rgb(236, 236, 236);
+  color: black;
+  border-radius: 4px;
+  padding: 16px;
+  font-size: 16px;
+  margin-bottom: 8px;
+  border-width: 0px;
+  text-align: start;
+  font-family: 'Minion Pro Bold';
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#infoIcon {
+  background: transparent;
+  border-width: 0px;
+  padding: 0px;
+}
+
+#addButtonText {
+  background: transparent;
+  border-width: 0px;
+  font-size: 16px;
+  font-family: 'Minion Pro Bold';
+  text-align: start;
+  flex: 1
+}
+
+#pointsLimitTitle {
+  text-align: center;
+}
+
+#pointsLimitButton {
+  background: rgb(46, 46, 49);
+  color: white;
+  border-width: 0px;
+  border-radius: 4px;
+  padding: 8px 16px;
+}
+
+#pointsContainer {
+  background: rgb(46, 46, 49);
+  border-radius: 4px;
+  padding: 16px 16px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+#pointsTitle {
+  font-size: 18px;
+  line-height: 24px;
+  color: white;
+  text-align: start;
+}
+
+#pointsTitleInfoIcon {
+  background: transparent;
+  border-width: 0px;
+  padding: 0px;
+}

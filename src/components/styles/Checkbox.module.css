@@ -1,0 +1,15 @@
+#checkbox {
+    background: transparent;
+    border-width: 0px;
+    padding: 0;
+}
+#checkmarkIcon {
+    height: 18px;
+}
+#uncheckedCheckbox {
+    background: transparent;
+    border: 2px solid #FFFFFF;
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+}

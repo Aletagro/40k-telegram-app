@@ -1,0 +1,90 @@
+#container {
+  border: 1px solid rgb(46, 46, 49);
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  align-items: center;
+  border-radius: 8px;
+}
+
+#title {
+  background: rgb(46, 46, 49);
+  color: white;
+  border-radius: 4px 4px 0px 0px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#titleSubContainer {
+  display: flex;
+}
+
+#text {
+  color: white;
+  font-size: 18px;
+  line-height: 24px;
+  font-family: 'Minion Pro Bold';
+  padding-right: 16px;
+}
+
+#points {
+  color: white;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+#rightBlock {
+  display: flex;
+  align-items: center;
+}
+
+#button {
+  background: rgb(245, 201, 80);
+  color: black;
+  margin-bottom: 16px;
+  margin-left: 4px;
+  border-radius: 4px;
+  border-width: 0px;
+  padding: 8px;
+  font-size: 14px;
+}
+
+#addUnitContainer {
+  display: flex;
+  justify-content: center;
+  margin: 0px 12px;
+}
+
+#addUnitButton {
+  width: 100%;
+  background: rgb(245, 201, 80);
+  color: black;
+  border-radius: 24px;
+  border-width: 0px;
+  padding: 8px 12px;
+  font-size: 18px;
+}
+
+#deleteButton {
+  background: transparent;
+  border-radius: 4px;
+  border-width: 0px;
+  padding: 4px;
+  margin-left: 16px;
+}
+
+#subTitle {
+  background: rgb(46, 46, 49);
+  color: white;
+  margin-bottom: 16px;
+  border-radius: 4px;
+  border-width: 0px;
+  padding: 7px 8px;
+  margin: 0px;
+  margin-left: 4px;
+  margin-bottom: 16px;
+  font-size: 16px;
+  display: inline-block;
+}

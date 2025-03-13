@@ -1,0 +1,74 @@
+#ability {
+  background: white;
+  display: block;
+  margin-bottom: 16px;
+  padding: 0px;
+  border-radius: 8px;
+  text-align: start;
+  font-size: 1em;
+  width: 100%;
+}
+
+#header {
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  padding: 8px 16px;
+  border-radius: 6px 6px 0px 0px;
+}
+
+#headerText {
+  color: white;
+  font-size: 18px;
+  margin: 6px 0px;
+}
+
+#cpCost {
+  color: white;
+  font-size: 18px;
+  margin: 6px 0px;
+  width: 38px;
+}
+
+#castingValueContainer {
+  background: black;
+  border-radius: 50px;
+  width: 18px;
+  padding: 4px;
+  border: 1px solid white;
+}
+
+#castingValue {
+  color: white;
+  text-align: center;
+  margin: 0px;
+  position: relative;
+  top: 1px;
+}
+
+#container {
+  padding: 0px 8px;
+}
+
+#text {
+  white-space: pre-line;
+  margin: 8px 0px;
+  font-size: 16px;
+}
+
+#keyword {
+  font-size: 16px;
+}
+
+#name {
+  margin-top: 16px;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+#keywordsContainer {
+  display: flex;
+  padding-bottom: 8px;
+}
