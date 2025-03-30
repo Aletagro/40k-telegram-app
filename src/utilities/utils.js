@@ -20,7 +20,7 @@ export const sortByName = (array, param) => param
 
 export const unitsSortesByType = (units) => {
     const getUnitsByType = (type) => {
-        const _units = filter(units, unit => includes(unit?.referenceKeywords, type.name) && (type.withoutHero ? !includes(unit.referenceKeywords, 'Hero') : true))
+        const _units = filter(units, unit => unit?.unitType === type.name && (type.withoutHero ? !unit.isCharacter : true))
         if (_units.length > 0) {
             sortByName(_units)
             return {units: _units, title: replace(type.name, /,/g, '')}
@@ -408,7 +408,7 @@ export const getRegimentOption = (option, unit) => {
                 const requiredUnit = allUnits.find(warscroll => warscroll.id === option.requiredWarscrollId)
                 if (requiredUnit) {
                     return {
-                        screen: 'warscroll',
+                        screen: 'datasheet',
                         title: requiredUnit.name,
                         data: {unit: requiredUnit}
                     }
@@ -430,7 +430,7 @@ export const getRegimentOption = (option, unit) => {
             const requiredUnit = allUnits.find(warscroll => warscroll.id === option.requiredWarscrollId)
             if (requiredUnit) {
                 return {
-                    screen: 'warscroll',
+                    screen: 'datasheet',
                     title: requiredUnit.name,
                     data: {unit: requiredUnit}
                 }
@@ -463,3 +463,15 @@ export const getRegimentOption = (option, unit) => {
     }
     return {}
 }
+
+export const removeDuplicates = (arr) => {
+    const uniqueIds = new Set()
+    const result = filter(arr, (item) => {
+        if (uniqueIds.has(item.id)) {
+        return false // Пропускаем дубликат
+      }
+      uniqueIds.add(item.id)
+      return true // Оставляем уникальный элемент
+    })
+    return result
+  }

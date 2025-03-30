@@ -21,16 +21,13 @@ const Search = () => {
 
     useDebounce(() => {
         if (value) {
-            const warscrolls = filter(dataBase.data.warscroll, (warscroll) => !warscroll.isSpearhead && includes(lowerCase(warscroll.name), lowerCase(value)))
-            search.Warscrolls = sortByName(warscrolls.splice(0, 20))
+            const datasheets = filter(dataBase.data.datasheet, (warscroll) => !warscroll.isSpearhead && includes(lowerCase(warscroll.name), lowerCase(value)))
+            search.Datasheets = sortByName(datasheets.splice(0, 20))
             const rules = filter(dataBase.data.rule_container, (rule) => includes(lowerCase(rule.title), lowerCase(value)))
             search.Rules = sortByName(rules.splice(0, 20), 'title')
-            const allegiances = filter(dataBase.data.faction_keyword, (faction) => includes(lowerCase(faction.name), lowerCase(value)) && faction.name !== 'Orruk Warclans')
-            search.Allegiances = sortByName(allegiances.splice(0, 20))
         } else {
-            search.Warscrolls = []
+            search.Datasheets = []
             search.Rules = []
-            search.Allegiances = []
         }
         forceUpdate()
       }, [value], 300
@@ -52,7 +49,7 @@ const Search = () => {
         title={unit.name}
         rightText={unit?.points ? `${unit?.points} pts` : undefined}
         image={unit?.rowImage}
-        navigateTo='warscroll'
+        navigateTo='datasheet'
         state={{unit}}
     />
 
@@ -61,14 +58,7 @@ const Search = () => {
         title={rule.title}
         subtitle={rule.updateType || 'rule'}
         navigateTo='rules'
-        state={{rules: [rule]}}
-    />
-
-    const renderAllegiance = (allegiance) => <Row
-        key={allegiance.id}
-        title={allegiance.name}
-        navigateTo='army'
-        state={{allegiance}}
+        state={{paragraph: rule}}
     />
 
     const renderAccordion = (type, renderItem) => <Accordion
@@ -84,9 +74,8 @@ const Search = () => {
             <input id={Styles.input} onChange={handleChange} autoFocus placeholder='Start Typing' type='search' name='search' size={40} />
         </div>
         <div id='column' className='Chapter'>
-            {size(search.Warscrolls) ? renderAccordion('Warscrolls', renderWarscroll) : null}
+            {size(search.Datasheets) ? renderAccordion('Datasheets', renderWarscroll) : null}
             {size(search.Rules) ? renderAccordion('Rules', renderRule) : null}
-            {size(search.Allegiances) ? renderAccordion('Allegiances', renderAllegiance) : null}
         </div>
     </>
 }

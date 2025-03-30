@@ -19,6 +19,16 @@
   border-radius: 6px 6px 0px 0px;
 }
 
+#onlyHeader {
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  padding: 8px 16px;
+  border-radius: 6px;
+}
+
 #headerText {
   color: white;
   font-size: 18px;
@@ -32,7 +42,7 @@
   width: 38px;
 }
 
-#castingValueContainer {
+#invulContainer {
   background: black;
   border-radius: 50px;
   width: 18px;
@@ -40,7 +50,7 @@
   border: 1px solid white;
 }
 
-#castingValue {
+#invul {
   color: white;
   text-align: center;
   margin: 0px;
@@ -60,6 +70,8 @@
 
 #keyword {
   font-size: 16px;
+  padding-left: 8px;
+  padding-bottom: 8px;
 }
 
 #name {

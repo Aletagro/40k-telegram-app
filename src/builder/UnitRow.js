@@ -88,7 +88,7 @@ const UnitRow = ({
         if (isRegimentsOfRenown) {
             navigate('/regimentOfRenown', {state: {title: unit.name, regiment: unit}})
         } else {
-            navigate('/warscroll', {state: {title: unit.name, unit}})
+            navigate('/datasheet', {state: {title: unit.name, unit}})
         }
     }
 

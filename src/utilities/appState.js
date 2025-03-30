@@ -29,13 +29,11 @@ export const roster = {
 
 export const search = {
     value: '',
-    Warscrolls: [],
+    Datasheets: [],
     Rules: [],
-    Allegiances: [],
     expand: {
-        Warscrolls: true,
-        Rules: true,
-        Allegiances: true
+        Datasheets: true,
+        Rules: true
     }
 }
 

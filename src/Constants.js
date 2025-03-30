@@ -79,24 +79,26 @@ const Constants = {
             includesTexts: ['Prayer', 'Bless', 'Rites', 'Warbeats', 'Scriptures']
         }
     ],
-    coreDocumentsId: 'e918110c-418e-4a50-90bc-484581a0fa5c',
-    rulesImage: 'https://dhss9aar8ocw.cloudfront.net/09a5c1fd-a186-4517-8a6f-0a107374eb45',
+    coreRulesId: '1c03d77c-1762-4cf3-bea1-9f4ba5768552',
+    coreRulesImage: 'https://d3ocysny7bghv8.cloudfront.net/c1e62db9-036d-49fa-9d4d-6c6395a81d95',
+    keyDocumentsId: '085bb508-281f-4a92-a99b-801a5c95c165',
+    keyDocumentsImage: 'https://d3ocysny7bghv8.cloudfront.net/9ba4219a-2937-491d-814e-3fbd305c44dc',
     manifestationsPublicationId: '318c212e-cbcd-4b44-a44d-318f3ae180a0',
     regimentsOfRenownImage: 'https://dhss9aar8ocw.cloudfront.net/39478fae-cf03-40ee-a130-6fef03492c44',
     unitsTypes: [
         {
-            name: 'Hero'
+            name: 'Character'
         },
         {
             name: 'Infantry',
             withoutHero: true
         },
         {
-            name: 'Cavalry',
+            name: 'Mounted',
             withoutHero: true
         },
         {
-            name: 'Beast,',
+            name: 'Beast',
             withoutHero: true
         },
         {
@@ -104,14 +106,20 @@ const Constants = {
             withoutHero: true
         },
         {
-            name: 'War Machine',
+            name: 'Vehicle',
             withoutHero: true
         },
         {
-            name: 'Manifestation'
+            name: 'Artillery',
+            withoutHero: true
         },
         {
-            name: 'Faction Terrain'
+            name: 'Swarm',
+            withoutHero: true
+        },
+        {
+            name: 'Fortification',
+            withoutHero: true
         }
     ],
     abilitiesTypes: {
@@ -413,14 +421,15 @@ const Constants = {
         }
     },
     defaultIsCollapseUnitsTypes: {
-        'Hero': false,
+        'Character': false,
         'Infantry': false,
-        'Cavalry': false,
+        'Mounted': false,
         'Beast': false,
         'Monster': false,
-        'War Machine': false,
-        'Manifestation': false,
-        'Faction Terrain': false
+        'Vehicle': false,
+        'Artillery': false,
+        'Swarm': false,
+        'Fortification': false
     },
     defaultIsCollapseRegimentAlliances: {
         'Chaos': false,

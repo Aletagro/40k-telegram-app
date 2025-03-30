@@ -1,6 +1,6 @@
-import React, {useCallback, useReducer} from 'react';
+import React, {useCallback, useReducer} from 'react'
 import {useLocation} from 'react-router-dom'
-import {unitsSortesByType} from '../utilities/utils'
+import {sortByName, unitsSortesByType} from '../utilities/utils'
 import {isCollapseUnitsTypes} from '../utilities/appState'
 import Row from '../components/Row'
 import HeaderImage from '../components/HeaderImage'
@@ -8,21 +8,32 @@ import Accordion from '../components/Accordion'
 
 import map from 'lodash/map'
 import find from 'lodash/find'
+import findIndex from 'lodash/findIndex'
 import filter from 'lodash/filter'
 
 const dataBase = require('../dataBase.json')
 
 const Units = () => {
-    const {allegiance, units} = useLocation().state
+    const {faction, codexInfo} = useLocation().state
     // eslint-disable-next-line
     const [_, forceUpdate] = useReducer((x) => x + 1, 0)
-    let _units = []
-    if (units) {
-        _units = unitsSortesByType(units)
+    let units = []
+    if (codexInfo) {
+        units = filter(dataBase.data.datasheet, datasheet => datasheet.publicationId === codexInfo?.id)
     } else {
-        const warscrollIds = map(filter(dataBase.data.warscroll_faction_keyword, (item) => item.factionKeywordId === allegiance.id), item => item.warscrollId)
-        _units = unitsSortesByType(filter(map(warscrollIds, warscrollId => find(dataBase.data.warscroll, scroll => scroll.id === warscrollId)), unit => !unit.isSpearhead && !unit.isLegends))
+        const unitsIds = map(filter(dataBase.data.datasheet_faction_keyword, (item) => item.factionKeywordId === faction.id), item => item.datasheetId)
+        units = map(unitsIds, unitId => find(dataBase.data.datasheet, datasheet => datasheet.id === unitId))
     }
+    const miniatures = map(units, unit => find(dataBase.data.miniature, ['datasheetId', unit.id]))
+    const unitsTypes = map(miniatures, miniature => {
+        const keywordsIds = sortByName(filter(dataBase.data.miniature_keyword, ['miniatureId', miniature.id]), 'displayOrder')
+        const keywords = map(keywordsIds, keyword => find(dataBase.data.keyword, ['id', keyword.keywordId]))
+        const characterIndex = findIndex(keywords, ['name', 'Character'])
+        return characterIndex >= 0 ? 'Character' : keywords[0]?.name
+
+    })
+    units = map(units, (unit, index) => ({...unit, unitType: unitsTypes[index]}))
+    units = unitsSortesByType(units)
 
     const handleChangeExpand = useCallback((e) => {
         isCollapseUnitsTypes[e.nativeEvent.target?.innerText] = !isCollapseUnitsTypes[e.nativeEvent.target?.innerText]
@@ -34,7 +45,7 @@ const Units = () => {
         title={unit?.name}
         rightText={unit?.points ? `${unit?.points} pts` : undefined}
         image={unit?.rowImage}
-        navigateTo='warscroll'
+        navigateTo='datasheet'
         state={{unit}}
     />
 
@@ -47,12 +58,12 @@ const Units = () => {
     />
 
     return <>
-        {allegiance?.rosterHeaderImage
-            ? <HeaderImage src={allegiance?.rosterHeaderImage} alt={allegiance?.name} isWide />
+        {faction?.rosterHeaderImage
+            ? <HeaderImage src={faction?.rosterHeaderImage} alt={faction?.name} isWide />
             : null
         }
         <div id='column' className='Chapter'>
-            {_units.map(renderUnitsType)}
+            {units.map(renderUnitsType)}
         </div>
     </>
 }

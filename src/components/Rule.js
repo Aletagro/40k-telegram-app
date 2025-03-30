@@ -26,7 +26,7 @@ const Rule = ({rule}) => {
     const renderBullet = (bullet) => <p key={bullet.id}>&#8226; {replaceAsterisks(bullet.text)}</p>
 
     const renderContent = () => {
-        switch (rule.contentType) {
+        switch (rule.type) {
             case 'text':
                 return <p id={Styles.text} key={rule.id}>{replaceAsterisks(rule.textContent)}</p>
             case 'header':
@@ -35,6 +35,7 @@ const Rule = ({rule}) => {
             case 'textItalic':
                 return <p id={Styles.textItalic} key={rule.id}>{replaceAsterisks(rule.textContent)}</p>
             case 'boxedText':
+            case 'quote':
                 return <p id={Styles.lightgreyContainer} key={rule.id}>{replaceAsterisks(rule.textContent)}</p>
             case 'accordion':
                 return <div id={Styles.lightgreyContainer} key={rule.id}>

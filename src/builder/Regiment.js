@@ -36,7 +36,7 @@ const Regiment = ({regiment, index, alliganceId, forceUpdate, artefacts, heroicT
     }
 
     const handleClickUnit = (unit) => {
-        navigate('/warscroll', {state: {title: unit.name, unit}})
+        navigate('/datasheet', {state: {title: unit.name, unit}})
     }
 
     const handleDeleteUnit = (unit, unitIndex) => {

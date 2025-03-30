@@ -2,22 +2,20 @@ import {useEffect} from 'react'
 import {Route, Routes} from 'react-router-dom'
 import Main from './screens/Main'
 import MainRules from './screens/MainRules'
-import Catalog from './screens/Catalog'
 import Army from './screens/Army'
 import Units from './screens/Units'
-import Warscroll from './screens/Warscroll'
-import ArmyInfo from './screens/ArmyInfo'
-import RegimentsOfRenownList from './screens/RegimentsOfRenownList'
-import RegimentOfRenown from './screens/RegimentOfRenown'
+import Datasheet from './screens/Datasheet'
+import ArmyRules from './screens/ArmyRules'
+import Detachment from './screens/Detachment'
+import Enhancements from './screens/Enhancements'
+import Stratagems from './screens/Stratagems'
 import Search from './screens/Search'
-import CoreDocuments from './screens/CoreDocuments'
+import CoreRules from './screens/CoreRules'
+import KeyDocuments from './screens/KeyDocuments'
 import RuleSections from './screens/RuleSections'
 import RuleChapters from './screens/RuleChapters'
-import Manifestations from './screens/Manifestations'
 import Rules from './screens/Rules'
 import Battleplan from './screens/Battleplan'
-import Legends from './screens/Legends'
-import LegendUnits from './screens/LegendUnits'
 import Header from './components/Header'
 import Lists from './builder/Lists'
 import ChooseGrandAlliance from './builder/ChooseGrandAlliance'
@@ -54,29 +52,27 @@ function App() {
     <Routes>
       <Route index element={<Main />} />
       <Route path={'mainRules'} element={<MainRules />} />
-      <Route path={'catalog'} element={<Catalog />} />
       <Route path={'army'} element={<Army />} />
       <Route path={'armyOfRenown'} element={<Army />} />
       <Route path={'units'} element={<Units />} />
-      <Route path={'warscroll'} element={<Warscroll />} />
+      <Route path={'datasheet'} element={<Datasheet />} />
       <Route path={'calculator'} element={<Calculator />} />
-      <Route path={'armyInfo'} element={<ArmyInfo />} />
+      <Route path={'armyRules'} element={<ArmyRules />} />
+      <Route path={'detachment'} element={<Detachment />} />
+      <Route path={'enhancements'} element={<Enhancements />} />
+      <Route path={'stratagems'} element={<Stratagems />} />
       <Route path={'builder'} element={<Builder />} />
       <Route path={'addUnit'} element={<AddUnit />} />
-      <Route path={'regimentOfRenown'} element={<RegimentOfRenown />} />
-      <Route path={'regimentOfRenownList'} element={<RegimentsOfRenownList />} />
       <Route path={'chooseEnhancement'} element={<ChooseEnhancement />} />
       <Route path={'chooseOption'} element={<ChooseOption />} />
       <Route path={'chooseWeapon'} element={<ChooseWeapon />} />
       <Route path={'search'} element={<Search />} />
-      <Route path={'coreDocuments'} element={<CoreDocuments />} />
+      <Route path={'coreRules'} element={<CoreRules />} />
+      <Route path={'keyDocuments'} element={<KeyDocuments />} />
       <Route path={'ruleSections'} element={<RuleSections />} />
       <Route path={'ruleChapters'} element={<RuleChapters />} />
       <Route path={'rules'} element={<Rules />} />
       <Route path={'battleplan'} element={<Battleplan />} />
-      <Route path={'manifestations'} element={<Manifestations />} />
-      <Route path={'legends'} element={<Legends />} />
-      <Route path={'legendUnits'} element={<LegendUnits />} />
       <Route path={'lists'} element={<Lists />} />
       <Route path={'chooseGrandAlliance'} element={<ChooseGrandAlliance />} />
       <Route path={'chooseFaction'} element={<ChooseFaction />} />

@@ -1,0 +1,18 @@
+#title {
+  background: rgb(46, 46, 49);
+  color: white;
+  border-radius: 4px;
+  padding: 16px 16px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+#note {
+  font-size: 18px;
+  padding-bottom: 16px;
+}
+#armyRuleContainer {
+  background: white;
+  padding: 16px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}

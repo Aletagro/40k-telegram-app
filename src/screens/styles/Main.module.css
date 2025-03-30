@@ -1,4 +1,5 @@
 #feedbackText {
+  color: white;
   margin: 0px;
   padding-bottom: 8px;
   font-weight: bold;
@@ -8,4 +9,11 @@
   border-width: 0px;
   background: transparent;
   color: white;
+}
+
+#separator {
+  background: white;
+  height: 1px;
+  margin-top: 16px;
+  margin-bottom: 24px;
 }

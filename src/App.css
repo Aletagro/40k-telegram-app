@@ -13,7 +13,7 @@
 }
 
 body {
-    background: white;
+    background: black;
     padding: 0px;
     margin: 0px;
     font-family: 'Minion Pro Regular';
@@ -48,7 +48,9 @@ button {
 .Chapter {
     display: flex;
     padding: 8px 8px;
+    background: black;
   }
 #column {
   flex-direction: column;
+  background: black;
 }

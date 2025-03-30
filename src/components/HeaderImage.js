@@ -25,7 +25,7 @@ const HeaderImage = ({src, alt, isWide}) => {
         setError(true)
     }
 
-    return <div>
+    return <div id='column'>
         {!loaded && <img src={placeholder} alt={alt} style={placeholderStyles}/>}
         {error ? null : <img src={src} alt={alt} style={isWide ? Styles.wide : Styles.big} onLoad={handleImageLoaded} onError={handleError}/>}
     </div>

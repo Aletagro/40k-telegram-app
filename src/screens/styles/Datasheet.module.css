@@ -1,0 +1,180 @@
+#container {
+  background: white;
+  margin: 0px;
+  padding: 0px 16px;
+  padding-bottom: 16px;
+}
+#weaponContainer {
+  flex: 1;
+  border: 1px solid rgb(46, 46, 49);
+  margin-bottom: 16px;
+  border-radius: 8px;
+}
+#weaponNameContainer {
+  background: rgb(46, 46, 49);
+  border-radius: 4px 4px 0px 0px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#weaponCharacteristicsContainer {
+  display: flex;
+  justify-content: space-between;
+}
+#weaponName {
+  color: white;
+  margin: 0px;
+  font-size: 16px;
+}
+#weaponAbilityContainer {
+  display: flex;
+  padding: 12px;
+}
+#cellTitle {
+  color: #525252;
+  font-size: 16px;
+  margin-top: 0px;
+  flex: 1;
+  text-align: center;
+}
+#cellValue {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 0px;
+  margin-bottom: 8px;
+  flex: 1;
+  text-align: center;
+}
+.flexContainer {
+  display: flex;
+  padding-bottom: 12px;
+}
+#weaponAbilities {
+  background: white;
+  color: #525252;
+  font-family: 'Minion Pro Bold';
+  font-size: 14px;
+  border: 1px dashed #8B8B8B;
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin-right: 4px;
+}
+#wargearOptions {
+  white-space: pre-line;
+  margin: 8px 0px;
+}
+#keywords {
+  background-color: #E8E8E8;
+  border-radius: 8px;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+#characteristicsContainer {
+  flex-direction: row;
+  justify-content: space-between;
+  background: rgb(51 54 56);
+  margin-top: -8px;
+  margin-left: -16px;
+  margin-right: -16px;
+  margin-bottom: 16px;
+  padding: 18px 12px;
+}
+#characteristicSubContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#characteristicValueContainer {
+  background: rgb(46, 46, 49);
+  padding: 4px;
+  width: 40px;
+  height: 40px;
+}
+#characteristicValue {
+  background: white;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  font-size: 24px;
+  font-family: 'Minion Pro Bold';
+  text-align: center;
+}
+#characteristicLongValue {
+  background: white;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  font-size: 24px;
+  font-family: 'Minion Pro Bold';
+  text-align: center;
+}
+#characteristicTitle {
+  color: white;
+  text-align: center;
+  font-family: 'Minion Pro Bold';
+  font-size: 16px;
+  padding-top: 4px
+}
+#unitDetailsContainer {
+  border: 1px solid rgb(46, 46, 49);
+  margin-bottom: 16px;
+  align-items: center;
+  border-radius: 8px;
+}
+#unitDetailsSubContainer {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+#unitDetailsTitle {
+  background: rgb(46, 46, 49);
+  color: white;
+  font-family: 'Minion Pro Bold';
+  font-size: 18px;
+  border-radius: 4px 4px 0px 0px;
+  padding: 16px;
+  margin: 0px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#unitDetailsText {
+  margin: 8px 0px;
+  white-space: pre-line;
+}
+#weaponTitleContainer {
+  display: flex;
+  justify-content: space-between;
+}
+#calculator {
+  background: transparent;
+  border-width: 0px;
+}
+#warscrollChapterTitle {
+  margin: 12px 0px;
+}
+#coreAbilitiesContainer {
+  padding-bottom: 16px;
+}
+#tableContainer {
+  border: 1px solid rgb(51 54 56);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table th {
+  background-color: rgb(51 54 56);
+  color: white;
+  text-align: left;
+  padding: 8px;
+}
+.table td {
+  padding: 8px;
+}
+#tableCount {
+  text-align: center;
+}

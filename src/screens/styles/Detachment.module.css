@@ -1,0 +1,14 @@
+#title {
+  background: rgb(46, 46, 49);
+  color: white;
+  border-radius: 4px;
+  padding: 16px 16px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+#detachmentRuleContainer {
+  background: white;
+  padding: 16px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
