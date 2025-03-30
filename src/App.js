@@ -9,6 +9,8 @@ import ArmyRules from './screens/ArmyRules'
 import Detachment from './screens/Detachment'
 import Enhancements from './screens/Enhancements'
 import Stratagems from './screens/Stratagems'
+import FAQ from './screens/FAQ'
+import Errata from './screens/Errata'
 import Search from './screens/Search'
 import CoreRules from './screens/CoreRules'
 import KeyDocuments from './screens/KeyDocuments'
@@ -61,6 +63,8 @@ function App() {
       <Route path={'detachment'} element={<Detachment />} />
       <Route path={'enhancements'} element={<Enhancements />} />
       <Route path={'stratagems'} element={<Stratagems />} />
+      <Route path={'faq'} element={<FAQ />} />
+      <Route path={'errata'} element={<Errata />} />
       <Route path={'builder'} element={<Builder />} />
       <Route path={'addUnit'} element={<AddUnit />} />
       <Route path={'chooseEnhancement'} element={<ChooseEnhancement />} />

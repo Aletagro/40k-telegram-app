@@ -1,0 +1,22 @@
+#container {
+  background: white;
+  margin: 12px;
+  padding: 12px;
+  border-radius: 8px;
+}
+#text {
+  white-space: pre-line;
+  font-size: 18px;
+}
+#title {
+  white-space: pre-line;
+  font-style: italic;
+  padding-bottom: 8px;
+  font-size: 18px;
+}
+#errataDate {
+  color: white;
+  padding-left: 12px;
+  padding-top: 12px;
+  font-size: 18px;
+}

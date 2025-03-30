@@ -12,9 +12,8 @@ import Styles from './styles/ArmyRules.module.css'
 const dataBase = require('../dataBase.json')
 
 const ArmyRules = () => {
-    const {faction, codexInfo} = useLocation().state
-    const armyRules = filter(dataBase.data.army_rule, ['publicationId', codexInfo.id])
-    const rules = map(armyRules, armyRule => sortByName(filter(dataBase.data.rule_container_component, ['armyRuleId', armyRule.id]), 'displayOrder'))
+    const {faction, data} = useLocation().state
+    const rules = map(data, armyRule => sortByName(filter(dataBase.data.rule_container_component, ['armyRuleId', armyRule.id]), 'displayOrder'))
 
     const renderRule = (rule) => <Rule
         key={rule.id}
@@ -22,7 +21,7 @@ const ArmyRules = () => {
     />
 
     const renderArmyRule = (armyRule, i) => <div key={armyRule.id}>
-        <p id={Styles.title}>{armyRules[i].name}</p>
+        <p id={Styles.title}>{data[i].name}</p>
         <div id={Styles.armyRuleContainer}>
             {map(armyRule, renderRule)}
         </div>

@@ -8,8 +8,8 @@ import Accordion from '../components/Accordion'
 
 import map from 'lodash/map'
 import find from 'lodash/find'
-import findIndex from 'lodash/findIndex'
 import filter from 'lodash/filter'
+import findIndex from 'lodash/findIndex'
 
 const dataBase = require('../dataBase.json')
 

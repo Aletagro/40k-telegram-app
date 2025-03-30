@@ -98,6 +98,10 @@ const Constants = {
             withoutHero: true
         },
         {
+            name: 'Beasts',
+            withoutHero: true
+        },
+        {
             name: 'Beast',
             withoutHero: true
         },
@@ -424,6 +428,7 @@ const Constants = {
         'Character': false,
         'Infantry': false,
         'Mounted': false,
+        'Beasts': false,
         'Beast': false,
         'Monster': false,
         'Vehicle': false,

@@ -1,0 +1,22 @@
+#container {
+  background: white;
+  margin: 12px;
+  padding: 12px;
+  border-radius: 8px;
+}
+#answer {
+  white-space: pre-line;
+  font-size: 18px;
+}
+#question {
+  white-space: pre-line;
+  font-style: italic;
+  padding-bottom: 4px;
+  font-size: 18px;
+}
+#errataDate {
+  color: white;
+  padding-left: 12px;
+  padding-top: 12px;
+  font-size: 18px;
+}
