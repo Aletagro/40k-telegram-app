@@ -22,6 +22,12 @@ const Army = () => {
     const armyRules = filter(dataBase.data.army_rule, ['publicationId', codexInfo.id])
     const faq = filter(dataBase.data.faq, ['publicationId', codexInfo.id])
     const errata = filter(dataBase.data.amendment, ['publicationId', codexInfo.id])
+    const grotErrataId = find(dataBase.data.rule_section, section => section.name === faction.name && section.parentId === '2258eed7-0511-4e18-9e51-206b959580b4')?.id
+    const grotErrataContainer = filter(dataBase.data.rule_container, ['ruleSectionId', grotErrataId])
+    const grotErrata = map(grotErrataContainer, container => {
+        const text = find(dataBase.data.rule_container_component, ['ruleContainerId', container.id])?.textContent
+        return {...container, text}
+    })
 
     let items = [
         {title: 'Datasheets', screen: 'units'}
@@ -35,6 +41,9 @@ const Army = () => {
     }
     if (size(errata)) {
         items.push({title: 'Updates & Errata', screen: 'errata', data: errata})
+    }
+    if (size(grotErrata)) {
+        items.push({title: 'Grotmas Detachments Errata', screen: 'errata', data: grotErrata})
     }
 
     // const handleClickBuilder = () => {
