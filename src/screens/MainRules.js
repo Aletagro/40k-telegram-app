@@ -24,7 +24,7 @@ const MainRules = () => {
     })
 
     const renderRow = (grandFaction) => <Row
-        key={grandFaction.id}
+        key={grandFaction.name}
         title={grandFaction.name}
         navigateTo='armies'
         state={{grandFaction}}

@@ -10,6 +10,7 @@ import map from 'lodash/map'
 import find from 'lodash/find'
 import size from 'lodash/size'
 import filter from 'lodash/filter'
+import includes from 'lodash/includes'
 import findIndex from 'lodash/findIndex'
 
 const dataBase = require('../dataBase.json')
@@ -25,7 +26,7 @@ const Units = () => {
         const unitsIds = map(filter(dataBase.data.datasheet_faction_keyword, (item) => item.factionKeywordId === faction.id), item => item.datasheetId)
         units = map(unitsIds, unitId => find(dataBase.data.datasheet, datasheet => datasheet.id === unitId))
     }
-    const imperialArmourId = find(dataBase.data.publication, ['factionKeywordId', faction.id])?.id
+    const imperialArmourId = find(dataBase.data.publication, publication => publication.factionKeywordId === faction.id && includes(publication.name, 'Imperial Armour:'))?.id
     const imperialArmourUnits = filter(dataBase.data.datasheet, ['publicationId', imperialArmourId])
     if (size(imperialArmourUnits)) {
         units = [...units, ...imperialArmourUnits]
