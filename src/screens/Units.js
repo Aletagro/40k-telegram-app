@@ -28,8 +28,23 @@ const Units = () => {
     const unitsTypes = map(miniatures, miniature => {
         const keywordsIds = sortByName(filter(dataBase.data.miniature_keyword, ['miniatureId', miniature.id]), 'displayOrder')
         const keywords = map(keywordsIds, keyword => find(dataBase.data.keyword, ['id', keyword.keywordId]))
+        const epicHeroIndex = findIndex(keywords, ['name', 'Epic Hero'])
+        if (epicHeroIndex >= 0) {
+            return 'Epic Hero'
+        }
         const characterIndex = findIndex(keywords, ['name', 'Character'])
-        return characterIndex >= 0 ? 'Character' : keywords[0]?.name
+        if (characterIndex >= 0) {
+            return 'Character'
+        }
+        const battlelineIndex = findIndex(keywords, ['name', 'Battleline'])
+        if (battlelineIndex >= 0) {
+            return 'Battleline'
+        }
+        const transportIndex = findIndex(keywords, ['name', 'Dedicated Transport'])
+        if (transportIndex >= 0) {
+            return 'Dedicated Transport'
+        }
+        return keywords[0]?.name
 
     })
     units = map(units, (unit, index) => ({...unit, unitType: unitsTypes[index]}))

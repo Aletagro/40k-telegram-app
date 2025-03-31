@@ -87,7 +87,14 @@ const Constants = {
     regimentsOfRenownImage: 'https://dhss9aar8ocw.cloudfront.net/39478fae-cf03-40ee-a130-6fef03492c44',
     unitsTypes: [
         {
+            name: 'Epic Hero'
+        },
+        {
             name: 'Character'
+        },
+        {
+            name: 'Battleline',
+            withoutHero: true
         },
         {
             name: 'Infantry',
@@ -111,6 +118,10 @@ const Constants = {
         },
         {
             name: 'Vehicle',
+            withoutHero: true
+        },
+        {
+            name: 'Dedicated Transport',
             withoutHero: true
         },
         {
@@ -425,13 +436,16 @@ const Constants = {
         }
     },
     defaultIsCollapseUnitsTypes: {
+        'Epic Hero': false,
         'Character': false,
+        'Battleline': false,
         'Infantry': false,
         'Mounted': false,
         'Beasts': false,
         'Beast': false,
         'Monster': false,
         'Vehicle': false,
+        'Dedicated Transport': false,
         'Artillery': false,
         'Swarm': false,
         'Fortification': false

@@ -12,3 +12,16 @@
   border-radius: 4px;
   margin-bottom: 16px;
 }
+#detachmentDetailContiner {
+  background: white;
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 8px;
+}
+#detachmentDetailTitle {
+  padding-bottom: 8px;
+}
+#detachmentDetailText {
+  white-space: pre-line;
+}
+
