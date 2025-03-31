@@ -2,6 +2,7 @@ import React from 'react'
 import {sortByName} from '../utilities/utils'
 import Row from '../components/Row'
 import HeaderImage from '../components/HeaderImage'
+import Constants from '../Constants'
 
 import map from 'lodash/map'
 import find from 'lodash/find'
@@ -17,12 +18,16 @@ const MainRules = () => {
         !faction.excludedFromArmyBuilder && find(dataBase.data.publication, publication => publication.factionKeywordId === faction.id && !publication.isCombatPatrol && !includes(publication.name, 'Imperial Armour'))
     )
     const sortedFactions = sortByName(map(factions, faction => ({...faction, name: faction.commonName || faction.name})))
+    const grandFactions = map(Constants.grandFactions, grandFaction => {
+        const _factions = filter(sortedFactions, faction => includes(grandFaction.factions, faction.name))
+        return {...grandFaction, factions: _factions}
+    })
 
-    const renderRow = (faction) => <Row
-        key={faction.id}
-        title={faction.name}
-        navigateTo='army'
-        state={{faction}}
+    const renderRow = (grandFaction) => <Row
+        key={grandFaction.id}
+        title={grandFaction.name}
+        navigateTo='armies'
+        state={{grandFaction}}
     />
 
     return <>
@@ -31,7 +36,7 @@ const MainRules = () => {
             <Row title='Core Rules' navigateTo='coreRules' />
             <Row title='Key Documents' navigateTo='keyDocuments' />
             <div id={Styles.separator} />
-            {map(sortedFactions, renderRow)}
+            {map(grandFactions, renderRow)}
         </div>
     </>
 }

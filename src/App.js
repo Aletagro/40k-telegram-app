@@ -2,6 +2,7 @@ import {useEffect} from 'react'
 import {Route, Routes} from 'react-router-dom'
 import Main from './screens/Main'
 import MainRules from './screens/MainRules'
+import Armies from './screens/Armies'
 import Army from './screens/Army'
 import Units from './screens/Units'
 import Datasheet from './screens/Datasheet'
@@ -54,6 +55,7 @@ function App() {
     <Routes>
       <Route index element={<Main />} />
       <Route path={'mainRules'} element={<MainRules />} />
+      <Route path={'armies'} element={<Armies />} />
       <Route path={'army'} element={<Army />} />
       <Route path={'armyOfRenown'} element={<Army />} />
       <Route path={'units'} element={<Units />} />

@@ -16,7 +16,6 @@
   padding: 12px 16px;
   margin-bottom: 16px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
 #weaponCharacteristicsContainer {
@@ -177,4 +176,9 @@
 }
 #tableCount {
   text-align: center;
+}
+#weaponChoiceIcon {
+  padding-right: 8px;
+  width: 20px;
+  height: 14px;
 }

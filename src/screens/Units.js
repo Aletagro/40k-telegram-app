@@ -8,6 +8,7 @@ import Accordion from '../components/Accordion'
 
 import map from 'lodash/map'
 import find from 'lodash/find'
+import size from 'lodash/size'
 import filter from 'lodash/filter'
 import findIndex from 'lodash/findIndex'
 
@@ -23,6 +24,11 @@ const Units = () => {
     } else {
         const unitsIds = map(filter(dataBase.data.datasheet_faction_keyword, (item) => item.factionKeywordId === faction.id), item => item.datasheetId)
         units = map(unitsIds, unitId => find(dataBase.data.datasheet, datasheet => datasheet.id === unitId))
+    }
+    const imperialArmourId = find(dataBase.data.publication, ['factionKeywordId', faction.id])?.id
+    const imperialArmourUnits = filter(dataBase.data.datasheet, ['publicationId', imperialArmourId])
+    if (size(imperialArmourUnits)) {
+        units = [...units, ...imperialArmourUnits]
     }
     const miniatures = map(units, unit => find(dataBase.data.miniature, ['datasheetId', unit.id]))
     const unitsTypes = map(miniatures, miniature => {
@@ -65,6 +71,7 @@ const Units = () => {
     />
 
     const renderUnitsType = (type) => <Accordion
+        key={type.title}
         title={type.title}
         data={type.units}
         renderItem={renderRow}

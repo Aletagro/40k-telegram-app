@@ -6,6 +6,7 @@ import {replaceAsterisks, sortByName, removeDuplicates} from '../utilities/utils
 import Ability from '../components/Ability'
 import HeaderImage from '../components/HeaderImage'
 import Modal from '../components/Modal'
+import WeaponChoice from '../icons/weaponChoice.svg'
 // import Calculator from '../icons/calculator.svg'
 
 import map from 'lodash/map'
@@ -135,6 +136,10 @@ const Datasheet = () => {
         const values = [weapon.range, weapon.attacks, weapon.ballisticSkill, weapon.strength, weapon.armourPenetration, weapon.damage]
         return <div key={weapon.id} id={Styles.weaponContainer}>
             <div id={Styles.weaponNameContainer}>
+                {weapon.weaponName === weapon.name
+                    ? null
+                    : <img id={Styles.weaponChoiceIcon} onClick={handleOpenModal(weapon.weaponName, 'Before selecting targets for this weapon, select one of its profiles to make attacks with.')} src={WeaponChoice} alt="" />
+                }
                 <p id={Styles.weaponName}>{weapon.weaponName === weapon.name ? weapon.name : `${weapon.weaponName} - ${weapon.name}`}</p>
             </div>
             <div id={Styles.weaponCharacteristicsContainer}>
