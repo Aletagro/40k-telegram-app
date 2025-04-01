@@ -31,9 +31,13 @@ export const search = {
     value: '',
     Datasheets: [],
     Rules: [],
+    Stratagems: [],
+    Detachments: [],
     expand: {
         Datasheets: true,
-        Rules: true
+        Rules: true,
+        Stratagems: true,
+        Detachments: true
     }
 }
 
