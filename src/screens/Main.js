@@ -14,7 +14,7 @@ const Main = () => {
         <HeaderImage src='https://w0.peakpx.com/wallpaper/632/404/HD-wallpaper-warhammer-40k-concept-art-warhammer.jpg' alt='main' />
         <div id='column' className='Chapter'>
             <Row title='Rules' navigateTo='mainRules' />
-            {/* <Row title='Builder' navigateTo='chooseGrandAlliance' /> */}
+            <Row title='Builder' navigateTo='chooseGrandFaction' />
             {/* <Row title='Builder' navigateTo='lists' /> */}
             {/* <Row title='Battle Dashboard' navigateTo='singlePlayer' /> */}
             {/* <Row title='Damage Calculator' navigateTo='calculator' /> */}

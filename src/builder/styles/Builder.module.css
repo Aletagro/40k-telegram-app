@@ -1,15 +1,16 @@
 #mainInfoContainer {
-  background-color: rgb(236, 236, 236);
+  background: rgb(46, 46, 49);
   border-radius: 8px;
   border-width: 0px;
   padding: 12px;
   padding-bottom: 4px;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   font-size: 20px;
   text-align: start;
 }
 
 #text {
+  color: white;
   margin: 0px;
   padding-bottom: 8px;
   font-size: 18px;
@@ -21,11 +22,12 @@
   justify-content: space-between;
 }
 
-#allegianceInfoIcon {
+#infoIcon {
   background: transparent;
   border-width: 0px;
   padding: 0px;
   padding-bottom: 8px;
+  padding-right: 4px;
 }
 
 #title {
@@ -33,19 +35,19 @@
   color: white;
   border-radius: 4px;
   padding: 16px 16px;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   text-align: start;
   font-size: 18px;
   line-height: 24px;
 }
 
-#addButton {
+#detachmentButton {
   background: rgb(245, 201, 80);
   color: black;
   border-radius: 4px;
   padding: 16px;
   font-size: 16px;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   border-width: 0px;
   text-align: start;
   font-family: 'Minion Pro Bold';
@@ -54,25 +56,26 @@
   justify-content: space-between;
 }
 
-#secondAddButton {
-  background-color: rgb(236, 236, 236);
-  color: black;
+#detachmentSecondButton {
+  background: rgb(46, 46, 49);
+  color: white;
   border-radius: 4px;
-  padding: 16px;
   font-size: 16px;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   border-width: 0px;
   text-align: start;
-  font-family: 'Minion Pro Bold';
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-#infoIcon {
-  background: transparent;
-  border-width: 0px;
-  padding: 0px;
+#detachmentButtonText {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  padding: 16px;
+  font-family: 'Minion Pro Bold';
 }
 
 #addButtonText {
@@ -99,8 +102,9 @@
 #pointsContainer {
   background: rgb(46, 46, 49);
   border-radius: 4px;
+  border-width: 0px;
   padding: 16px 16px;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   display: flex;
   justify-content: space-between;
 }
@@ -116,4 +120,18 @@
   background: transparent;
   border-width: 0px;
   padding: 0px;
+}
+
+#unitsLabel {
+  background: rgb(46, 46, 49);
+  color: white;
+  border-radius: 4px;
+  padding: 16px;
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+
+#detachmentInfoIcon {
+  padding: 12px;
+  padding-right: 16px;
 }

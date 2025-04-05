@@ -22,7 +22,7 @@ const PlayerInfo = ({player, onUpdate}) => {
 
     const handleClickAllegiance = () => {
         if (singlePlayer[player].allegiance.id) {
-            navigate('/army', {state: {allegianceId: singlePlayer[player].allegiance.id}})
+            navigate('/army', {state: {factionId: singlePlayer[player].allegiance.id}})
         }
     }
 

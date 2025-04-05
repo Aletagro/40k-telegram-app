@@ -1,30 +1,16 @@
 import Constants from '../Constants'
 
 export const roster = {
-    grandAlliance: '',
-    allegiance: '',
-    regiments: [
-        {
-            units: [],
-            heroId: '',
-            points: 0,
-            artefact: '',
-            heroicTrait: ''
-        }
-    ],
-    generalRegimentIndex: null,
-    auxiliaryUnits: [],
-    regimentOfRenown: null,
-    regimentsOfRenownUnits: [],
-    battleFormation: '',
-    withoutBattleFormation: false,
-    spellsLore: '',
-    prayersLore: '',
-    manifestationLore: '',
-    manifestationsList: [],
-    factionTerrain: '',
+    grandFaction: '',
+    faction: '',
+    factionId: '',
+    units: {},
+    warlordIndex: null,
+    detachment: '',
     pointsLimit: 2000,
-    points: 0
+    points: {
+        all: 0
+    }
 }
 
 export const search = {

@@ -21,7 +21,7 @@ const RuleSections = () => {
         startContainers = filter(ruleContainers, ['id', 'd02413a0-4316-4e24-90d8-80f98af615b8'])
         endContainers = filter(ruleContainers, container => container.id !== 'd02413a0-4316-4e24-90d8-80f98af615b8')
     }
-    console.log({ruleSections})
+
     const renderContainer = (paragraph) => {
         if (paragraph.containerType === 'introduction') {
             return null

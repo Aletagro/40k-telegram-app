@@ -4,22 +4,54 @@ const Constants = {
     grandFactions: [
         {
             name: 'Imperium',
-            factions: ['Adepta Sororitas', 'Adeptus Custodes', 'Adeptus Mechanicus', 'Astra Militarum', 'Grey Knights', 'Imperial Agents', 'Imperial Knights'],
+            factions: [
+                {name: 'Adepta Sororitas', id: 'aee1b46d-3461-4d5d-a612-0efd05dd843d'},
+                {name: 'Adeptus Custodes', id: '6cc4ee5e-3bc6-4142-8147-2e1a9fb6e82c'},
+                {name: 'Adeptus Mechanicus', id: '60ecf26b-0c2b-4ea3-8a29-5f06bd02f6d8'},
+                {name: 'Astra Militarum', id: '9b847488-9663-48dc-b819-08ab93ac4382'},
+                {name: 'Grey Knights', id: '93423323-3abb-4a72-a51e-b8ac54f2f98d'},
+                {name: 'Imperial Agents', id: '2f81671f-3164-4ab0-93c0-4a99746b5996'},
+                {name: 'Imperial Knights', id: '5737b3b6-1c33-4cb3-828c-08b6909197aa'}
+            ],
             image: 'https://www.destructoid.com/wp-content/uploads/2024/07/imperium-vs-orks-warhammer-40k.jpg?fit=1200%2C675'
         },
         {
             name: 'Imperium - Adeptus Astartes',
-            factions: ['Black Templars', 'Blood Angels', 'Dark Angels', 'Deathwatch', 'Space Marines', 'Space Wolves'],
+            factions: [
+                {name: 'Black Templars', id: '28162de0-fd36-450b-87ee-39e973ead32d'},
+                {name: 'Blood Angels', id: '864734c9-d6c7-4486-92de-9b8271a6a1e5'},
+                {name: 'Dark Angels', id: 'fa0e86ef-b5da-4510-9a9f-8cd86267bb6a'},
+                {name: 'Deathwatch', id: '51ac31b0-93ff-4c94-a9a5-5c1a97fbbb75'},
+                {name: 'Space Marines', id: '01623188-9470-4441-96b0-e06eb2572bb5'},
+                {name: 'Space Wolves', id: 'bc367514-36b7-47c6-bd3f-ffbf85f5cfd9'}
+            ],
             image: 'https://artwork.40k.gallery/wp-content/uploads/2021/12/zhang-han-lazarus-768x430.jpg.webp'
         },
         {
             name: 'Chaos',
-            factions: ['Chaos Daemons', 'Chaos Knights', 'Chaos Space Marines', 'Death Guard', 'Emperor’s Children', 'Thousand Sons', 'World Eaters'],
+            factions: [
+                {name: 'Chaos Daemons', id: '40a70c91-675a-4ac5-aa97-daedb9cb6f11'},
+                {name: 'Chaos Knights', id: '2e79f9cd-94dc-48ca-bddf-6d5e877609c5'},
+                {name: 'Chaos Space Marines', id: 'd4162ab7-8356-4e4e-adb3-5e3b631d47e6'},
+                {name: 'Death Guard', id: '19176137-2faa-4d6e-adb4-2572510032b7'},
+                {name: 'Emperor’s Children', id: 'b63a417d-63ea-4d20-b7f0-85c66c56979e'},
+                {name: 'Thousand Sons', id: '25d2c58f-59b5-4a4f-b597-495ba322ce07'},
+                {name: 'World Eaters', id: '8bd4c67d-4aba-4502-8561-7c6c6faae51d'}
+            ],
             image: 'https://warzonestudio.com/image/catalog/blog/Chaos-Daemons-codex-review/Chaos-daemons-codex-review-03.jpg'
         },
         {
             name: 'Xenos',
-            factions: ['Aeldari', 'Drukhari', 'Genestealer Cults', 'Leagues of Votann', 'Necrons', 'Orks', 'Tyranids', 'T’au Empire'],
+            factions: [
+                {name: 'Aeldari', id: '2cb72f92-bfc7-4d2c-a183-b2bff6b26bfc'},
+                {name: 'Drukhari', id: '43bbfe97-4c14-47be-be2b-90de3e6756b1'},
+                {name: 'Genestealer Cults', id: '800c0387-5033-47da-bad0-f42e53b37453'},
+                {name: 'Leagues of Votann', id: 'a42808ab-f00b-4664-aed5-8d9341b96e36'},
+                {name: 'Necrons', id: '47670bc3-64b8-4c2d-9154-7391f132688b'},
+                {name: 'Orks', id: '0b30f1e3-1e5c-4823-afa1-07951433a270'},
+                {name: 'Tyranids', id: 'b30b3258-9140-46b8-9c9e-113be9008ea9'},
+                {name: 'T’au Empire', id: '1a241f8e-2d79-47c4-82b1-f6faea353970'}
+            ],
             image: 'https://static1.thegamerimages.com/wordpress/wp-content/uploads/wm/2025/01/tyranid-screamer-killer-4-final.jpg'
         }
     ],

@@ -58,15 +58,31 @@ const Datasheet = () => {
     const compositionsSize = map(miniatures, _miniature => filter(dataBase.data.unit_composition_miniature, composition => composition.miniatureId === _miniature.id))
     const compositionsPoints = filter(dataBase.data.unit_composition, composition => composition.datasheetId === unit.id)
     const compositions = map(compositionsPoints, compositionPoints => {
+        let title
         const models = map(miniatures, _miniature => {
             const miniatureSizes = find(compositionsSize, compositionSizes => compositionSizes[0].miniatureId === _miniature.id)
             const counts = find(miniatureSizes, ['unitCompositionId', compositionPoints.id])
+            const factionKeyword = find(dataBase.data.unit_composition_required_faction_keyword, ['unitCompositionId', counts.unitCompositionId])
+            const armyFaction = factionKeyword ? find(dataBase.data.faction_keyword, ['id', factionKeyword.factionKeywordId]) : null
+            if (armyFaction) {
+                title = `Army Faction: ${armyFaction.name}`
+            } else {
+                const requiredDetachmentId = find(dataBase.data.unit_composition_required_detachment, ['unitCompositionId', counts.unitCompositionId])?.detachmentId
+                const requiredDetachment = requiredDetachmentId ? find(dataBase.data.detachment, ['id', requiredDetachmentId]) : null
+                if (requiredDetachment) {
+                    title = `${requiredDetachment.name} Detachment`
+                }
+            }
             return {
                 name: _miniature.name,
                 count: counts.max === counts.min ? counts.min : `${counts.min}-${counts.max}`
             }
         })
-        return {models, points: compositionPoints.points}
+        const groupingKeyword = compositionPoints.referenceGroupingKeywordId ? find(dataBase.data.keyword, ['id', compositionPoints.referenceGroupingKeywordId]) : ''
+        if (groupingKeyword) {
+            title = `Every model has the ${groupingKeyword.name} Keyword`
+        }
+        return {models, points: compositionPoints.points, title}
     })
     const miniatureKeywords = sortByName(filter(dataBase.data.miniature_keyword, ['miniatureId', miniature.id]), 'displayOrder')
     const keywords = map(miniatureKeywords, keyword => find(dataBase.data.keyword, ['id', keyword.keywordId]))
@@ -190,7 +206,7 @@ const Datasheet = () => {
 
     const renderAdditionalAbility = (ability, index) => <Ability key={ability.id} ability={ability} />
 
-    const renderCharacteristic = (characteristic) => <div key={characteristic.value} id={Styles.characteristicSubContainer} style={{width: '20%'}}>
+    const renderCharacteristic = (characteristic, index) => <div key={index} id={Styles.characteristicSubContainer} style={{width: '20%'}}>
         <p id={Styles.characteristicTitle}>{characteristic.title}</p>
         <div id={Styles.characteristicValueContainer}>
             <p id={characteristic.value?.length > 3 ? Styles.characteristicLongValue : Styles.characteristicValue}>
@@ -203,17 +219,18 @@ const Datasheet = () => {
         <p id={Styles.unitDetailsText}>{replaceAsterisks(wargearRule.rulesText)}</p>
 
     const renderTableRow = (composition, unitIndex) => <React.Fragment key={unitIndex}>
-        {composition.models.map((model, modelIndex) => (
-        <tr key={`${unitIndex}-${modelIndex}`} style={{'background': `${unitIndex % 2 === 1 ? '#ECECEC' : ''}`}}>
-            <td>{model.name}</td>
-            <td id={Styles.tableCount}>{model.count}</td>
-            {modelIndex === 0 && (
-            <td id={Styles.tableCount} rowSpan={composition.models.length}>
-                {composition.points}
-            </td>
-            )}
-        </tr>
-        ))}
+        {composition.models.map((model, modelIndex) => <>
+            {composition.title ? <b id={Styles.compositionTitle}>{composition.title}</b> : null}
+            <tr key={`${unitIndex}-${modelIndex}`} style={{'background': `${unitIndex % 2 === 1 ? '#ECECEC' : ''}`}}>
+                <td>{model.name}</td>
+                <td id={Styles.tableCount}>{model.count}</td>
+                {modelIndex === 0 && (
+                <td id={Styles.tableCount} rowSpan={composition.models.length}>
+                    {composition.points}
+                </td>
+                )}
+            </tr>
+        </>)}
     </React.Fragment>
 
     const renderCompositionsTable = () => <div id={Styles.tableContainer}>

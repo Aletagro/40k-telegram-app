@@ -8,7 +8,6 @@ import Styles from './styles/FAQ.module.css'
 
 const FAQ = () => {
     const {data, codexInfo} = useLocation().state
-    console.log(codexInfo)
 
     const renderQuestion = (item) => <div id={Styles.container} key={item.id}>
         <p id={Styles.question}>Q: {replaceAsterisks(item.question)}</p>

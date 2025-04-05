@@ -12,7 +12,7 @@ const Armies = () => {
         key={faction.id}
         title={faction.name}
         navigateTo='army'
-        state={{faction}}
+        state={{faction, grandFaction: grandFaction.name}}
     />
 
     return <>

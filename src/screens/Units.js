@@ -1,61 +1,16 @@
 import React, {useCallback, useReducer} from 'react'
 import {useLocation} from 'react-router-dom'
-import {sortByName, unitsSortesByType} from '../utilities/utils'
+import {getUnitsSortesByType} from '../utilities/utils'
 import {isCollapseUnitsTypes} from '../utilities/appState'
 import Row from '../components/Row'
 import HeaderImage from '../components/HeaderImage'
 import Accordion from '../components/Accordion'
 
-import map from 'lodash/map'
-import find from 'lodash/find'
-import size from 'lodash/size'
-import filter from 'lodash/filter'
-import includes from 'lodash/includes'
-import findIndex from 'lodash/findIndex'
-
-const dataBase = require('../dataBase.json')
-
 const Units = () => {
     const {faction, codexInfo} = useLocation().state
     // eslint-disable-next-line
     const [_, forceUpdate] = useReducer((x) => x + 1, 0)
-    let units = []
-    if (codexInfo) {
-        units = filter(dataBase.data.datasheet, datasheet => datasheet.publicationId === codexInfo?.id)
-    } else {
-        const unitsIds = map(filter(dataBase.data.datasheet_faction_keyword, (item) => item.factionKeywordId === faction.id), item => item.datasheetId)
-        units = map(unitsIds, unitId => find(dataBase.data.datasheet, datasheet => datasheet.id === unitId))
-    }
-    const imperialArmourId = find(dataBase.data.publication, publication => publication.factionKeywordId === faction.id && includes(publication.name, 'Imperial Armour:'))?.id
-    const imperialArmourUnits = filter(dataBase.data.datasheet, ['publicationId', imperialArmourId])
-    if (size(imperialArmourUnits)) {
-        units = [...units, ...imperialArmourUnits]
-    }
-    const miniatures = map(units, unit => find(dataBase.data.miniature, ['datasheetId', unit.id]))
-    const unitsTypes = map(miniatures, miniature => {
-        const keywordsIds = sortByName(filter(dataBase.data.miniature_keyword, ['miniatureId', miniature.id]), 'displayOrder')
-        const keywords = map(keywordsIds, keyword => find(dataBase.data.keyword, ['id', keyword.keywordId]))
-        const epicHeroIndex = findIndex(keywords, ['name', 'Epic Hero'])
-        if (epicHeroIndex >= 0) {
-            return 'Epic Hero'
-        }
-        const characterIndex = findIndex(keywords, ['name', 'Character'])
-        if (characterIndex >= 0) {
-            return 'Character'
-        }
-        const battlelineIndex = findIndex(keywords, ['name', 'Battleline'])
-        if (battlelineIndex >= 0) {
-            return 'Battleline'
-        }
-        const transportIndex = findIndex(keywords, ['name', 'Dedicated Transport'])
-        if (transportIndex >= 0) {
-            return 'Dedicated Transport'
-        }
-        return keywords[0]?.name
-
-    })
-    units = map(units, (unit, index) => ({...unit, unitType: unitsTypes[index]}))
-    units = unitsSortesByType(units)
+    const units = getUnitsSortesByType(faction, codexInfo)
 
     const handleChangeExpand = useCallback((e) => {
         isCollapseUnitsTypes[e.nativeEvent.target?.innerText] = !isCollapseUnitsTypes[e.nativeEvent.target?.innerText]

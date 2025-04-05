@@ -3,7 +3,7 @@ import {useLocation} from 'react-router-dom'
 import Row from '../components/Row'
 import HeaderImage from '../components/HeaderImage'
 import {sortByName} from '../utilities/utils'
-// import {roster, navigationState} from '../utilities/appState'
+import {roster, navigationState} from '../utilities/appState'
 
 import map from 'lodash/map'
 import find from 'lodash/find'
@@ -16,7 +16,7 @@ import Styles from './styles/Army.module.css'
 const dataBase = require('../dataBase.json')
 
 const Army = () => {
-    const {faction} = useLocation().state
+    const {faction, grandFaction} = useLocation().state
     const codexInfo = find(dataBase.data.publication, publication => publication.factionKeywordId === faction.id && !publication.isCombatPatrol && !includes(publication.name, 'Imperial Armour'))
     const detachments = sortByName(filter(dataBase.data.detachment, ['publicationId', codexInfo.id]))
     const armyRules = filter(dataBase.data.army_rule, ['publicationId', codexInfo.id])
@@ -46,10 +46,12 @@ const Army = () => {
         items.push({title: 'Grotmas Detachments Errata', screen: 'errata', data: grotErrata})
     }
 
-    // const handleClickBuilder = () => {
-    //     roster.allegiance = faction.name
-    //     navigationState.isBuilder = true
-    // }
+    const handleClickBuilder = () => {
+        roster.grandFaction = grandFaction
+        roster.faction = faction.name
+        roster.factionId = faction.id
+        navigationState.isBuilder = true
+    }
 
     const renderRow = (item) => <Row
         key={item.title}
@@ -66,18 +68,18 @@ const Army = () => {
     />
 
 
-    // const renderBuilderRow = () => <Row
-    //     title='Builder'
-    //     navigateTo='builder'
-    //     state={{alliganceId: faction.id}}
-    //     onClick={handleClickBuilder}
-    // />
+    const renderBuilderRow = () => <Row
+        title='Builder'
+        navigateTo='builder'
+        state={{faction}}
+        onClick={handleClickBuilder}
+    />
 
     return <>
         <HeaderImage src={faction.rosterHeaderImage} alt={faction.name} isWide />
         <div id='column' className='Chapter'>
             {map(items, renderRow)}
-            {/* {renderBuilderRow()} */}
+            {renderBuilderRow()}
             {size(detachments)
                 ? <>
                     <p id={Styles.title}>Detachments</p>

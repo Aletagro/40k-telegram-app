@@ -19,7 +19,7 @@ const MainRules = () => {
     )
     const sortedFactions = sortByName(map(factions, faction => ({...faction, name: faction.commonName || faction.name})))
     const grandFactions = map(Constants.grandFactions, grandFaction => {
-        const _factions = filter(sortedFactions, faction => includes(grandFaction.factions, faction.name))
+        const _factions = filter(sortedFactions, faction => find(grandFaction.factions, ['name', faction.name]))
         return {...grandFaction, factions: _factions}
     })
 

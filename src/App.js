@@ -21,7 +21,7 @@ import Rules from './screens/Rules'
 import Battleplan from './screens/Battleplan'
 import Header from './components/Header'
 import Lists from './builder/Lists'
-import ChooseGrandAlliance from './builder/ChooseGrandAlliance'
+import ChooseGrandFaction from './builder/ChooseGrandFaction'
 import ChooseFaction from './builder/ChooseFaction'
 import Builder from './builder/Builder'
 import AddUnit from './builder/AddUnit'
@@ -80,7 +80,7 @@ function App() {
       <Route path={'rules'} element={<Rules />} />
       <Route path={'battleplan'} element={<Battleplan />} />
       <Route path={'lists'} element={<Lists />} />
-      <Route path={'chooseGrandAlliance'} element={<ChooseGrandAlliance />} />
+      <Route path={'chooseGrandFaction'} element={<ChooseGrandFaction />} />
       <Route path={'chooseFaction'} element={<ChooseFaction />} />
       <Route path={'export'} element={<Export />} />
       <Route path={'singlePlayer'} element={<SinglePlayer />} />

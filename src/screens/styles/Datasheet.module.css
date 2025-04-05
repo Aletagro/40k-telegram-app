@@ -182,3 +182,7 @@
   width: 20px;
   height: 14px;
 }
+#compositionTitle {
+  padding: 8px;
+  display: flex;
+}

@@ -2,7 +2,6 @@ import parse from 'html-react-parser';
 import Constants from '../Constants'
 
 import map from 'lodash/map'
-import get from 'lodash/get'
 import size from 'lodash/size'
 import find from 'lodash/find'
 import filter from 'lodash/filter'
@@ -10,6 +9,7 @@ import indexOf from 'lodash/indexOf'
 import forEach from 'lodash/forEach'
 import replace from 'lodash/replace'
 import includes from 'lodash/includes'
+import findIndex from 'lodash/findIndex'
 import lowerCase from 'lodash/lowerCase'
 
 const dataBase = require('../dataBase.json')
@@ -52,10 +52,10 @@ export const getErrors = (roster) => {
     if (roster.points > roster.pointsLimit) {
         errors.push(`You use more than ${roster.pointsLimit} points`)
     }
-    if (!roster.battleFormation  && !roster.withoutBattleFormation) {
-        errors.push('Choose Battle Formation')
+    if (!roster.detachment) {
+        errors.push('Choose Detachment')
     }
-    if (roster.generalRegimentIndex === null) {
+    if (roster.warlordIndex === null) {
         errors.push('Choose General')
     }
     const uniqueUnits = []
@@ -68,11 +68,6 @@ export const getErrors = (roster) => {
     let jawsCount = 0
             let krulsCount = 0
     forEach(roster.regiments, (regiment, index) => {
-        if (index === roster.generalRegimentIndex && regiment.units.length > 5) {
-            errors.push("In General's Regiment you have more than 4 units")
-        } else if (index !== roster.generalRegimentIndex && regiment.units.length > 4){
-            errors.push(`In Regiment ${index + 1} you have more than 3 units`)
-        }
         regiment.units.forEach(unit => {
             if (includes(unit.referenceKeywords, 'Unique')) {
                 uniqueUnits.push(unit.name)
@@ -92,21 +87,7 @@ export const getErrors = (roster) => {
             if (includes(unit.referenceKeywords, 'Warmaster')) {
                 hasWarmasterInRegiments.push(index)
             }
-            if (roster.requiredGeneral && unit.id === roster.requiredGeneral.id) {
-                hasRequiredGeneral = true
-                if (index === roster.generalRegimentIndex) {
-                    isRequiredGeneralIsGeneral = true
-                }
-            }
         })
-        if (roster.allegiance === 'Big Waaagh!') {
-            if (get(regiment, 'units[0].name', '') === 'Kragnos, the End of Empire') {
-            } else if (includes(get(regiment, 'units[0].referenceKeywords', ''), 'Ironjawz')) {
-                jawsCount = jawsCount + 1
-            } else if (includes(get(regiment, 'units[0].referenceKeywords', ''), 'Kruleboyz')) {
-                krulsCount = krulsCount + 1
-            }
-        }
     })
     // RoR с дп может брать артефакты и трейты
     if (roster.regimentOfRenown?.id === '11cc4585-4cf5-43eb-af29-e2cbcdb6f5dd') {
@@ -128,8 +109,8 @@ export const getErrors = (roster) => {
     if (ensorcelledBannersCount > 1) {
         errors.push(`You have ${ensorcelledBannersCount} Ensorcelled Banners`)
     }
-    if (hasWarmasterInRegiments.length && !includes(hasWarmasterInRegiments, roster.generalRegimentIndex) && !roster.requiredGeneral) {
-        errors.push("You have a Warmaster hero, but he isn't your general")
+    if (hasWarmasterInRegiments.length && !includes(hasWarmasterInRegiments, roster.warlordIndex) && !roster.requiredGeneral) {
+        errors.push("You have a Warlord hero, but he isn't your general")
     }
     if (roster.requiredGeneral) {
         if (!hasRequiredGeneral) {
@@ -181,12 +162,6 @@ export const getWarnings = (roster) => {
         if (hasWizard) {
             warnings.push('Choose Manifestations Lore')
         }
-    }
-    if (roster.allegiance === 'Ogor Mawtribes' && !roster.factionTerrain) {
-        warnings.push('Choose Faction Terrain')
-    }
-    if (roster.allegiance === 'Disciples of Tzeentch' && !roster.spellsLore) {
-        warnings.push('Choose Spells Lore')
     }
     let hasLegends = false
     forEach(roster.regiments, (regiment) => {
@@ -254,16 +229,6 @@ export const getWoundsCount = (roster) => {
             woundsCount = woundsCount + (unit.modelCount * (unit.isReinforced ? 2 : 1) * unit.health)
         })
     })
-    if (roster.auxiliaryUnits.length > 0) {
-        forEach(roster.auxiliaryUnits, unit => {
-            woundsCount = woundsCount + (unit.modelCount * (unit.isReinforced ? 2 : 1) * unit.health)
-        })
-    }
-    if (roster.regimentOfRenown) {
-        forEach(roster.regimentsOfRenownUnits, unit => {
-            woundsCount = woundsCount + (unit.modelCount * (unit.isReinforced ? 2 : 1) * unit.health)
-        })
-    }
     return woundsCount
 }
 
@@ -332,9 +297,9 @@ export const setTacticColor = (tactic) => {
     return Constants.tacticsTypes.UNIVERSAL
 }
 
-export const getInfo = (screen, allegiance) => {
+export const getInfo = (screen, faction) => {
     let abilitiesGroup = dataBase.data[screen.groupName].filter((item) => 
-        item.factionId === allegiance.id &&
+        item.factionId === faction.id &&
         item.abilityGroupType === screen.abilityGroupType &&
         (screen.includesTexts
             ? Boolean(screen.includesTexts.find(text => item.name.includes(text)))
@@ -342,7 +307,7 @@ export const getInfo = (screen, allegiance) => {
         )
     )
     if (screen.abilityGroupType === 'battleTraits') {
-        abilitiesGroup = [abilitiesGroup.find(({name})=> replaceQuotation(name).includes(replaceQuotation(allegiance.name)))]
+        abilitiesGroup = [abilitiesGroup.find(({name})=> replaceQuotation(name).includes(replaceQuotation(faction.name)))]
     }
     const abilitiesRules = abilitiesGroup.map(formation => dataBase.data[screen.ruleName].filter((item) => item[screen.ruleIdName] === formation?.id))
     const abilities = abilitiesGroup.map((formation, index) => {
@@ -391,13 +356,8 @@ const hasKeyword = (unitKeywords, requiredKeywords , excludedKeywords) => {
 
 export const getRegimentOption = (option, unit) => {
     const publicationId = find(dataBase.data.warscroll_publication, ['warscrollId', unit.id])?.publicationId
-    let alliganceId = find(dataBase.data.publication, ['id', publicationId])?.factionKeywordId
-    if (includes(unit.referenceKeywords, 'Ironjawz')) {
-        alliganceId = '298391fb-3d74-4a26-b9cc-5f3ad5fe4852'
-    } else if (includes(unit.referenceKeywords, 'Kruleboyz')) {
-        alliganceId = '21ed7371-d9e3-4a05-8b2c-db46cee7d29d'
-    }
-    const warscrollIds = dataBase.data.warscroll_faction_keyword.filter((item) => item.factionKeywordId === alliganceId).map(item => item.warscrollId)
+    let factionId = find(dataBase.data.publication, ['id', publicationId])?.factionKeywordId
+    const warscrollIds = dataBase.data.warscroll_faction_keyword.filter((item) => item.factionKeywordId === factionId).map(item => item.warscrollId)
     // определяем всех юнитов фракции
     const allUnits = warscrollIds.map(warscrollId => dataBase.data.warscroll.find(scroll => scroll.id === warscrollId)).filter(unit => !unit.isSpearhead && !unit.isLegends && unit.points !== null)
     // определяем кейворды всех юнитов фракции
@@ -474,4 +434,44 @@ export const removeDuplicates = (arr) => {
       return true // Оставляем уникальный элемент
     })
     return result
-  }
+}
+
+export const getUnitsSortesByType = (faction, codexInfo) => {
+    let units = []
+    if (codexInfo) {
+        units = filter(dataBase.data.datasheet, datasheet => datasheet.publicationId === codexInfo?.id)
+    } else {
+        const unitsIds = map(filter(dataBase.data.datasheet_faction_keyword, (item) => item.factionKeywordId === faction.id), item => item.datasheetId)
+        units = map(unitsIds, unitId => find(dataBase.data.datasheet, datasheet => datasheet.id === unitId))
+    }
+    const imperialArmourId = find(dataBase.data.publication, publication => publication.factionKeywordId === faction.id && includes(publication.name, 'Imperial Armour:'))?.id
+    const imperialArmourUnits = filter(dataBase.data.datasheet, ['publicationId', imperialArmourId])
+    if (size(imperialArmourUnits)) {
+        units = [...units, ...imperialArmourUnits]
+    }
+    const miniatures = map(units, unit => find(dataBase.data.miniature, ['datasheetId', unit.id]))
+    const unitsTypes = map(miniatures, miniature => {
+        const keywordsIds = sortByName(filter(dataBase.data.miniature_keyword, ['miniatureId', miniature.id]), 'displayOrder')
+        const keywords = map(keywordsIds, keyword => find(dataBase.data.keyword, ['id', keyword.keywordId]))
+        const epicHeroIndex = findIndex(keywords, ['name', 'Epic Hero'])
+        if (epicHeroIndex >= 0) {
+            return 'Epic Hero'
+        }
+        const characterIndex = findIndex(keywords, ['name', 'Character'])
+        if (characterIndex >= 0) {
+            return 'Character'
+        }
+        const battlelineIndex = findIndex(keywords, ['name', 'Battleline'])
+        if (battlelineIndex >= 0) {
+            return 'Battleline'
+        }
+        const transportIndex = findIndex(keywords, ['name', 'Dedicated Transport'])
+        if (transportIndex >= 0) {
+            return 'Dedicated Transport'
+        }
+        return keywords[0]?.name
+
+    })
+    units = map(units, (unit, index) => ({...unit, unitType: unitsTypes[index]}))
+    return unitsSortesByType(units)
+}

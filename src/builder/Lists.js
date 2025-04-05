@@ -3,7 +3,6 @@ import {useNavigate} from 'react-router-dom'
 import {navigationState, roster} from '../utilities/appState'
 import Add from '../icons/add.svg'
 
-import map from 'lodash/map'
 import find from 'lodash/find'
 
 import Styles from './styles/Lists.module.css'
@@ -14,42 +13,42 @@ const dataBase = require('../dataBase.json')
 //     {
 //         id: 1,
 //         name: 'Крулы из болота молодцы, победили огурцы',
-//         alliganceId: '21ed7371-d9e3-4a05-8b2c-db46cee7d29d'
+//         factionId: '21ed7371-d9e3-4a05-8b2c-db46cee7d29d'
 //     },
 //     {
 //         id: 2,
 //         name: 'Костетрясы',
-//         alliganceId: '262eabc2-f3b4-4296-9ef5-632d6cf1aadf'
+//         factionId: '262eabc2-f3b4-4296-9ef5-632d6cf1aadf'
 //     },
 //     {
 //         id: 3,
 //         name: 'Джовсы',
-//         alliganceId: '298391fb-3d74-4a26-b9cc-5f3ad5fe4852'
+//         factionId: '298391fb-3d74-4a26-b9cc-5f3ad5fe4852'
 //     },
 //     {
 //         id: 4,
 //         name: 'Полотенца',
-//         alliganceId: '0e399a0d-a181-4870-960d-f3709686af0d'
+//         factionId: '0e399a0d-a181-4870-960d-f3709686af0d'
 //     },
 //     {
 //         id: 5,
 //         name: 'Мамонты',
-//         alliganceId: '08135df6-633c-4d58-9adb-7d4b8563b0da'
+//         factionId: '08135df6-633c-4d58-9adb-7d4b8563b0da'
 //     },
 //     {
 //         id: 6,
 //         name: 'Крысы',
-//         alliganceId: '7287a920-61ef-41e1-87b9-911319cfe865'
+//         factionId: '7287a920-61ef-41e1-87b9-911319cfe865'
 //     },
 //     {
 //         id: 7,
 //         name: 'Тзинч',
-//         alliganceId: 'fc32e7a5-c952-430a-bcda-9aba4195c181'
+//         factionId: 'fc32e7a5-c952-430a-bcda-9aba4195c181'
 //     },
 //     {
 //         id: 8,
 //         name: 'Труг всем друг',
-//         alliganceId: '69149f93-d1b0-4b7e-826c-c0308a96b538'
+//         factionId: '69149f93-d1b0-4b7e-826c-c0308a96b538'
 //     }
 // ]
 
@@ -58,8 +57,8 @@ const lists = [
         'name': 'Костетрясы',
         'isPublic': true,
         "grandAlliance": "Destruction",
-        "allegiance": "Bonesplitterz",
-        "allegianceId": "262eabc2-f3b4-4296-9ef5-632d6cf1aadf",
+        "faction": "Bonesplitterz",
+        "factionId": "262eabc2-f3b4-4296-9ef5-632d6cf1aadf",
         "regiments": [
             {
                 "units": [
@@ -104,7 +103,7 @@ const lists = [
                 "heroicTrait": ""
             }
         ],
-        "generalRegimentIndex": 0,
+        "warlordIndex": 0,
         "auxiliaryUnits": [
             {
                 "id": "457fc0d0-f9d0-4f16-a888-79b0186840ce",
@@ -129,8 +128,7 @@ const lists = [
                 "points": 210
             }
         ],
-        "battleFormation": "Kop Rukk",
-        "withoutBattleFormation": false,
+        "detachment": "Kop Rukk",
         "spellsLore": "Lore of the Savage Beast",
         "prayersLore": "Prayers of the Living Wilds",
         "manifestationLore": "Twilit Sorceries",
@@ -157,7 +155,7 @@ const lists = [
         'name': 'Гобла',
         'isPublic': true,
         "grandAlliance": "Destruction",
-        "allegiance": "Gloomspite Gitz",
+        "faction": "Gloomspite Gitz",
         "regiments": [
             {
                 "units": [
@@ -190,7 +188,7 @@ const lists = [
                 "points": 670
             }
         ],
-        "generalRegimentIndex": 0,
+        "warlordIndex": 0,
         "auxiliaryUnits": [
             {
                 "id": "9e631509-bf9b-481e-b586-ebe2d56916fb",
@@ -215,8 +213,7 @@ const lists = [
                 "points": 90
             }
         ],
-        "battleFormation": "Troggherd",
-        "withoutBattleFormation": false,
+        "detachment": "Troggherd",
         "spellsLore": "Lore of the Clammy Dank",
         "prayersLore": "",
         "manifestationLore": "Krondspine Incarnate",
@@ -230,11 +227,11 @@ const lists = [
         "pointsLimit": 2000,
         "points": 1150,
         "requiredGeneral": null,
-        "allegianceId": "eef8e883-a05c-40f2-8257-912586275561"
+        "factionId": "eef8e883-a05c-40f2-8257-912586275561"
     },
     {
         "grandAlliance": "Chaos",
-        "allegiance": "Blades of Khorne",
+        "faction": "Blades of Khorne",
         "regiments": [
             {
                 "units": [
@@ -284,7 +281,7 @@ const lists = [
                 "heroicTrait": ""
             }
         ],
-        "generalRegimentIndex": 0,
+        "warlordIndex": 0,
         "auxiliaryUnits": [],
         "regimentOfRenown": {
             "id": "4eb81bd5-0209-4ea1-9780-c2ee5e6de3a6",
@@ -308,8 +305,7 @@ const lists = [
                 "points": 0
             }
         ],
-        "battleFormation": "Bloodbound Warhorde",
-        "withoutBattleFormation": false,
+        "detachment": "Bloodbound Warhorde",
         "spellsLore": "",
         "prayersLore": "Blood Blesssings of Khorne",
         "manifestationLore": "Judgements of Khorne",
@@ -331,7 +327,7 @@ const lists = [
         "pointsLimit": 2000,
         "points": 1410,
         "requiredGeneral": null,
-        "allegianceId": "cc154b45-7b22-45fc-b584-9b3db739070c",
+        "factionId": "cc154b45-7b22-45fc-b584-9b3db739070c",
         "name": "test name",
         "isPublic": true
     }
@@ -341,44 +337,24 @@ const Lists = () => {
     const navigate = useNavigate()
 
     const handleAddNewRoster = () => {
-        navigate('/chooseGrandAlliance')
+        navigate('/chooseGrandFaction')
     }
 
-
-    const getUnits = (units) => map(units, (unit) => {
-        const _unit = find(dataBase.data.warscroll, ['id', unit.id])
-        return {..._unit, ...unit}
-    })
-
     const handleNavigateToRoster = (list) => () => {
-        const regiments = map(list.regiments, (regiment) => {
-            const units = getUnits(regiment.units)
-            return {...regiment, units}
-        })
-        roster.allegiance = list.allegiance
-        roster.allegianceId = list.allegianceId
-        roster.auxiliaryUnits = getUnits(list.auxiliaryUnits)
-        roster.battleFormation = list.battleFormation
-        roster.factionTerrain = list.factionTerrain
-        roster.generalRegimentIndex = list.generalRegimentIndex
-        roster.grandAlliance = list.grandAlliance
-        roster.manifestationLore = list.manifestationLore
-        roster.manifestationsList = getUnits(list.manifestationsList)
+        roster.faction = list.faction
+        roster.factionId = list.factionId
+        roster.detachment = list.detachment
+        roster.warlordIndex = list.warlordIndex
+        roster.grandFaction = list.grandFaction
         roster.points = list.points
         roster.pointsLimit = list.pointsLimit
-        roster.prayersLore = list.prayersLore
-        roster.regimentOfRenown = find(dataBase.data.ability_group, ['id', list.regimentOfRenown?.id]) 
-        roster.regiments = regiments
-        roster.regimentsOfRenownUnits = getUnits(list.regimentsOfRenownUnits)
-        roster.requiredGeneral = list.requiredGeneral
-        roster.spellsLore = list.spellsLore
-        roster.withoutBattleFormation = list.withoutBattleFormation
+        roster.units = list.units
         navigationState.isBuilder = true
-        navigate('/builder', {state: {alliganceId: list.allegianceId}})
+        navigate('/builder', {state: {factionId: list.factionId}})
     }
 
     const renderList = (list) => {
-        const army = find(dataBase.data.faction_keyword, ['id', list.allegianceId])
+        const army = find(dataBase.data.faction_keyword, ['id', list.factionId])
         return <button id={Styles.button} onClick={handleNavigateToRoster(list)} key={list.id}>
             <img src={army?.moreInfoImage} alt={army?.name} id={Styles.image} />
             <div id={Styles.textContainer}>

@@ -45,14 +45,14 @@ const Export = () => {
         return `${text}`.replace(/,/g, '')
     }
 
-    const getRegimentForExport = (regiment, index) => `Regiment ${index + 1}\n${roster.generalRegimentIndex === index ? "General's regiment\n" : ''}${regiment.units.map(getUnitForExport).join('\n')}\n----`
+    const getRegimentForExport = (regiment, index) => `Regiment ${index + 1}\n${roster.warlordIndex === index ? "General's regiment\n" : ''}${regiment.units.map(getUnitForExport).join('\n')}\n----`
 
     const getRegimentsForExport = () => roster.regiments.map(getRegimentForExport).join('\n')
 
     const handleExportList = () => {
         const rosterText = `${errors.length > 0 ? `Roster errors:\n${getErrorsText(errors)}\n\n` : ''}${warnings.length > 0 ? `Roster warnings:\n${getErrorsText(warnings)}\n\n` : ''}Grand Alliance: ${roster.grandAlliance}
 Faction: ${roster.allegiance}
-Battle Formation: ${roster.battleFormation}
+Detachment: ${roster.detachment}
 Drops: ${roster.regiments.length + roster.auxiliaryUnits.length + (roster.regimentOfRenown ? 1 : 0)}${roster.auxiliaryUnits.length > 0 ? `\nAuxiliaries: ${roster.auxiliaryUnits.length}` : ''}
 
 ${roster.spellsLore ? `Spell Lore: ${roster.spellsLore}` : ''}${roster.prayersLore ? `\nPrayer Lore: ${roster.prayersLore}` : ''}${roster.manifestationLore ? `\nManifestation Lore: ${roster.manifestationLore}` : ''}${roster.factionTerrain ? `\nFaction Terrain: ${roster.factionTerrain}` : ''}
@@ -137,7 +137,6 @@ ${roster.points}/${roster.pointsLimit} Pts
 
     const renderRegiment = (regiment, index) => <div key={index}>
         <p>Regiment {index + 1}</p>
-        {roster.generalRegimentIndex === index ? <p>General's regiment</p> : null}
         {regiment.units.map(renderUnit)}
     </div>
 
@@ -168,7 +167,7 @@ ${roster.points}/${roster.pointsLimit} Pts
         }
         <p>Grand Alliance: {roster.grandAlliance}</p>
         <p>Faction: {roster.allegiance}</p>
-        <p>Battle Formation: {roster.battleFormation}</p>
+        <p>Detachment: {roster.detachment}</p>
         <p>Drops: {roster.regiments.length + roster.auxiliaryUnits.length + (roster.regimentOfRenown ? 1 : 0)}</p>
         {roster.auxiliaryUnits.length > 0 ? <p>Auxiliaries: {roster.auxiliaryUnits.length}</p> : null}
         <br/>

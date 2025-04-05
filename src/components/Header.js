@@ -21,21 +21,12 @@ const Header = () => {
 
     const clearAppState = () => {
         if (pathname === '/builder') {
-            roster.auxiliaryUnits = []
-            roster.battleFormation = ''
-            roster.factionTerrain = ''
-            roster.generalRegimentIndex = null
-            roster.manifestationLore = ''
-            roster.manifestationsList = []
+            roster.detachment = ''
+            roster.detachmentId = ''
+            roster.warlordIndex = null
             roster.points = 0
             roster.pointsLimit = 2000
-            roster.prayersLore = ''
-            roster.regimentOfRenown = null
-            roster.regiments = [{units: [], heroId: '', points: 0}]
-            roster.regimentsOfRenownUnits = []
-            roster.requiredGeneral = null
-            roster.spellsLore = ''
-            roster.withoutBattleFormation = false
+            roster.units = {}
             navigationState.isBuilder = false
         } else if (pathname === '/search') {
             search.value = ''
