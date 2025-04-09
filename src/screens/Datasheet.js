@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import {useLocation} from 'react-router-dom'
 // import Constants from '../Constants'
 // import {calc} from '../utilities/appState'
-import {replaceAsterisks, sortByName, removeDuplicates} from '../utilities/utils'
+import {replaceAsterisks, sortByName, removeDuplicates, getCompositions} from '../utilities/utils'
 import Ability from '../components/Ability'
 import HeaderImage from '../components/HeaderImage'
 import Modal from '../components/Modal'
@@ -55,35 +55,7 @@ const Datasheet = () => {
     const additionalAbilities = filter(dataBase.data.datasheet_rule , rule => rule.datasheetId === unit.id)
     const damagedInfo = find(dataBase.data.datasheet_damage , damage => damage.datasheetId === unit.id)
     const wargearRules = filter(dataBase.data.wargear_rule, ['datasheetId', unit.id])
-    const compositionsSize = map(miniatures, _miniature => filter(dataBase.data.unit_composition_miniature, composition => composition.miniatureId === _miniature.id))
-    const compositionsPoints = filter(dataBase.data.unit_composition, composition => composition.datasheetId === unit.id)
-    const compositions = map(compositionsPoints, compositionPoints => {
-        let title
-        const models = map(miniatures, _miniature => {
-            const miniatureSizes = find(compositionsSize, compositionSizes => compositionSizes[0].miniatureId === _miniature.id)
-            const counts = find(miniatureSizes, ['unitCompositionId', compositionPoints.id])
-            const factionKeyword = find(dataBase.data.unit_composition_required_faction_keyword, ['unitCompositionId', counts.unitCompositionId])
-            const armyFaction = factionKeyword ? find(dataBase.data.faction_keyword, ['id', factionKeyword.factionKeywordId]) : null
-            if (armyFaction) {
-                title = `Army Faction: ${armyFaction.name}`
-            } else {
-                const requiredDetachmentId = find(dataBase.data.unit_composition_required_detachment, ['unitCompositionId', counts.unitCompositionId])?.detachmentId
-                const requiredDetachment = requiredDetachmentId ? find(dataBase.data.detachment, ['id', requiredDetachmentId]) : null
-                if (requiredDetachment) {
-                    title = `${requiredDetachment.name} Detachment`
-                }
-            }
-            return {
-                name: _miniature.name,
-                count: counts.max === counts.min ? counts.min : `${counts.min}-${counts.max}`
-            }
-        })
-        const groupingKeyword = compositionPoints.referenceGroupingKeywordId ? find(dataBase.data.keyword, ['id', compositionPoints.referenceGroupingKeywordId]) : ''
-        if (groupingKeyword) {
-            title = `Every model has the ${groupingKeyword.name} Keyword`
-        }
-        return {models, points: compositionPoints.points, title}
-    })
+    const compositions = unit.compositions || getCompositions(miniatures)
     const miniatureKeywords = sortByName(filter(dataBase.data.miniature_keyword, ['miniatureId', miniature.id]), 'displayOrder')
     const keywords = map(miniatureKeywords, keyword => find(dataBase.data.keyword, ['id', keyword.keywordId]))
     const factionKeywordId = find(dataBase.data.datasheet_faction_keyword, ['datasheetId', unit.id])?.factionKeywordId

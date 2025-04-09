@@ -48,8 +48,8 @@ const AddUnit = () => {
         } else {
             roster.units = {...roster.units, [unitsType.title]: [unit]}
         }
-        // roster.points[unitsType.title] = roster.points[unitsType.title] + unit.points
-        // roster.points.all = roster.points.all + unit.points
+        roster.points[unitsType.title] = (roster.points[unitsType.title] || 0) + unit.points
+        roster.points.all = roster.points.all + unit.points
     }
 
     const renderRow = (unit) => getIsLimit(unit.id)

@@ -436,7 +436,62 @@ export const removeDuplicates = (arr) => {
     return result
 }
 
-export const getUnitsSortesByType = (faction, codexInfo) => {
+const getUnitType = (miniatureId) => {
+    const keywordsIds = sortByName(filter(dataBase.data.miniature_keyword, ['miniatureId', miniatureId]), 'displayOrder')
+    const keywords = map(keywordsIds, keyword => find(dataBase.data.keyword, ['id', keyword.keywordId]))
+    const epicHeroIndex = findIndex(keywords, ['name', 'Epic Hero'])
+    if (epicHeroIndex >= 0) {
+        return 'Epic Hero'
+    }
+    const characterIndex = findIndex(keywords, ['name', 'Character'])
+    if (characterIndex >= 0) {
+        return 'Character'
+    }
+    const battlelineIndex = findIndex(keywords, ['name', 'Battleline'])
+    if (battlelineIndex >= 0) {
+        return 'Battleline'
+    }
+    const transportIndex = findIndex(keywords, ['name', 'Dedicated Transport'])
+    if (transportIndex >= 0) {
+        return 'Dedicated Transport'
+    }
+    return keywords[0]?.name
+}
+
+export const getCompositions = (miniatures) => {
+    const compositionsSize = map(miniatures, _miniature => filter(dataBase.data.unit_composition_miniature, composition => composition.miniatureId === _miniature.id))
+    const compositionsPoints = sortByName(filter(dataBase.data.unit_composition, composition => composition.datasheetId === miniatures[0].datasheetId), 'displayOrder')
+    const compositions = map(compositionsPoints, compositionPoints => {
+        let title
+        const models = map(miniatures, _miniature => {
+            const miniatureSizes = find(compositionsSize, compositionSizes => compositionSizes[0].miniatureId === _miniature.id)
+            const counts = find(miniatureSizes, ['unitCompositionId', compositionPoints.id])
+            const factionKeyword = find(dataBase.data.unit_composition_required_faction_keyword, ['unitCompositionId', counts.unitCompositionId])
+            const armyFaction = factionKeyword ? find(dataBase.data.faction_keyword, ['id', factionKeyword.factionKeywordId]) : null
+            if (armyFaction) {
+                title = `Army Faction: ${armyFaction.name}`
+            } else {
+                const requiredDetachmentId = find(dataBase.data.unit_composition_required_detachment, ['unitCompositionId', counts.unitCompositionId])?.detachmentId
+                const requiredDetachment = requiredDetachmentId ? find(dataBase.data.detachment, ['id', requiredDetachmentId]) : null
+                if (requiredDetachment) {
+                    title = `${requiredDetachment.name} Detachment`
+                }
+            }
+            return {
+                name: _miniature.name,
+                count: counts.max === counts.min ? counts.min : `${counts.min}-${counts.max}`
+            }
+        })
+        const groupingKeyword = compositionPoints.referenceGroupingKeywordId ? find(dataBase.data.keyword, ['id', compositionPoints.referenceGroupingKeywordId]) : ''
+        if (groupingKeyword) {
+            title = `Every model has the ${groupingKeyword.name} Keyword`
+        }
+        return {models, points: compositionPoints.points, title}
+    })
+    return compositions
+}
+
+export const getUnitsSortesByType = (faction, codexInfo, condition) => {
     let units = []
     if (codexInfo) {
         units = filter(dataBase.data.datasheet, datasheet => datasheet.publicationId === codexInfo?.id)
@@ -449,29 +504,19 @@ export const getUnitsSortesByType = (faction, codexInfo) => {
     if (size(imperialArmourUnits)) {
         units = [...units, ...imperialArmourUnits]
     }
-    const miniatures = map(units, unit => find(dataBase.data.miniature, ['datasheetId', unit.id]))
-    const unitsTypes = map(miniatures, miniature => {
-        const keywordsIds = sortByName(filter(dataBase.data.miniature_keyword, ['miniatureId', miniature.id]), 'displayOrder')
-        const keywords = map(keywordsIds, keyword => find(dataBase.data.keyword, ['id', keyword.keywordId]))
-        const epicHeroIndex = findIndex(keywords, ['name', 'Epic Hero'])
-        if (epicHeroIndex >= 0) {
-            return 'Epic Hero'
-        }
-        const characterIndex = findIndex(keywords, ['name', 'Character'])
-        if (characterIndex >= 0) {
-            return 'Character'
-        }
-        const battlelineIndex = findIndex(keywords, ['name', 'Battleline'])
-        if (battlelineIndex >= 0) {
-            return 'Battleline'
-        }
-        const transportIndex = findIndex(keywords, ['name', 'Dedicated Transport'])
-        if (transportIndex >= 0) {
-            return 'Dedicated Transport'
-        }
-        return keywords[0]?.name
-
+    const miniaturesData = map(units, unit => filter(dataBase.data.miniature, ['datasheetId', unit.id]))
+    const unitsInfo = map(miniaturesData, miniatures => {
+        const unitType = getUnitType(miniatures[0].id)
+        const compositions = getCompositions(miniatures)
+        return {unitType, compositions, points: compositions[0].points}
     })
-    units = map(units, (unit, index) => ({...unit, unitType: unitsTypes[index]}))
+    units = map(units, (unit, index) => ({...unit, ...unitsInfo[index]}))
+    if (condition) {
+        const keyword = find(dataBase.data.keyword, ['id', condition.keywordId])
+        const unitIndex = findIndex(units, ['id', condition.datasheetId])
+        if (unitIndex) {
+            units[unitIndex].unitType = keyword.name
+        }
+    }
     return unitsSortesByType(units)
 }

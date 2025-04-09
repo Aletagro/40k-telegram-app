@@ -24,7 +24,7 @@ const Header = () => {
             roster.detachment = ''
             roster.detachmentId = ''
             roster.warlordIndex = null
-            roster.points = 0
+            roster.points = {all: 0}
             roster.pointsLimit = 2000
             roster.units = {}
             navigationState.isBuilder = false

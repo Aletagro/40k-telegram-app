@@ -21,7 +21,12 @@ const UnitsType = ({unitsType, factionId, forceUpdate, isAllied, alliedFactionId
         const miniatureKeywords = filter(dataBase.data.miniature_keyword, ['miniatureId', miniature.id])
         const keywords = map(miniatureKeywords, keyword => find(dataBase.data.keyword, ['id', keyword.keywordId]))
         const isWarlordTitan = Boolean(find(keywords, ['name', 'Warlord Titan']))
-        return count === (isWarlordTitan ? 1 : unitsType.title === 'Battleline' ? 6 : 3)
+        return count === (isWarlordTitan
+            ? 1
+            : unitsType.title === 'Battleline' || unitsType.title === 'Dedicated Transport'
+                ? 6
+                : 3
+        )
     }
 
     const handleAddUnit = () => {
@@ -42,13 +47,15 @@ const UnitsType = ({unitsType, factionId, forceUpdate, isAllied, alliedFactionId
         const newUnits = roster.units[unitsType.title]
         newUnits.splice(unitIndex, 1)
         roster.units[unitsType.title] = newUnits
+        roster.points[unitsType.title] = roster.points[unitsType.title] - unit.points
+        roster.points.all = roster.points.all - unit.points
         forceUpdate()
     }
 
     const handleCopy = (unit) => {
         roster.units[unitsType.title].push(unit)
-        // roster.points[unitsType.title] = roster.points[unitsType.title] + unit.points
-        // roster.points = roster.points + unit.points
+        roster.points[unitsType.title] = roster.points[unitsType.title] + unit.points
+        roster.points.all = roster.points.all + unit.points
         forceUpdate()
     }
 

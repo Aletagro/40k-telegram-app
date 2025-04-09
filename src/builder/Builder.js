@@ -1,4 +1,4 @@
-import React, {useReducer, useState} from 'react'
+import React, {useReducer, useState, useMemo} from 'react'
 import {useLocation, useNavigate} from 'react-router-dom'
 import Modal from '@mui/joy/Modal'
 import ModalDialog from '@mui/joy/ModalDialog'
@@ -27,7 +27,8 @@ const Builder = () => {
     const [_, forceUpdate] = useReducer((x) => x + 1, 0)
     const codexInfo = find(dataBase.data.publication, publication => publication.factionKeywordId === faction.id && !publication.isCombatPatrol && !includes(publication.name, 'Imperial Armour'))
     const detachments = sortByName(filter(dataBase.data.detachment, ['publicationId', codexInfo.id]))
-    const unitsTypes = getUnitsSortesByType(faction, codexInfo)
+    const detachementCondition = find(dataBase.data.conditional_keyword, ['requiredDetachmentId', roster.detachmentId])
+    const unitsTypes = useMemo(() => getUnitsSortesByType(faction, codexInfo, detachementCondition), [faction, codexInfo, detachementCondition])
     const alliedFactionIds = filter(dataBase.data.faction_keyword_allied_faction, ['factionKeywordId', faction.id])
 
     const handleChooseEnhancement = (name, type, data, isInfo) => () => {

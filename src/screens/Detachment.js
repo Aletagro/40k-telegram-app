@@ -27,7 +27,6 @@ const Detachment = () => {
         const rules = filter(dataBase.data.detachment_detail_bullet_point, ['detachmentDetailId', detail.id])
         return {...detail, rules}
     })
-    console.log({detachmentDetails, detachmentDetailsRules})
     const enhancements = sortByName(filter(dataBase.data.enhancement, ['detachmentId', _detachment.id]), 'displayOrder')
     const stratagems = sortByName(filter(dataBase.data.stratagem, ['detachmentId', _detachment.id]), 'displayOrder')
     const items = []
