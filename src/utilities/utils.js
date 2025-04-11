@@ -1,7 +1,10 @@
-import parse from 'html-react-parser';
+import parse from 'html-react-parser'
 import Constants from '../Constants'
+import {roster} from '../utilities/appState'
 
 import map from 'lodash/map'
+import min from 'lodash/min'
+import max from 'lodash/max'
 import size from 'lodash/size'
 import find from 'lodash/find'
 import filter from 'lodash/filter'
@@ -55,8 +58,8 @@ export const getErrors = (roster) => {
     if (!roster.detachment) {
         errors.push('Choose Detachment')
     }
-    if (roster.warlordIndex === null) {
-        errors.push('Choose General')
+    if (roster.warlordId === null) {
+        errors.push('Choose Warlord')
     }
     const uniqueUnits = []
     let heroicTraitsCount = 0
@@ -109,7 +112,7 @@ export const getErrors = (roster) => {
     if (ensorcelledBannersCount > 1) {
         errors.push(`You have ${ensorcelledBannersCount} Ensorcelled Banners`)
     }
-    if (hasWarmasterInRegiments.length && !includes(hasWarmasterInRegiments, roster.warlordIndex) && !roster.requiredGeneral) {
+    if (hasWarmasterInRegiments.length && !includes(hasWarmasterInRegiments, roster.warlordId) && !roster.requiredGeneral) {
         errors.push("You have a Warlord hero, but he isn't your general")
     }
     if (roster.requiredGeneral) {
@@ -519,4 +522,35 @@ export const getUnitsSortesByType = (faction, codexInfo, condition) => {
         }
     }
     return unitsSortesByType(units)
+}
+
+export const setDefaultWargears = (unit, unitType) => {
+    const unitIndex = size(roster.units[unitType]) - 1
+    const miniatures = sortByName(filter(dataBase.data.miniature, ['datasheetId', unit.id]), 'displayOrder')
+    const wargearOptionGroups = map(miniatures, miniature => find(dataBase.data.wargear_option_group, wargearOptionGroup => wargearOptionGroup.miniatureId === miniature.id && wargearOptionGroup.instructionText === 'Default Wargear'))
+    const wargearOptions = map(wargearOptionGroups, wargearOptionGroup => filter(dataBase.data.wargear_option, ['wargearOptionGroupId', wargearOptionGroup.id]))
+    const wargears = map(wargearOptions, wargears => map(wargears, wargear => find(dataBase.data.wargear_item_profile, ['wargearItemId', wargear.wargearItemId])))
+    const newWargears = {}
+    roster.units[unitType][unitIndex].models = {}
+    forEach(miniatures, (miniature, index) => {
+        const compositions = filter(dataBase.data.unit_composition_miniature, ['miniatureId', miniature.id])
+        const models = {
+            min: min(map(compositions, composition => composition.min)),
+            select: min(map(compositions, composition => composition.min)),
+            max: max(map(compositions, composition => composition.max))
+        }
+        newWargears[miniature.name] = {}
+        newWargears[miniature.name][wargearOptionGroups[index].id] = {}
+        forEach(wargearOptions[index], (item, i) => {
+            const value = item.inputType === 'checkbox'
+                ? true
+                : models.min
+            newWargears[miniature.name][wargearOptionGroups[index].id] = {
+                ...newWargears[miniature.name][wargearOptionGroups[index].id],
+                [wargears[index][i].name]: value
+            }
+        })
+        roster.units[unitType][unitIndex].models[miniature.name] = models
+    })
+    roster.units[unitType][unitIndex].wargears = newWargears
 }

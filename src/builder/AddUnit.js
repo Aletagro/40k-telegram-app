@@ -1,7 +1,7 @@
 import React from 'react';
 import {useLocation, useNavigate} from 'react-router-dom'
 import {roster} from '../utilities/appState'
-import {sortByName} from '../utilities/utils'
+import {sortByName, setDefaultWargears} from '../utilities/utils'
 import UnitRow from './UnitRow'
 import Accordion from '../components/Accordion'
 
@@ -40,7 +40,6 @@ const AddUnit = () => {
     }
 
     const handleClick = (unit) => {
-        navigate(-1)
         if (roster.units[unitsType.title]) {
             const newUnits = roster.units[unitsType.title]
             newUnits.push(unit)
@@ -50,6 +49,8 @@ const AddUnit = () => {
         }
         roster.points[unitsType.title] = (roster.points[unitsType.title] || 0) + unit.points
         roster.points.all = roster.points.all + unit.points
+        setDefaultWargears(unit, unitsType.title)
+        navigate(-1)
     }
 
     const renderRow = (unit) => getIsLimit(unit.id)

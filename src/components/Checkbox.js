@@ -15,7 +15,7 @@ const Checkbox = ({onClick, checked, isGold}) => {
             ? <div id={Styles.checkmarkIcon}>
                 <img src={isGold ? GoldCheckmark : Checkmark} alt="" />
             </div>
-            : <div id={Styles.uncheckedCheckbox} style={{'border-color': isGold ? '#FFFFFF' : ' rgb(46, 46, 49)'}}/>
+            : <div id={Styles.uncheckedCheckbox} />
         }
     </button>
 }

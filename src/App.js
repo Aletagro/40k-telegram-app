@@ -27,7 +27,7 @@ import Builder from './builder/Builder'
 import AddUnit from './builder/AddUnit'
 import ChooseEnhancement from './builder/ChooseEnhancement'
 import ChooseOption from './builder/ChooseOption'
-import ChooseWeapon from './builder/ChooseWeapon'
+import ChooseWargear from './builder/ChooseWargear'
 import Export from './builder/Export'
 import Calculator from './calculator/Calculator'
 import SinglePlayer from './singlePlayer/SinglePlayer'
@@ -71,7 +71,7 @@ function App() {
       <Route path={'addUnit'} element={<AddUnit />} />
       <Route path={'chooseEnhancement'} element={<ChooseEnhancement />} />
       <Route path={'chooseOption'} element={<ChooseOption />} />
-      <Route path={'chooseWeapon'} element={<ChooseWeapon />} />
+      <Route path={'chooseWargear'} element={<ChooseWargear />} />
       <Route path={'search'} element={<Search />} />
       <Route path={'coreRules'} element={<CoreRules />} />
       <Route path={'keyDocuments'} element={<KeyDocuments />} />

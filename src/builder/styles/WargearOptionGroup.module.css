@@ -1,0 +1,11 @@
+#instructionTextContainer {
+  background: rgb(97, 97, 97);
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+#instructionText {
+  color: white;
+  white-space: pre-line;
+}

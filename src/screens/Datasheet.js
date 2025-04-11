@@ -148,6 +148,10 @@ const Datasheet = () => {
         const values = [weapon.attacks, weapon.weaponSkill, weapon.strength, weapon.armourPenetration, weapon.damage]
         return <div key={weapon.id} id={Styles.weaponContainer}>
             <div id={Styles.weaponNameContainer}>
+                {weapon.weaponName === weapon.name
+                    ? null
+                    : <img id={Styles.weaponChoiceIcon} onClick={handleOpenModal(weapon.weaponName, 'Before selecting targets for this weapon, select one of its profiles to make attacks with.')} src={WeaponChoice} alt="" />
+                }
                 <p id={Styles.weaponName}>{weapon.weaponName === weapon.name ? weapon.name : `${weapon.weaponName} - ${weapon.name}`}</p>
             </div>
             <div id={Styles.weaponCharacteristicsContainer}>

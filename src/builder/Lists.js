@@ -103,53 +103,10 @@ const lists = [
                 "heroicTrait": ""
             }
         ],
-        "warlordIndex": 0,
-        "auxiliaryUnits": [
-            {
-                "id": "457fc0d0-f9d0-4f16-a888-79b0186840ce",
-                "name": "Savage Big Boss",
-                "points": 130
-            }
-        ],
-        "regimentOfRenown": {
-            "id": "65430964-f97c-4d31-965b-217cd400072b",
-            "name": "Da Hurtlin' Hogz",
-            "regimentOfRenownPointsCost": 420
-        },
-        "regimentsOfRenownUnits": [
-            {
-                "id": "a4e18ce4-008a-4dc3-a522-2611e96a52d3",
-                "name": "Tuskboss on Maw-grunta",
-                "points": 260
-            },
-            {
-                "id": "071732ac-2e57-49df-8360-8f675cb7291c",
-                "name": "Maw-grunta Gougers",
-                "points": 210
-            }
-        ],
+        "warlordId": 0,
         "detachment": "Kop Rukk",
-        "spellsLore": "Lore of the Savage Beast",
-        "prayersLore": "Prayers of the Living Wilds",
-        "manifestationLore": "Twilit Sorceries",
-        "manifestationsList": [
-            {
-                "id": "5b44489d-46ae-4903-9b00-4d2e02fd63fc",
-                "name": "Geminids of Uhl-Gysh"
-            },
-            {
-                "id": "f315ac3c-c2f7-4235-994e-e68b04b1703a",
-                "name": "Prismatic Palisade"
-            },
-            {
-                "id": "5db3ef5f-4f1e-4ae7-875a-b5a87743b3f9",
-                "name": "Umbral Spellportal"
-            }
-        ],
-        "factionTerrain": "",
         "pointsLimit": "2500",
-        "points": 1850,
-        "requiredGeneral": null
+        "points": {all: 1850},
     },
     {
         'name': 'Гобла',
@@ -188,45 +145,10 @@ const lists = [
                 "points": 670
             }
         ],
-        "warlordIndex": 0,
-        "auxiliaryUnits": [
-            {
-                "id": "9e631509-bf9b-481e-b586-ebe2d56916fb",
-                "name": "Loonboss on Giant Cave Squig",
-                "points": 120
-            }
-        ],
-        "regimentOfRenown": {
-            "id": "370f5870-57da-454e-af97-986594bfc552",
-            "name": "Da Kountin' Krew",
-            "regimentOfRenownPointsCost": 360
-        },
-        "regimentsOfRenownUnits": [
-            {
-                "id": "4ee9c7f6-7c80-4042-be09-ffb110cb4265",
-                "name": "Swampboss Skumdrekk",
-                "points": 220
-            },
-            {
-                "id": "721ae3a3-66dc-475a-824a-63aa661c83f5",
-                "name": "Hobgrot Slittaz",
-                "points": 90
-            }
-        ],
+        "warlordId": 0,
         "detachment": "Troggherd",
-        "spellsLore": "Lore of the Clammy Dank",
-        "prayersLore": "",
-        "manifestationLore": "Krondspine Incarnate",
-        "manifestationsList": [
-            {
-                "id": "359bea6e-9deb-441b-a667-e75727b8d58a",
-                "name": "Krondspine Incarnate of Ghur"
-            }
-        ],
-        "factionTerrain": "Bad Moon Loonshrine",
         "pointsLimit": 2000,
-        "points": 1150,
-        "requiredGeneral": null,
+        "points": {all: 1150},
         "factionId": "eef8e883-a05c-40f2-8257-912586275561"
     },
     {
@@ -281,52 +203,10 @@ const lists = [
                 "heroicTrait": ""
             }
         ],
-        "warlordIndex": 0,
-        "auxiliaryUnits": [],
-        "regimentOfRenown": {
-            "id": "4eb81bd5-0209-4ea1-9780-c2ee5e6de3a6",
-            "name": "Brand's Oathbound",
-            "regimentOfRenownPointsCost": 250
-        },
-        "regimentsOfRenownUnits": [
-            {
-                "id": "1b7ac985-650b-4409-8fe4-3fa20cc9faff",
-                "name": "Singri Brand",
-                "points": 0
-            },
-            {
-                "id": "5bcac905-0fa2-4b12-9533-9bb3861391ed",
-                "name": "Gunnar Brand",
-                "points": 240
-            },
-            {
-                "id": "c989de25-48da-4efa-94a1-01e6cb3527e6",
-                "name": "The Oathsworn Kin",
-                "points": 0
-            }
-        ],
+        "warlordId": 0,
         "detachment": "Bloodbound Warhorde",
-        "spellsLore": "",
-        "prayersLore": "Blood Blesssings of Khorne",
-        "manifestationLore": "Judgements of Khorne",
-        "manifestationsList": [
-            {
-                "id": "bdb057e6-7f63-4f9e-8a4b-8c593c2564c6",
-                "name": "Wrath-Axe"
-            },
-            {
-                "id": "8988e3b5-c61f-4f32-afc4-f96bf7e39fc5",
-                "name": "Bleeding Icon"
-            },
-            {
-                "id": "02bbd9c9-4a13-45ff-8a50-19fe49ea9c51",
-                "name": "Hexgorger Skulls"
-            }
-        ],
-        "factionTerrain": "Skull Altar",
         "pointsLimit": 2000,
-        "points": 1410,
-        "requiredGeneral": null,
+        "points": {all: 1410},
         "factionId": "cc154b45-7b22-45fc-b584-9b3db739070c",
         "name": "test name",
         "isPublic": true
@@ -344,7 +224,7 @@ const Lists = () => {
         roster.faction = list.faction
         roster.factionId = list.factionId
         roster.detachment = list.detachment
-        roster.warlordIndex = list.warlordIndex
+        roster.warlordId = list.warlordId
         roster.grandFaction = list.grandFaction
         roster.points = list.points
         roster.pointsLimit = list.pointsLimit

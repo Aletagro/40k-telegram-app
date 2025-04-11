@@ -48,6 +48,17 @@
   margin: 0px;
 }
 
+#unitsType {
+  color: white;
+  font-size: 20px;
+  padding-bottom: 12px
+}
+
 #text {
   color: white;
+  padding-bottom: 4px
+}
+
+#textContainer {
+  padding-left: 8px;
 }

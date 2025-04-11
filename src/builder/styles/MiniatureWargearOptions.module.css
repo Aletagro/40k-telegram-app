@@ -1,0 +1,44 @@
+#miniatureRow {
+  background: rgb(60, 90, 120);
+  padding: 16px;
+  margin-bottom: 12px;
+  margin-top: 4px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#miniatureName {
+  color: white;
+}
+
+#countContainer {
+  display: flex;
+  align-items: center;
+}
+
+#count {
+  color: white;
+  border-radius: 4px;
+  margin: 0px 4px;
+  padding: 0px 10px;
+  font-size: 18px;
+}
+
+#button {
+  background: none;
+  border-radius: 4px;
+  border: 1px solid white;
+  padding: 6px;
+  padding-bottom: 1px;
+}
+
+#disabledButton {
+  background: none;
+  border-radius: 4px;
+  border: 1px solid #52718f;
+  padding: 6px;
+  padding-bottom: 1px;
+}
+

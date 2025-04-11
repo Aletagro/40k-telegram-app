@@ -63,8 +63,8 @@ const UnitsType = ({unitsType, factionId, forceUpdate, isAllied, alliedFactionId
 
     }
 
-    const handleChooseWarlord = (index) => {
-        roster.warlordIndex = index
+    const handleChooseWarlord = (id) => {
+        roster.warlordId = id
         forceUpdate()
     }
        
@@ -72,8 +72,6 @@ const UnitsType = ({unitsType, factionId, forceUpdate, isAllied, alliedFactionId
         key={index}
         unit={unit}
         unitIndex={index}
-        isCharacter={unitsType.title === 'Character'}
-        isEpicHero={unitsType.title === 'Epic Hero'}
         onClick={handleClickUnit}
         onDelete={handleDeleteUnit}
         onReinforced={handleReinforced}

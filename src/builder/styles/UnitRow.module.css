@@ -56,16 +56,25 @@
 #generalIcon {
   padding-right: 8px;
 }
-#enhancementsContainer {
+#wargearsContainer {
   display: flex;
-  margin-left: 4px;
+  margin-left: 12px;
 }
-#chooseEnhancementButton {
+#chooseWargearButton {
   color: #525252;
   border: 1px solid #8B8B8B;
   margin-bottom: 12px;
   border-radius: 24px;
-  padding: 4px 8px;
+  padding: 6px 8px;
+  margin-right: 16px;
+}
+#warlordButton {
+  color: white;
+  background: rgb(36, 35, 35);
+  border: 1px solid rgb(36, 35, 35);
+  margin-bottom: 12px;
+  border-radius: 24px;
+  padding: 6px 8px;
   margin-right: 16px;
 }
 #button {
@@ -81,4 +90,15 @@
   padding-right: 0px;
   padding-left: 8px;
   height: 22px;
+}
+#wargearsContainer {
+  display: block;
+  padding-bottom: 4px;
+}
+#miniature {
+  padding-bottom: 4px;
+}
+#wargearText {
+  padding-bottom: 2px;
+  padding-left: 8px;
 }

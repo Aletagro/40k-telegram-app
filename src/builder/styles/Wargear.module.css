@@ -1,0 +1,42 @@
+#container {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#wargearName {
+  white-space: pre-line;
+}
+
+#countContainer {
+  display: flex;
+  align-items: center;
+}
+
+#count {
+  background: white;
+  border-radius: 4px;
+  margin: 0px 4px;
+  padding: 6px 10px;
+  font-size: 18px;
+}
+
+#button {
+  background: white;
+  border-radius: 4px;
+  border: 1px solid black;
+  padding: 6px;
+  padding-bottom: 1px;
+}
+
+#disabledButton {
+  background: white;
+  border-radius: 4px;
+  border: 1px solid rgb(228, 228, 228);
+  padding: 6px;
+  padding-bottom: 1px;
+}
