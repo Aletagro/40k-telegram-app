@@ -16,7 +16,8 @@ const dataBase = require('../dataBase.json')
 const Wargear = ({index, wargear, unitData}) => {
     // eslint-disable-next-line
     const [_, forceUpdate] = useReducer((x) => x + 1, 0)
-    const wargearItem = find(dataBase.data.wargear_item_profile, ['wargearItemId', wargear.wargearItemId])
+    // const wargearItem = find(dataBase.data.wargear_item_profile, ['wargearItemId', wargear.wargearItemId])
+    const wargearItem = find(dataBase.data.wargear_item, ['id', wargear.wargearItemId])
     const {unitType, unitIndex, miniatureName, wargearOptionGroupId} = unitData
     const unit = roster.units[unitType][unitIndex]
     const value = get(unit, `wargears[${miniatureName}][${wargearOptionGroupId}][${wargearItem.name}]`, 0)

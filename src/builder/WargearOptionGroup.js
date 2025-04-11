@@ -15,7 +15,7 @@ const WargearOptionGroup = ({wargearOptionGroup, unitData}) => {
         key={wargear.id}
         index={index}
         wargear={wargear}
-        unitData={{...unitData, wargearOptionGroupId: wargearOptionGroup.id}}
+        unitData={{...unitData, wargearOptionGroupId: wargearOptionGroup.instructionText === 'Default Wargear' ? 'default' : wargearOptionGroup.id}}
     />
 
     return <div>

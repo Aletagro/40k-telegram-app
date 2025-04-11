@@ -529,7 +529,8 @@ export const setDefaultWargears = (unit, unitType) => {
     const miniatures = sortByName(filter(dataBase.data.miniature, ['datasheetId', unit.id]), 'displayOrder')
     const wargearOptionGroups = map(miniatures, miniature => find(dataBase.data.wargear_option_group, wargearOptionGroup => wargearOptionGroup.miniatureId === miniature.id && wargearOptionGroup.instructionText === 'Default Wargear'))
     const wargearOptions = map(wargearOptionGroups, wargearOptionGroup => filter(dataBase.data.wargear_option, ['wargearOptionGroupId', wargearOptionGroup.id]))
-    const wargears = map(wargearOptions, wargears => map(wargears, wargear => find(dataBase.data.wargear_item_profile, ['wargearItemId', wargear.wargearItemId])))
+    // const wargears = map(wargearOptions, wargears => map(wargears, wargear => find(dataBase.data.wargear_item_profile, ['wargearItemId', wargear.wargearItemId])))
+    const wargears = map(wargearOptions, wargears => map(wargears, wargear => find(dataBase.data.wargear_item, ['id', wargear.wargearItemId])))
     const newWargears = {}
     roster.units[unitType][unitIndex].models = {}
     forEach(miniatures, (miniature, index) => {
@@ -540,13 +541,13 @@ export const setDefaultWargears = (unit, unitType) => {
             max: max(map(compositions, composition => composition.max))
         }
         newWargears[miniature.name] = {}
-        newWargears[miniature.name][wargearOptionGroups[index].id] = {}
+        newWargears[miniature.name].default = {}
         forEach(wargearOptions[index], (item, i) => {
             const value = item.inputType === 'checkbox'
                 ? true
                 : models.min
-            newWargears[miniature.name][wargearOptionGroups[index].id] = {
-                ...newWargears[miniature.name][wargearOptionGroups[index].id],
+            newWargears[miniature.name].default = {
+                ...newWargears[miniature.name].default,
                 [wargears[index][i].name]: value
             }
         })

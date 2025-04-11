@@ -77,7 +77,7 @@ const UnitRow = ({
         {map(wargearsGroup, renderWargear)}
     </>
 
-    const renderWargears = (wargears, index) => <div id={Styles.wargearsContainer}>
+    const renderWargears = (wargears, index) => <div key={index} id={Styles.wargearsContainer}>
         <b id={Styles.miniature}>{unit.models[index].select} x {index}</b>
         {map(wargears, renderWargearsGroup)}
     </div>

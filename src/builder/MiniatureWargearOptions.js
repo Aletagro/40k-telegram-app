@@ -7,6 +7,8 @@ import WinterPlus from '../icons/winterPlus.svg'
 import WinterMinus from '../icons/winterMinus.svg'
 
 import map from 'lodash/map'
+import forEach from 'lodash/forEach'
+import isNumber from 'lodash/isNumber'
 
 import Styles from './styles/MiniatureWargearOptions.module.css'
 
@@ -15,14 +17,25 @@ const MiniatureWargearOptions = ({wargearOptionGroup, unitData}) => {
     const [_, forceUpdate] = useReducer((x) => x + 1, 0)
     const models = roster.units[unitData.unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name]
 
-
     const handleClickMinus = () => {
         roster.units[unitData.unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select = roster.units[unitData.unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select - 1
+        const wargears = roster.units[unitData.unitType][unitData.unitIndex].wargears[wargearOptionGroup.miniature.name].default
+        forEach(wargears, (wargear, index) => {
+            if (isNumber(wargear)) {
+                roster.units[unitData.unitType][unitData.unitIndex].wargears[wargearOptionGroup.miniature.name].default[index] = wargear - 1
+            }
+        })
         forceUpdate()
     }
 
     const handleClickPlus = () => {
         roster.units[unitData.unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select = roster.units[unitData.unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select + 1
+        const wargears = roster.units[unitData.unitType][unitData.unitIndex].wargears[wargearOptionGroup.miniature.name].default
+        forEach(wargears, (wargear, index) => {
+            if (isNumber(wargear)) {
+                roster.units[unitData.unitType][unitData.unitIndex].wargears[wargearOptionGroup.miniature.name].default[index] = wargear + 1
+            }
+        })
         forceUpdate()
     }
 
