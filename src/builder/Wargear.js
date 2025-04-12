@@ -47,7 +47,7 @@ const Wargear = ({index, wargear, unitData}) => {
     }
 
     const renderStepper = () => {
-        const disabledMinus = value === unit.models[miniatureName].min
+        const disabledMinus = value <= unit.models[miniatureName].min
         const disabledPlus = value === unit.models[miniatureName].select
         return <div id={Styles.countContainer}>
             {disabledMinus

@@ -21,7 +21,7 @@ const MiniatureWargearOptions = ({wargearOptionGroup, unitData}) => {
         roster.units[unitData.unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select = roster.units[unitData.unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select - 1
         const wargears = roster.units[unitData.unitType][unitData.unitIndex].wargears[wargearOptionGroup.miniature.name].default
         forEach(wargears, (wargear, index) => {
-            if (isNumber(wargear)) {
+            if (isNumber(wargear) && wargear > models.min) {
                 roster.units[unitData.unitType][unitData.unitIndex].wargears[wargearOptionGroup.miniature.name].default[index] = wargear - 1
             }
         })
