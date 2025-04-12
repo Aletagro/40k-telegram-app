@@ -11,7 +11,7 @@ const Enhancements = () => {
     const renderEnhancement = (enhancement) => <Ability
         key={enhancement.id}
         ability={enhancement}
-        isDarkBackground
+        isEnchancement
     />
 
     return <>

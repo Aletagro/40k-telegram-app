@@ -25,8 +25,7 @@ const Datasheet = () => {
     const [modalData, setModalData] = useState({visible: false, title: '', text: ''})
     // const navigate = useNavigate()
     const unit = useLocation().state.unit
-    const miniatures = filter(dataBase.data.miniature, ['datasheetId', unit.id])
-    const miniature = miniatures[0]
+    const miniatures = sortByName(filter(dataBase.data.miniature, ['datasheetId', unit.id]), 'displayOrder')
     const invul = find(dataBase.data.invulnerable_save, ['datasheetId', unit.id])
     const wargearOptionGroups = filter(dataBase.data.wargear_option_group, wargearOptionGroup => wargearOptionGroup.datasheetId === unit.id)
     const wargearOptions = map(wargearOptionGroups, wargearOptionGroup => filter(dataBase.data.wargear_option, wargearOption => wargearOption.wargearOptionGroupId === wargearOptionGroup.id))
@@ -56,19 +55,10 @@ const Datasheet = () => {
     const damagedInfo = find(dataBase.data.datasheet_damage , damage => damage.datasheetId === unit.id)
     const wargearRules = filter(dataBase.data.wargear_rule, ['datasheetId', unit.id])
     const compositions = unit.compositions || getCompositions(miniatures)
-    const miniatureKeywords = sortByName(filter(dataBase.data.miniature_keyword, ['miniatureId', miniature.id]), 'displayOrder')
+    const miniatureKeywords = sortByName(filter(dataBase.data.miniature_keyword, ['miniatureId', miniatures[0].id]), 'displayOrder')
     const keywords = map(miniatureKeywords, keyword => find(dataBase.data.keyword, ['id', keyword.keywordId]))
     const factionKeywordId = find(dataBase.data.datasheet_faction_keyword, ['datasheetId', unit.id])?.factionKeywordId
     const factionKeyword = find(dataBase.data.faction_keyword, ['id', factionKeywordId])?.name
-
-    const characteristics = [
-        {value: miniature.movement, title: 'M'},
-        {value: miniature.toughness, title: 'T'},
-        {value: miniature.save, title: 'SV'},
-        {value: miniature.wounds, title: 'W'},
-        {value: miniature.leadership, title: 'LD'},
-        {value: miniature.objectiveControl, title: 'OC'}
-    ]
 
     const getWeaponAbilities = (weaponId) => {
         const abilitiesIds = map(filter(dataBase.data.wargear_item_profile_wargear_ability, ability => ability.wargearItemProfileId === weaponId), ability => ability.wargearAbilityId)
@@ -226,11 +216,31 @@ const Datasheet = () => {
 
     const renderKeyword = (keyword, index) => <b key={keyword.id}>{upperCase(keyword.name)}{index + 1 === size(keywords) ? '' : ', '}</b>
 
+    const renderCharacteristics = (miniature) => {
+        if (miniature.statlineHidden) {
+            return null
+        }
+        const characteristics = [
+            {value: miniature.movement, title: 'M'},
+            {value: miniature.toughness, title: 'T'},
+            {value: miniature.save, title: 'SV'},
+            {value: miniature.wounds, title: 'W'},
+            {value: miniature.leadership, title: 'LD'},
+            {value: miniature.objectiveControl, title: 'OC'}
+        ]
+        return <div key={miniature.id}>
+            {size(miniatures) > 1 ? <p id={Styles.miniatureName}>{miniature.name}</p> : null}
+            <div id={Styles.characteristicsContainer} className={Styles.flexContainer}>
+                {map(characteristics, renderCharacteristic)}
+            </div>
+        </div>
+    }
+
     return <>
         <HeaderImage src={unit.bannerImage} alt={unit.name} />
         <div id={Styles.container}>
-            <div id={Styles.characteristicsContainer} className={Styles.flexContainer}>
-                {map(characteristics, renderCharacteristic)}
+            <div id={Styles.characteristicsBlockContainer}>
+                {map(miniatures, renderCharacteristics)}
             </div>
             {invul
                 ? <Ability ability={{

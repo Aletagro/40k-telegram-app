@@ -77,7 +77,6 @@
   margin-top: -8px;
   margin-left: -16px;
   margin-right: -16px;
-  margin-bottom: 16px;
   padding: 18px 12px;
 }
 #characteristicSubContainer {
@@ -185,4 +184,15 @@
 #compositionTitle {
   padding: 8px;
   display: flex;
+}
+#characteristicsBlockContainer {
+  margin-bottom: 16px;
+}
+#miniatureName {
+  background: #52718f;
+  color: white;
+  flex: 1;
+  margin-left: -16px;
+  margin-right: -16px;
+  padding: 16px
 }

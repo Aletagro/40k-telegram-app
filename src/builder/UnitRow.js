@@ -62,20 +62,20 @@ const UnitRow = ({
     }
 
     const handleChooseWargearOptions = () => {
-        navigate('/chooseWargear', {state: {
-            title: 'Wargear Options',
-            unit,
-            unitIndex
-        }})
+        navigate('/chooseWargear', {state: {title: 'Wargear Options', unit, unitIndex}})
+    }
+
+    const handleChooseEnhancement = () => {
+        navigate('/chooseEnhancement', {state: {title: 'Enhancement', unit, unitIndex}})
     }
 
     const renderWargear = (wargearCount, index) => wargearCount
-        ? <p id={Styles.wargearText}>{isNumber(wargearCount) ? wargearCount : 1} x {index}</p>
+        ? <p key={index} id={Styles.wargearText}>{isNumber(wargearCount) ? wargearCount : 1} x {index}</p>
         : null
 
-    const renderWargearsGroup = (wargearsGroup) => <>
+    const renderWargearsGroup = (wargearsGroup, index) => <div key={index}>
         {map(wargearsGroup, renderWargear)}
-    </>
+    </div>
 
     const renderWargears = (wargears, index) => <div key={index} id={Styles.wargearsContainer}>
         <b id={Styles.miniature}>{unit.models[index].select} x {index}</b>
@@ -124,6 +124,12 @@ const UnitRow = ({
                 {hasWargearOption
                     ? <button id={Styles.chooseWargearButton} onClick={handleChooseWargearOptions}>
                         Wargear Options
+                    </button>
+                    : null
+                }
+                {isCharacter && roster.detachmentId
+                    ? <button id={Styles.chooseWargearButton} onClick={handleChooseEnhancement}>
+                        {unit.enhancement || 'Choose Enhancement'}
                     </button>
                     : null
                 }

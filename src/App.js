@@ -25,6 +25,7 @@ import ChooseGrandFaction from './builder/ChooseGrandFaction'
 import ChooseFaction from './builder/ChooseFaction'
 import Builder from './builder/Builder'
 import AddUnit from './builder/AddUnit'
+import ChooseDetachment from './builder/ChooseDetachment'
 import ChooseEnhancement from './builder/ChooseEnhancement'
 import ChooseOption from './builder/ChooseOption'
 import ChooseWargear from './builder/ChooseWargear'
@@ -69,6 +70,7 @@ function App() {
       <Route path={'errata'} element={<Errata />} />
       <Route path={'builder'} element={<Builder />} />
       <Route path={'addUnit'} element={<AddUnit />} />
+      <Route path={'chooseDetachment'} element={<ChooseDetachment />} />
       <Route path={'chooseEnhancement'} element={<ChooseEnhancement />} />
       <Route path={'chooseOption'} element={<ChooseOption />} />
       <Route path={'chooseWargear'} element={<ChooseWargear />} />

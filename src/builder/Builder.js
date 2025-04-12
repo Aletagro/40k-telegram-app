@@ -31,8 +31,8 @@ const Builder = () => {
     const unitsTypes = useMemo(() => getUnitsSortesByType(faction, codexInfo, detachementCondition), [faction, codexInfo, detachementCondition])
     const alliedFactionIds = filter(dataBase.data.faction_keyword_allied_faction, ['factionKeywordId', faction.id])
 
-    const handleChooseEnhancement = (name, type, data, isInfo) => () => {
-        navigate('/chooseEnhancement', {state: {title: name, data, type, isRosterInfo: true, isInfo}})
+    const handleChooseDetachment = () => {
+        navigate('/chooseDetachment', {state: {title: 'Detachments', detachments}})
     }
 
     const handleClickFaction = () => {
@@ -92,12 +92,12 @@ const Builder = () => {
         {size(detachments)
             ? roster.detachment 
                 ? <div id={Styles.detachmentSecondButton}>
-                    <button id={Styles.detachmentButtonText} onClick={handleChooseEnhancement('Detachment', 'detachment', detachments)}>
+                    <button id={Styles.detachmentButtonText} onClick={handleChooseDetachment}>
                         Detachment: {roster.detachment}
                     </button>
                     <img onClick={handleClickDetachmentInfo} id={Styles.detachmentInfoIcon} src={WhiteInfo} alt="" />
                 </div>
-                : <button id={Styles.detachmentButton} onClick={handleChooseEnhancement('Detachment', 'detachment', detachments)}>
+                : <button id={Styles.detachmentButton} onClick={handleChooseDetachment}>
                     Choose Detachment
                 </button>
             : null

@@ -9,7 +9,7 @@ import startCase from 'lodash/startCase'
 
 import Styles from './styles/Ability.module.css'
 
-const Ability = ({ability, keyword, onClick, isDarkBackground}) => {
+const Ability = ({ability, keyword, onClick, isEnchancement}) => {
 
     const borderColor = ability.isPsychic
         ? '#323282'
@@ -17,7 +17,7 @@ const Ability = ({ability, keyword, onClick, isDarkBackground}) => {
             ? '#962424'
             : ability.isBondsman || ability.key === 'eitherPlayer'
                 ? '#166a25'
-                : isDarkBackground || ability.key === 'yourTurn'
+                : isEnchancement || ability.key === 'yourTurn'
                     ? '#184b72'
                     : 'black'
 
