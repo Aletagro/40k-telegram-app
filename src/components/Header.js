@@ -23,7 +23,6 @@ const Header = () => {
         if (pathname === '/builder') {
             roster.detachment = ''
             roster.detachmentId = ''
-            roster.warlordId = null
             roster.points = {all: 0}
             roster.pointsLimit = 2000
             roster.units = {}

@@ -103,7 +103,6 @@ const lists = [
                 "heroicTrait": ""
             }
         ],
-        "warlordId": 0,
         "detachment": "Kop Rukk",
         "pointsLimit": "2500",
         "points": {all: 1850},
@@ -145,7 +144,6 @@ const lists = [
                 "points": 670
             }
         ],
-        "warlordId": 0,
         "detachment": "Troggherd",
         "pointsLimit": 2000,
         "points": {all: 1150},
@@ -203,7 +201,6 @@ const lists = [
                 "heroicTrait": ""
             }
         ],
-        "warlordId": 0,
         "detachment": "Bloodbound Warhorde",
         "pointsLimit": 2000,
         "points": {all: 1410},
@@ -224,7 +221,6 @@ const Lists = () => {
         roster.faction = list.faction
         roster.factionId = list.factionId
         roster.detachment = list.detachment
-        roster.warlordId = list.warlordId
         roster.grandFaction = list.grandFaction
         roster.points = list.points
         roster.pointsLimit = list.pointsLimit

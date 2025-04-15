@@ -7,6 +7,7 @@ import map from 'lodash/map'
 import size from 'lodash/size'
 import find from 'lodash/find'
 import filter from 'lodash/filter'
+import forEach from 'lodash/forEach'
 
 import Styles from './styles/UnitsType.module.css'
 
@@ -53,7 +54,8 @@ const UnitsType = ({unitsType, factionId, forceUpdate, isAllied, alliedFactionId
     }
 
     const handleCopy = (unit) => {
-        roster.units[unitsType.title].push(unit)
+        const newUnit = {...unit}
+        roster.units[unitsType.title].push(newUnit)
         roster.points[unitsType.title] = roster.points[unitsType.title] + unit.points
         roster.points.all = roster.points.all + unit.points
         forceUpdate()
@@ -63,8 +65,19 @@ const UnitsType = ({unitsType, factionId, forceUpdate, isAllied, alliedFactionId
 
     }
 
-    const handleChooseWarlord = (id) => {
-        roster.warlordId = id
+    const handleChooseWarlord = (unitType, unitIndex) => {
+        forEach(roster.units['Character'], (unit) => {
+            unit.isWarlord = false
+        })
+        forEach(roster.units['Epic Hero'], (unit) => {
+            unit.isWarlord = false
+        })
+        roster.units[unitType][unitIndex].isWarlord = true
+        forceUpdate()
+    }
+
+    const handleClearWarlord = (unitType, unitIndex) => {
+        roster.units[unitType][unitIndex].isWarlord = false
         forceUpdate()
     }
        
@@ -76,6 +89,7 @@ const UnitsType = ({unitsType, factionId, forceUpdate, isAllied, alliedFactionId
         onDelete={handleDeleteUnit}
         onReinforced={handleReinforced}
         onChooseWarlord={handleChooseWarlord}
+        onClearWarlord={handleClearWarlord}
         onCopy={handleCopy}
         factionId={factionId}
         isLimit={getIsLimit(unit.id)}

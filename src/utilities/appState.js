@@ -5,7 +5,6 @@ export const roster = {
     faction: '',
     factionId: '',
     units: {},
-    warlordId: null,
     detachment: '',
     pointsLimit: 2000,
     points: {

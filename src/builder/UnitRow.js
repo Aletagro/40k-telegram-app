@@ -4,8 +4,6 @@ import RowImage from '../components/RowImage'
 import {roster} from '../utilities/appState'
 import Copy from '../icons/copy.svg'
 import Close from '../icons/close.svg'
-import Plus from '../icons/plus.svg'
-import Minus from '../icons/minus.svg'
 import Info from '../icons/info.svg'
 
 import map from 'lodash/map'
@@ -17,7 +15,7 @@ import Styles from './styles/UnitRow.module.css'
 const dataBase = require('../dataBase.json')
 
 const UnitRow = ({
-    unit, unitIndex, isAddUnit, onClick, onDelete, onCopy, onReinforced, withoutMargin, withoutCopy, factionId, isLimit, onChooseWarlord
+    unit, unitIndex, isAddUnit, onClick, onDelete, onCopy, withoutMargin, withoutCopy, factionId, isLimit, onChooseWarlord, onClearWarlord
 }) => {
     const isCharacter = unit.unitType === 'Character'
     const isEpicHero= unit.unitType === 'Epic Hero'
@@ -43,22 +41,16 @@ const UnitRow = ({
         }
     }
 
-    const handleReinforced = () => {
-        if (onReinforced) {
-            onReinforced(unit, unitIndex)
-        }
-    }
-
     const handleClickInfo = () => {
         navigate('/datasheet', {state: {title: unit.name, unit}})
     }
 
     const handleChooseWarlord = () => {
-        onChooseWarlord(unit.id)
+        onChooseWarlord(unit.unitType, unitIndex)
     }
 
     const handleClearWarlord = () => {
-        onChooseWarlord('')
+        onClearWarlord(unit.unitType, unitIndex)
     }
 
     const handleChooseWargearOptions = () => {
@@ -91,12 +83,6 @@ const UnitRow = ({
                 </div>
                 <p id={Styles.price}>{unit.points || unit.regimentOfRenownPointsCost || 0} pts</p>
             </button>
-            {isAddUnit || isEpicHero || isCharacter
-                ? null
-                : unit.isReinforced
-                    ? <button id={Styles.button} onClick={handleReinforced}><img src={Minus} alt="" /></button>
-                    : <button id={Styles.button} onClick={handleReinforced}><img src={Plus} alt="" /></button>
-            }
             {isAddUnit || isEpicHero || isLimit
                 ? null
                 : <button id={Styles.button} onClick={handleCopy}><img src={Copy} alt="" /></button>
@@ -112,7 +98,7 @@ const UnitRow = ({
             ? null
             : <div id={Styles.wargearsContainer}>
                 {isEpicHero || isCharacter
-                    ? roster.warlordId === unit.id
+                    ? unit.isWarlord
                         ? <button id={Styles.warlordButton} onClick={handleClearWarlord}>
                             Warlord
                         </button>

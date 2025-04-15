@@ -58,9 +58,9 @@ export const getErrors = (roster) => {
     if (!roster.detachment) {
         errors.push('Choose Detachment')
     }
-    if (roster.warlordId === null) {
-        errors.push('Choose Warlord')
-    }
+    // if (roster.units === null) {
+    //     errors.push('Choose Warlord')
+    // }
     const uniqueUnits = []
     let heroicTraitsCount = 0
     let atrefactsCount = 0
@@ -112,7 +112,7 @@ export const getErrors = (roster) => {
     if (ensorcelledBannersCount > 1) {
         errors.push(`You have ${ensorcelledBannersCount} Ensorcelled Banners`)
     }
-    if (hasWarmasterInRegiments.length && !includes(hasWarmasterInRegiments, roster.warlordId) && !roster.requiredGeneral) {
+    if (hasWarmasterInRegiments.length) {
         errors.push("You have a Warlord hero, but he isn't your general")
     }
     if (roster.requiredGeneral) {
