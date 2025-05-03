@@ -2,6 +2,7 @@ import parse from 'html-react-parser'
 import Constants from '../Constants'
 import {roster} from '../utilities/appState'
 
+import get from 'lodash/get'
 import map from 'lodash/map'
 import min from 'lodash/min'
 import max from 'lodash/max'
@@ -511,7 +512,7 @@ export const getUnitsSortesByType = (faction, codexInfo, condition) => {
     const unitsInfo = map(miniaturesData, miniatures => {
         const unitType = getUnitType(miniatures[0].id)
         const compositions = getCompositions(miniatures)
-        return {unitType, compositions, points: compositions[0].points}
+        return {unitType, compositions, points: get(compositions, '[0].points', 0)}
     })
     units = map(units, (unit, index) => ({...unit, ...unitsInfo[index]}))
     if (condition) {
