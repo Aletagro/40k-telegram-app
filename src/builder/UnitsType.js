@@ -93,6 +93,7 @@ const UnitsType = ({unitsType, factionId, forceUpdate, isAllied, alliedFactionId
         onCopy={handleCopy}
         factionId={factionId}
         isLimit={getIsLimit(unit.id)}
+        isAllied={isAllied}
     />
 
     return <div id={Styles.container}>

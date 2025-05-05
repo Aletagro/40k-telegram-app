@@ -8,6 +8,7 @@ import min from 'lodash/min'
 import max from 'lodash/max'
 import size from 'lodash/size'
 import find from 'lodash/find'
+import union from 'lodash/union'
 import filter from 'lodash/filter'
 import indexOf from 'lodash/indexOf'
 import forEach from 'lodash/forEach'
@@ -440,7 +441,7 @@ export const removeDuplicates = (arr) => {
     return result
 }
 
-const getUnitType = (miniatureId) => {
+export const getUnitType = (miniatureId) => {
     const keywordsIds = sortByName(filter(dataBase.data.miniature_keyword, ['miniatureId', miniatureId]), 'displayOrder')
     const keywords = map(keywordsIds, keyword => find(dataBase.data.keyword, ['id', keyword.keywordId]))
     const epicHeroIndex = findIndex(keywords, ['name', 'Epic Hero'])
@@ -495,18 +496,48 @@ export const getCompositions = (miniatures) => {
     return compositions
 }
 
-export const getUnitsSortesByType = (faction, codexInfo, condition) => {
+export const getUnitsSortesByType = (faction, codexInfo, condition, parentCodexId) => {
     let units = []
-    if (codexInfo) {
+    if (codexInfo && codexInfo.id !== Constants.EmperorsChildrenCodexId && codexInfo.id !== Constants.AeldariCodexId) {
         units = filter(dataBase.data.datasheet, datasheet => datasheet.publicationId === codexInfo?.id)
     } else {
         const unitsIds = map(filter(dataBase.data.datasheet_faction_keyword, (item) => item.factionKeywordId === faction.id), item => item.datasheetId)
         units = map(unitsIds, unitId => find(dataBase.data.datasheet, datasheet => datasheet.id === unitId))
     }
+    if (parentCodexId) {
+        let parentFactionUnits = filter(dataBase.data.datasheet, datasheet => datasheet.publicationId === parentCodexId)
+        // если родительская армия это спейсмары, то нужно добавить только ванильных маров
+        if (parentCodexId === Constants.vanilSpaceMarinesCodexId) {
+            const notVanilSpaceMarinesArmies = filter(dataBase.data.faction_keyword, ['parentFactionKeywordId', Constants.vanilSpaceMarinesId])
+            const notVanilSpaceMarinesUnitsIds = union(...map(notVanilSpaceMarinesArmies, army => map(filter(dataBase.data.datasheet_faction_keyword, (item) => item.factionKeywordId === army.id ), item => item.datasheetId)))
+            parentFactionUnits = filter(parentFactionUnits, unit => !includes(notVanilSpaceMarinesUnitsIds, unit.id))
+        }
+        if (size(parentFactionUnits)) {
+            units = [...units, ...parentFactionUnits]
+        }
+    }
+    // Удаление лишних юнитов для ванильных спейсмаров
+    if (faction.id === Constants.vanilSpaceMarinesId) {
+        const notVanilSpaceMarinesArmies = filter(dataBase.data.faction_keyword, ['parentFactionKeywordId', Constants.vanilSpaceMarinesId])
+        const notVanilSpaceMarinesUnitsIds = union(...map(notVanilSpaceMarinesArmies, army => map(filter(dataBase.data.datasheet_faction_keyword, (item) => item.factionKeywordId === army.id ), item => item.datasheetId)))
+        units = filter(units, unit => !includes(notVanilSpaceMarinesUnitsIds, unit.id))
+    }
     const imperialArmourId = find(dataBase.data.publication, publication => publication.factionKeywordId === faction.id && includes(publication.name, 'Imperial Armour:'))?.id
     const imperialArmourUnits = filter(dataBase.data.datasheet, ['publicationId', imperialArmourId])
     if (size(imperialArmourUnits)) {
         units = [...units, ...imperialArmourUnits]
+    }
+    // убрать юниты, которые не доступны в определенной фракции
+    units = filter(units, unit => !find(dataBase.data.faction_keyword_excluded_datasheet, datasheet => {
+            return datasheet.datasheetId === unit.id && datasheet.factionKeywordId === faction.id
+        })
+    )
+    // добавить юниты для доступные для определенного детачмента
+    const detachmentAlliedId = find(dataBase.data.allied_faction_required_detachment, ['detachmentId', roster.detachmentId])?.alliedFactionId
+    if (detachmentAlliedId) {
+        const detachmentAlliedUnitsIds = filter(dataBase.data.allied_faction_datasheet, ['alliedFactionId', detachmentAlliedId])
+        const detachmentAlliedUnits = map(detachmentAlliedUnitsIds, unit => find(dataBase.data.datasheet, datasheet => datasheet.id === unit.datasheetId))
+        units = [...units, ...detachmentAlliedUnits]
     }
     const miniaturesData = map(units, unit => filter(dataBase.data.miniature, ['datasheetId', unit.id]))
     const unitsInfo = map(miniaturesData, miniatures => {
@@ -555,4 +586,14 @@ export const setDefaultWargears = (unit, unitType) => {
         roster.units[unitType][unitIndex].models[miniature.name] = models
     })
     roster.units[unitType][unitIndex].wargears = newWargears
+}
+
+export const getUnitPounts = (unit) => {
+    let ponts = unit.points || unit.regimentOfRenownPointsCost
+    if (ponts) {
+        return ponts
+    }
+    const miniatures = filter(dataBase.data.miniature, ['datasheetId', unit.id])
+    const compositions = getCompositions(miniatures)
+    return get(compositions, '[0].points', 0)
 }

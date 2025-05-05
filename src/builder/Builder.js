@@ -26,18 +26,32 @@ const Builder = () => {
     // eslint-disable-next-line
     const [_, forceUpdate] = useReducer((x) => x + 1, 0)
     const codexInfo = find(dataBase.data.publication, publication => publication.factionKeywordId === faction.id && !publication.isCombatPatrol && !includes(publication.name, 'Imperial Armour'))
-    const detachments = sortByName(filter(dataBase.data.detachment, ['publicationId', codexInfo.id]))
+    const detachmentsIds = filter(dataBase.data.detachment_faction_keyword, ['factionKeywordId', faction.id])
+    const detachments = sortByName(map(detachmentsIds, item => find(dataBase.data.detachment, ['id', item.detachmentId])))
     const detachementCondition = find(dataBase.data.conditional_keyword, ['requiredDetachmentId', roster.detachmentId])
-    const unitsTypes = useMemo(() => getUnitsSortesByType(faction, codexInfo, detachementCondition), [faction, codexInfo, detachementCondition])
-    const alliedFactionIds = filter(dataBase.data.faction_keyword_allied_faction, ['factionKeywordId', faction.id])
+    const parentFactionId = find(dataBase.data.faction_keyword, ['id', faction.id])?.parentFactionKeywordId
+    const parentCodexId = find(dataBase.data.publication, ['factionKeywordId', parentFactionId])?.id
+    const unitsTypes = useMemo(() => getUnitsSortesByType(faction, codexInfo, detachementCondition, parentCodexId), [faction, codexInfo, detachementCondition, parentCodexId])
+    let alliedFactionIds = filter(dataBase.data.faction_keyword_allied_faction, ['factionKeywordId', faction.id])
+    if (size(alliedFactionIds)) {
+        alliedFactionIds = filter(alliedFactionIds, item => !find(dataBase.data.allied_faction_required_detachment, ['alliedFactionId', item.alliedFactionId]))
+    }
 
     const handleChooseDetachment = () => {
         navigate('/chooseDetachment', {state: {title: 'Detachments', detachments}})
     }
 
     const handleClickFaction = () => {
-        const data = filter(dataBase.data.army_rule, ['publicationId', codexInfo.id])
-        navigate('/armyRules', {state: {title: 'Army Rules', faction, data}})
+        let data = []
+        if (codexInfo?.id) {
+            data = filter(dataBase.data.army_rule, ['publicationId', codexInfo?.id])
+        } else {
+            const armyRulesIds = filter(dataBase.data.army_rule_faction_keyword, ['factionKeywordId', faction.id])
+            data = map(armyRulesIds, rule => find(dataBase.data.army_rule, ['id', rule.armyRuleId]))
+        }
+        if (size(data)) {
+            navigate('/armyRules', {state: {title: 'Army Rules', faction, data}})
+        }
     }
 
     const handleOpenModal = () => {setOpen(true)}
@@ -50,7 +64,7 @@ const Builder = () => {
     }
 
     const handleClickDetachmentInfo = () => {
-        navigate('/detachment', {state: {detachmentId: roster.detachmentId}})
+        navigate('/detachment', {state: {title: roster.detachment, detachmentId: roster.detachmentId}})
     }
         
     const renderPointsLimitButton = (limit) => <button key={limit} id={Styles.pointsLimitButton} onClick={handleClickPointsLimitButton(limit)}>{limit} Points</button>

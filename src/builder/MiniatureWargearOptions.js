@@ -1,6 +1,7 @@
 import React, {useReducer} from 'react'
 import WargearOptionGroup from './WargearOptionGroup'
 import {roster} from '../utilities/appState'
+import {getUnitType} from '../utilities/utils'
 import Plus from '../icons/whitePlus.svg'
 import Minus from '../icons/whiteMinus.svg'
 import WinterPlus from '../icons/winterPlus.svg'
@@ -15,25 +16,26 @@ import Styles from './styles/MiniatureWargearOptions.module.css'
 const MiniatureWargearOptions = ({wargearOptionGroup, unitData}) => {
     // eslint-disable-next-line
     const [_, forceUpdate] = useReducer((x) => x + 1, 0)
-    const models = roster.units[unitData.unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name]
+    const unitType = unitData.unitType || getUnitType(wargearOptionGroup?.miniature?.id)
+    const models = roster.units[unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name]
 
     const handleClickMinus = () => {
-        roster.units[unitData.unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select = roster.units[unitData.unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select - 1
-        const wargears = roster.units[unitData.unitType][unitData.unitIndex].wargears[wargearOptionGroup.miniature.name].default
+        roster.units[unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select = roster.units[unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select - 1
+        const wargears = roster.units[unitType][unitData.unitIndex].wargears[wargearOptionGroup.miniature.name].default
         forEach(wargears, (wargear, index) => {
             if (isNumber(wargear) && wargear > models.min) {
-                roster.units[unitData.unitType][unitData.unitIndex].wargears[wargearOptionGroup.miniature.name].default[index] = wargear - 1
+                roster.units[unitType][unitData.unitIndex].wargears[wargearOptionGroup.miniature.name].default[index] = wargear - 1
             }
         })
         forceUpdate()
     }
 
     const handleClickPlus = () => {
-        roster.units[unitData.unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select = roster.units[unitData.unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select + 1
-        const wargears = roster.units[unitData.unitType][unitData.unitIndex].wargears[wargearOptionGroup.miniature.name].default
+        roster.units[unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select = roster.units[unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select + 1
+        const wargears = roster.units[unitType][unitData.unitIndex].wargears[wargearOptionGroup.miniature.name].default
         forEach(wargears, (wargear, index) => {
             if (isNumber(wargear)) {
-                roster.units[unitData.unitType][unitData.unitIndex].wargears[wargearOptionGroup.miniature.name].default[index] = wargear + 1
+                roster.units[unitType][unitData.unitIndex].wargears[wargearOptionGroup.miniature.name].default[index] = wargear + 1
             }
         })
         forceUpdate()
@@ -42,7 +44,7 @@ const MiniatureWargearOptions = ({wargearOptionGroup, unitData}) => {
     const renderWargearOptions = (wargearOption) => <WargearOptionGroup
         key={wargearOption.id}
         wargearOptionGroup={wargearOption}
-        unitData={{...unitData, miniatureName: wargearOptionGroup.miniature.name}}
+        unitData={{...unitData, miniatureName: wargearOptionGroup.miniature.name, unitType}}
     />
 
     const renderStepper = () => {
@@ -64,7 +66,7 @@ const MiniatureWargearOptions = ({wargearOptionGroup, unitData}) => {
     return <div>
         <div id={Styles.miniatureRow}>
             <p id={Styles.miniatureName}>{wargearOptionGroup.miniature.name}</p>
-            {models.max > 1 ? renderStepper() : null}
+            {models?.max > 1 ? renderStepper() : null}
         </div>
         {map(wargearOptionGroup.wargearOptions, renderWargearOptions)}
     </div>

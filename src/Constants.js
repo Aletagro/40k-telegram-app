@@ -22,10 +22,16 @@ const Constants = {
                 {name: 'Blood Angels', id: '864734c9-d6c7-4486-92de-9b8271a6a1e5'},
                 {name: 'Dark Angels', id: 'fa0e86ef-b5da-4510-9a9f-8cd86267bb6a'},
                 {name: 'Deathwatch', id: '51ac31b0-93ff-4c94-a9a5-5c1a97fbbb75'},
+                {name: 'Imperial Fists', id: 'cd8dd346-3b5a-489d-8e47-22711922098d'},
+                {name: 'Iron Hands', id: '780aa838-ed0f-44b7-bca3-ff54d357a07b'},
+                {name: 'Raven Guard', id: '8d74ba46-ac06-4c05-a90c-5d25282b2c94'},
+                {name: 'Salamanders', id: '4db683fe-87a0-4138-9b53-4b326c8e8521'},
                 {name: 'Space Marines', id: '01623188-9470-4441-96b0-e06eb2572bb5'},
-                {name: 'Space Wolves', id: 'bc367514-36b7-47c6-bd3f-ffbf85f5cfd9'}
+                {name: 'Space Wolves', id: 'bc367514-36b7-47c6-bd3f-ffbf85f5cfd9'},
+                {name: 'Ultramarines', id: 'b7d67027-cf56-4cd1-8127-9e7658de4ef5'},
+                {name: 'White Scars', id: 'a65e110c-2b80-4887-8b2f-1f335b4dd450'}
             ],
-            image: 'https://artwork.40k.gallery/wp-content/uploads/2021/12/zhang-han-lazarus-768x430.jpg.webp'
+            image: 'https://warhammer40kfanatics.com/wp-content/uploads/2024/01/warhammer-40k-miniatures-banner.png'
         },
         {
             name: 'Chaos',
@@ -486,7 +492,11 @@ const Constants = {
         'Imperium - Adeptus Astartes': false,
         'Chaos': false,
         'Xenos': false
-    }
+    },
+    vanilSpaceMarinesId: '01623188-9470-4441-96b0-e06eb2572bb5',
+    vanilSpaceMarinesCodexId: '58c77720-0edd-418f-a8ab-56a774bfc8bf',
+    EmperorsChildrenCodexId: 'bc2940c7-b4e3-4d2b-ac39-5bc2df3ad21c',
+    AeldariCodexId: '995328e1-ae96-4ef6-b548-c31fad1a06fc'
 }
 
 export default Constants

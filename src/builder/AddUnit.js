@@ -10,6 +10,8 @@ import find from 'lodash/find'
 import size from 'lodash/size'
 import split from 'lodash/split'
 import filter from 'lodash/filter'
+import forEach from 'lodash/forEach'
+import difference from 'lodash/difference'
 
 // import Styles from './styles/AddUnit.module.css'
 
@@ -21,13 +23,31 @@ const AddUnit = () => {
     const {unitsType, isAllied, alliedFactionIds} = useLocation().state
     let allied = []
     if (isAllied) {
-        const alliedDatasheetsIds = map(alliedFactionIds, item => filter(dataBase.data.allied_faction_datasheet, ['alliedFactionId', item.alliedFactionId]))
+        let _alliedFactionIds = filter(alliedFactionIds, item => !find(dataBase.data.allied_faction, ['id', item.alliedFactionId])?.isSiblingFaction)
+        const alliedWithParentKeyword = filter(_alliedFactionIds, item => {
+            const parentFactions = filter(dataBase.data.allied_faction_parent_faction_keyword, ['alliedFactionId', item.alliedFactionId])
+            return size(parentFactions) > 1
+        })
+        _alliedFactionIds = difference(_alliedFactionIds, alliedWithParentKeyword)
+        const alliedDatasheetsIds = map(_alliedFactionIds, item => filter(dataBase.data.allied_faction_datasheet, ['alliedFactionId', item.alliedFactionId]))
         const alliedDatasheets = map(alliedDatasheetsIds, data => sortByName(map(data, item => find(dataBase.data.datasheet, ['id', item.datasheetId]))))
         allied = map(alliedDatasheets, _allied => {
             const faction = find(dataBase.data.publication, ['id', _allied[0].publicationId])
-            return {title: split(faction.name, ': ')[1], units: _allied}
+            return {title: split(faction.name, ':')[1], units: _allied}
         })
         allied = sortByName(allied, 'title')
+        if (size(alliedWithParentKeyword)) {
+            forEach(alliedWithParentKeyword, allieWithParentKeyword => {
+                const datasheetsIds = filter(dataBase.data.allied_faction_datasheet, ['alliedFactionId', allieWithParentKeyword.alliedFactionId])
+                const datasheets = map(datasheetsIds, item => find(dataBase.data.datasheet, ['id', item.datasheetId]))
+                const parentFactions = filter(dataBase.data.allied_faction_parent_faction_keyword, ['alliedFactionId', allieWithParentKeyword.alliedFactionId])
+                forEach(parentFactions, parentFaction => {
+                    const parentFactionDatasheets = filter(datasheets, datasheet => find(dataBase.data.datasheet_faction_keyword, item => item.datasheetId === datasheet.id && item.factionKeywordId === parentFaction.factionKeywordId))
+                    const faction = find(dataBase.data.faction_keyword, ['id', parentFaction.factionKeywordId])
+                    allied.push({title: faction.name, units: parentFactionDatasheets})
+                })
+            })
+        }
     }
 
     const getIsLimit = (unitId) => {

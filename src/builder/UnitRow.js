@@ -2,6 +2,7 @@ import React from 'react'
 import {useNavigate} from 'react-router-dom'
 import RowImage from '../components/RowImage'
 import {roster} from '../utilities/appState'
+import {getUnitPounts} from '../utilities/utils'
 import Copy from '../icons/copy.svg'
 import Close from '../icons/close.svg'
 import Info from '../icons/info.svg'
@@ -15,11 +16,12 @@ import Styles from './styles/UnitRow.module.css'
 const dataBase = require('../dataBase.json')
 
 const UnitRow = ({
-    unit, unitIndex, isAddUnit, onClick, onDelete, onCopy, withoutMargin, withoutCopy, factionId, isLimit, onChooseWarlord, onClearWarlord
+    unit, unitIndex, isAddUnit, onClick, onDelete, onCopy, withoutMargin, withoutCopy, factionId, isLimit, onChooseWarlord, onClearWarlord, isAllied
 }) => {
     const isCharacter = unit.unitType === 'Character'
     const isEpicHero= unit.unitType === 'Epic Hero'
     const hasWargearOption = find(dataBase.data.wargear_option_group, wargearOptionGroup => wargearOptionGroup.datasheetId === unit.id && wargearOptionGroup.instructionText !== 'Default Wargear')
+    const points = getUnitPounts(unit)
 
     const navigate = useNavigate()
 
@@ -54,7 +56,7 @@ const UnitRow = ({
     }
 
     const handleChooseWargearOptions = () => {
-        navigate('/chooseWargear', {state: {title: 'Wargear Options', unit, unitIndex}})
+        navigate('/chooseWargear', {state: {title: 'Wargear Options', unit, unitIndex, isAllied}})
     }
 
     const handleChooseEnhancement = () => {
@@ -70,7 +72,7 @@ const UnitRow = ({
     </div>
 
     const renderWargears = (wargears, index) => <div key={index} id={Styles.wargearsContainer}>
-        <b id={Styles.miniature}>{unit.models[index].select} x {index}</b>
+        <b id={Styles.miniature}>{unit.models[index]?.select} x {index}</b>
         {map(wargears, renderWargearsGroup)}
     </div>
 
@@ -81,7 +83,7 @@ const UnitRow = ({
                 <div id={Styles.addUnitButtonSubContainer}>
                     <p id={Styles.name}>{unit.modelCount ? `${unit.modelCount * (unit.isReinforced ? 2 : 1)} ` : ''}{unit.name}</p>
                 </div>
-                <p id={Styles.price}>{unit.points || unit.regimentOfRenownPointsCost || 0} pts</p>
+                <p id={Styles.price}>{points} pts</p>
             </button>
             {isAddUnit || isEpicHero || isLimit
                 ? null
