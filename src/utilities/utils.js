@@ -484,7 +484,10 @@ export const getCompositions = (miniatures) => {
             }
             return {
                 name: _miniature.name,
-                count: counts.max === counts.min ? counts.min : `${counts.min}-${counts.max}`
+                id: _miniature.id,
+                count: counts.max === counts.min ? counts.min : `${counts.min}-${counts.max}`,
+                min: counts.min,
+                max: counts.max
             }
         })
         const groupingKeyword = compositionPoints.referenceGroupingKeywordId ? find(dataBase.data.keyword, ['id', compositionPoints.referenceGroupingKeywordId]) : ''
@@ -596,4 +599,24 @@ export const getUnitPounts = (unit) => {
     const miniatures = filter(dataBase.data.miniature, ['datasheetId', unit.id])
     const compositions = getCompositions(miniatures)
     return get(compositions, '[0].points', 0)
+}
+
+export const checkUnitPoints = (unitData) => {
+    const unit = roster.units[unitData.unitType][unitData.unitIndex]
+    const selectedModelsCount = map(unit.models, model => model.select)
+    const points = find(unit.compositions, composition => {
+        let isThisComposition = true
+        forEach(composition.models, (model, index) => {
+            if (model.min > selectedModelsCount[index] || selectedModelsCount[index] > model.max) {
+                isThisComposition = false
+            }
+        })
+        return isThisComposition
+    })?.points
+    if (points !== unit.points) {
+        const pointsDifference = points - unit.points
+        roster.units[unitData.unitType][unitData.unitIndex].points = points
+        roster.points[unitData.unitType] += pointsDifference
+        roster.points.all += pointsDifference
+    }
 }

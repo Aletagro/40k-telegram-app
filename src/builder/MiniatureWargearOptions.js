@@ -1,7 +1,7 @@
 import React, {useReducer} from 'react'
 import WargearOptionGroup from './WargearOptionGroup'
 import {roster} from '../utilities/appState'
-import {getUnitType} from '../utilities/utils'
+import {getUnitType, checkUnitPoints} from '../utilities/utils'
 import Plus from '../icons/whitePlus.svg'
 import Minus from '../icons/whiteMinus.svg'
 import WinterPlus from '../icons/winterPlus.svg'
@@ -13,31 +13,33 @@ import isNumber from 'lodash/isNumber'
 
 import Styles from './styles/MiniatureWargearOptions.module.css'
 
-const MiniatureWargearOptions = ({wargearOptionGroup, unitData}) => {
+const MiniatureWargearOptions = ({wargearOptionGroup, unitData, onChangeModelsCount}) => {
     // eslint-disable-next-line
     const [_, forceUpdate] = useReducer((x) => x + 1, 0)
     const unitType = unitData.unitType || getUnitType(wargearOptionGroup?.miniature?.id)
     const models = roster.units[unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name]
 
     const handleClickMinus = () => {
-        roster.units[unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select = roster.units[unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select - 1
+        roster.units[unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select -= 1
         const wargears = roster.units[unitType][unitData.unitIndex].wargears[wargearOptionGroup.miniature.name].default
         forEach(wargears, (wargear, index) => {
             if (isNumber(wargear) && wargear > models.min) {
                 roster.units[unitType][unitData.unitIndex].wargears[wargearOptionGroup.miniature.name].default[index] = wargear - 1
             }
         })
+        checkUnitPoints(unitData)
         forceUpdate()
     }
 
     const handleClickPlus = () => {
-        roster.units[unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select = roster.units[unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select + 1
+        roster.units[unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select += 1
         const wargears = roster.units[unitType][unitData.unitIndex].wargears[wargearOptionGroup.miniature.name].default
         forEach(wargears, (wargear, index) => {
             if (isNumber(wargear)) {
                 roster.units[unitType][unitData.unitIndex].wargears[wargearOptionGroup.miniature.name].default[index] = wargear + 1
             }
         })
+        checkUnitPoints(unitData)
         forceUpdate()
     }
 
