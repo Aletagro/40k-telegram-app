@@ -13,12 +13,13 @@ import isNumber from 'lodash/isNumber'
 
 import Styles from './styles/MiniatureWargearOptions.module.css'
 
-const MiniatureWargearOptions = ({wargearOptionGroup, unitData, onChangeModelsCount}) => {
+const MiniatureWargearOptions = ({wargearOptionGroup, unitData}) => {
     // eslint-disable-next-line
     const [_, forceUpdate] = useReducer((x) => x + 1, 0)
     const unitType = unitData.unitType || getUnitType(wargearOptionGroup?.miniature?.id)
     const models = roster.units[unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name]
-
+    console.log('MiniatureWargearOptions', wargearOptionGroup)
+    // loadout_choice_set
     const handleClickMinus = () => {
         roster.units[unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select -= 1
         const wargears = roster.units[unitType][unitData.unitIndex].wargears[wargearOptionGroup.miniature.name].default
