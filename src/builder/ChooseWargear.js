@@ -13,7 +13,7 @@ const dataBase = require('../dataBase.json')
 const ChooseWargear = () => {
     const navigate = useNavigate()
     const {unit, unitIndex, isAllied} = useLocation().state
-    console.log(unit)
+    // console.log(unit)
     const miniatures = filter(dataBase.data.miniature, ['datasheetId', unit.id])
     const wargearOptionGroups = map(miniatures, miniature => {
         return {

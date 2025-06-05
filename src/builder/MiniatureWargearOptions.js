@@ -18,7 +18,7 @@ const MiniatureWargearOptions = ({wargearOptionGroup, unitData}) => {
     const [_, forceUpdate] = useReducer((x) => x + 1, 0)
     const unitType = unitData.unitType || getUnitType(wargearOptionGroup?.miniature?.id)
     const models = roster.units[unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name]
-    console.log('MiniatureWargearOptions', wargearOptionGroup)
+    // console.log('MiniatureWargearOptions', wargearOptionGroup)
     // loadout_choice_set
     const handleClickMinus = () => {
         roster.units[unitType][unitData.unitIndex].models[wargearOptionGroup.miniature.name].select -= 1
