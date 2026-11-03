@@ -1,10 +1,11 @@
 {
   "files": {
-    "main.css": "/40k-telegram-app/static/css/main.0705a93f.css",
-    "main.js": "/40k-telegram-app/static/js/main.7991bb57.js",
+    "main.css": "/40k-telegram-app/static/css/main.040bac5c.css",
+    "main.js": "/40k-telegram-app/static/js/main.6488829e.js",
     "static/media/placeholder.png": "/40k-telegram-app/static/media/placeholder.816f67bc014b91894c3e.png",
     "static/media/MinionPro-Bold.woff": "/40k-telegram-app/static/media/MinionPro-Bold.e73f42dae2e6ae675375.woff",
     "static/media/MinionPro-Regular.woff": "/40k-telegram-app/static/media/MinionPro-Regular.7cfa635450eff096f301.woff",
+    "static/media/spaceMarine.jpeg": "/40k-telegram-app/static/media/spaceMarine.714884c4a4199b9fd53b.jpeg",
     "static/media/add.svg": "/40k-telegram-app/static/media/add.fc78ba00fcec417be7fade2132452c3e.svg",
     "static/media/export.svg": "/40k-telegram-app/static/media/export.891ab20efb017ba3fc68b8ca59b6b9e7.svg",
     "static/media/delete.svg": "/40k-telegram-app/static/media/delete.5b90fab076dec066ad769f8f7e7448cf.svg",
@@ -18,7 +19,6 @@
     "static/media/whiteCopy.svg": "/40k-telegram-app/static/media/whiteCopy.0d202b6fafa9edf369abcc84e983be2b.svg",
     "static/media/copy.svg": "/40k-telegram-app/static/media/copy.3fb355d1d836891fb914a4f892176c6d.svg",
     "index.html": "/40k-telegram-app/index.html",
-    "static/media/book.svg": "/40k-telegram-app/static/media/book.5375825f5532c8244a0b4431c1320105.svg",
     "static/media/weaponChoice.svg": "/40k-telegram-app/static/media/weaponChoice.e063d90eebe6fe8445bdd3d065d1d1cb.svg",
     "static/media/checkmark.svg": "/40k-telegram-app/static/media/checkmark.3534622028fa8e88124b29a257c3aa79.svg",
     "static/media/goldCheckmark.svg": "/40k-telegram-app/static/media/goldCheckmark.3ba83c49489fe35dc43e87829735d5a0.svg",
@@ -30,11 +30,11 @@
     "static/media/minus.svg": "/40k-telegram-app/static/media/minus.e96d94d06862f0e438941502b49deb0e.svg",
     "static/media/winterMinus.svg": "/40k-telegram-app/static/media/winterMinus.093b1ec23e395726bb457b123f26a54d.svg",
     "static/media/whiteMinus.svg": "/40k-telegram-app/static/media/whiteMinus.660df51c268b57b6bcbadd633ab5b4d0.svg",
-    "main.0705a93f.css.map": "/40k-telegram-app/static/css/main.0705a93f.css.map",
-    "main.7991bb57.js.map": "/40k-telegram-app/static/js/main.7991bb57.js.map"
+    "main.040bac5c.css.map": "/40k-telegram-app/static/css/main.040bac5c.css.map",
+    "main.6488829e.js.map": "/40k-telegram-app/static/js/main.6488829e.js.map"
   },
   "entrypoints": [
-    "static/css/main.0705a93f.css",
-    "static/js/main.7991bb57.js"
+    "static/css/main.040bac5c.css",
+    "static/js/main.6488829e.js"
   ]
 }
