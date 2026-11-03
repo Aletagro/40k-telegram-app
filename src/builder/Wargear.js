@@ -11,7 +11,7 @@ import find from 'lodash/find'
 
 import Styles from './styles/Wargear.module.css'
 
-const dataBase = require('../dataBase.json')
+const dataBase = require('../utilities/db')
 
 const Wargear = ({index, wargear, unitData}) => {
     // eslint-disable-next-line

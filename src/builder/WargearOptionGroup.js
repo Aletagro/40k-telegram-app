@@ -6,7 +6,7 @@ import filter from 'lodash/filter'
 
 import Styles from './styles/WargearOptionGroup.module.css'
 
-const dataBase = require('../dataBase.json')
+const dataBase = require('../utilities/db')
 
 const WargearOptionGroup = ({wargearOptionGroup, unitData}) => {
     const wargearOptions = filter(dataBase.data.wargear_option, ['wargearOptionGroupId', wargearOptionGroup.id])

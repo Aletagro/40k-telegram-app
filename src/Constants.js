@@ -61,67 +61,10 @@ const Constants = {
             image: 'https://static1.thegamerimages.com/wordpress/wp-content/uploads/wm/2025/01/tyranid-screamer-killer-4-final.jpg'
         }
     ],
-    armyEnhancements: [
-        {
-            title: 'Battle Traits',
-            groupName: 'ability_group',
-            ruleName: 'ability',
-            ruleIdName: 'abilityGroupId',
-            abilityGroupType: 'battleTraits',
-            abilityKeywordsName: 'ability_keyword',
-            abilityIdName: 'abilityId'
-        },
-        {
-            title: 'Battle Formations',
-            groupName: 'battle_formation',
-            ruleName: 'battle_formation_rule',
-            ruleIdName: 'battleFormationId'
-        },
-        {
-            title: 'Artefacts of Power',
-            groupName: 'ability_group',
-            ruleName: 'ability',
-            ruleIdName: 'abilityGroupId',
-            abilityGroupType: 'artefactsOfPower',
-            abilityKeywordsName: 'ability_keyword',
-            abilityIdName: 'abilityId'
-        },
-        {
-            title: 'Heroic Traits',
-            groupName: 'ability_group',
-            ruleName: 'ability',
-            ruleIdName: 'abilityGroupId',
-            abilityGroupType: 'heroicTraits',
-            abilityKeywordsName: 'ability_keyword',
-            abilityIdName: 'abilityId'
-        },
-        {
-            title: 'Spell Lores',
-            groupName: 'lore',
-            ruleName: 'lore_ability',
-            ruleIdName: 'loreId',
-            abilityGroupType: undefined,
-            abilityKeywordsName: 'lore_ability_keyword',
-            abilityIdName: 'loreAbilityId',
-            includesTexts: ['Lore of', 'Spell Lore', 'Arcane']
-        },
-        {
-            title: 'Prayer Lores',
-            groupName: 'lore',
-            ruleName: 'lore_ability',
-            ruleIdName: 'loreId',
-            abilityGroupType: undefined,
-            abilityKeywordsName: 'lore_ability_keyword',
-            abilityIdName: 'loreAbilityId',
-            includesTexts: ['Prayer', 'Bless', 'Rites', 'Warbeats', 'Scriptures']
-        }
-    ],
     coreRulesId: '1c03d77c-1762-4cf3-bea1-9f4ba5768552',
     coreRulesImage: 'https://d3ocysny7bghv8.cloudfront.net/c1e62db9-036d-49fa-9d4d-6c6395a81d95',
     keyDocumentsId: '085bb508-281f-4a92-a99b-801a5c95c165',
     keyDocumentsImage: 'https://d3ocysny7bghv8.cloudfront.net/9ba4219a-2937-491d-814e-3fbd305c44dc',
-    manifestationsPublicationId: '318c212e-cbcd-4b44-a44d-318f3ae180a0',
-    regimentsOfRenownImage: 'https://dhss9aar8ocw.cloudfront.net/39478fae-cf03-40ee-a130-6fef03492c44',
     unitsTypes: [
         {
             name: 'Epic Hero'
@@ -174,23 +117,6 @@ const Constants = {
             withoutHero: true
         }
     ],
-    abilitiesTypes: {
-        startOfTurn: 'black',
-        combatPhase: 'darkred',
-        heroPhase: 'rgb(201 189 82)',
-        movementPhase: 'grey',
-        defensive: 'darkgreen',
-        chargePhase: 'rgb(182, 92, 28)',
-        shootingPhase: 'rgb(26, 72, 110)',
-        endOfTurn: 'indigo'
-    },
-    tacticsTypes: {
-        UNIVERSAL: 'black',
-        CHAOS: 'darkred',
-        DESTRUCTION: 'darkgreen',
-        ORDER: 'rgb(26, 72, 110)',
-        DEATH: 'indigo'
-    },
     regimentOfRenownsWithWizard: [
         {
             id: '0d95831a-70f6-4ca0-8fcb-a438740ec203',
@@ -296,157 +222,6 @@ const Constants = {
         {modificator: 2, title: 'Crit on 5+'},
         {modificator: 1, title: 'Crit on 6+'}
     ],
-    battleplansRuleSectionId: '97befff2-c7fa-4ee2-aa73-1e7fe2e8d8cd',
-    tacticsIds: {
-        Universal: 'b14bc337-1f07-47ab-853c-e7484b6b6661',
-        Order: 'b2e81319-fd3c-4ee4-aae6-f3547efee8b6',
-        Death: '9a1ff3fc-662d-4e98-ae89-8fe0b08136f8',
-        Destruction: '0cc9bec3-40fe-4ed4-af4e-3e2e9e099c31',
-        Chaos: 'a25e9b34-58df-468f-8f57-d7f7cbdfaec1'
-    },
-    newPlayer: {
-        name: '',
-        alliance: {
-            name: 'Chaos',
-            id: '90175462-fae6-41e4-a0fe-19e41a833c9a'
-        },
-        allegiance: {
-            name: '',
-            id: ''
-        },
-        roster: '',
-        vp: 0,
-        cp: 4
-    },
-    battleplans: [
-        {
-            "id": "57ac18e5-16dd-4291-956a-c1af34154976",
-            "title": "Shifting Objectives",
-            "scoreParams": [
-                {title: 'Tactics Complete', id: 'tactics', value: 4, completed: false},
-                {title: 'Primary Objective', id: 'primaryObjective', value: 2, completed: false},
-                {title: 'First Secondary Objective', id: 'firstSecondaryObjective', value: 1, completed: false},
-                {title: 'Second Secondary Objective', id: 'SecondSecondaryObjective', value: 1, completed: false},
-                {title: 'More Than Opp', id: 'moreThan', value: 2, completed: false}
-            ]
-        },
-        {
-            "id": "97c0441a-4155-47b3-92bb-ed612265dcae",
-            "title": "Focal Points",
-            "scoreParams": [
-                {title: 'Tactics Complete', id: 'tactics', value: 4, completed: false},
-                {title: 'One', id: 'one', value: 1, completed: false},
-                {title: 'Two and More', id: 'twoAndMore', value: 1, completed: false},
-                {title: 'More Than Opp', id: 'moreThan', value: 1, completed: false},
-                {title: '2 or more home/flank objectives', id: 'home/flank', value: 3, completed: false}
-            ]
-        },
-        {
-            "id": "3651f2c9-b014-4200-8fa8-84c9fda8ff0f",
-            "title": "Starstrike",
-            "scoreParams": [
-                {title: 'Tactics Complete', id: 'tactics', value: 4, completed: false},
-                {title: 'One ', id: 'one', value: 3, completed: false},
-                {title: 'More Than Opp', id: 'moreThan', value: 3, completed: false}
-            ]
-        },
-        {
-            "id": "53d86219-6dae-4b17-97ab-e2fa8279c949",
-            "title": "Feral Foray",
-            "scoreParams": [
-                {title: 'Tactics Complete', id: 'tactics', value: 4, completed: false},
-                {title: 'One', id: 'one', value: 2, completed: false},
-                {title: 'Two and More', id: 'twoAndMore', value: 2, completed: false},
-                {title: 'More Than Opp', id: 'moreThan', value: 2, completed: false}
-            ]
-        },
-        {
-            "id": "375743bf-f4c8-4eff-ba26-4fc304ce8d4f",
-            "title": "The Jaws of Gallet",
-            "scoreParams": [
-                {title: 'Tactics Complete', id: 'tactics', value: 4, completed: false},
-                {title: 'One', id: 'one', value: 2, completed: false},
-                {title: 'Two and More', id: 'twoAndMore', value: 2, completed: false},
-                {title: 'More Than Opp', id: 'moreThan', value: 2, completed: false}
-            ]
-        },
-        {
-            "id": "ee208ce6-8301-4c4e-b633-37005af617e9",
-            "title": "Battle for the Pass",
-            "scoreParams": [
-                {title: 'Tactics Complete', id: 'tactics', value: 4, completed: false},
-                {title: 'Home', id: 'home', value: 1, completed: false},
-                {title: 'First Border', id: 'firstBorder', value: 2, completed: false},
-                {title: 'Second Border', id: 'secondBorder', value: 2, completed: false},
-                {title: 'Enemy', id: 'enemy', value: 5, completed: false}
-            ],
-            "maxForObjectives": 6
-        },
-        {
-            "id": "010ccbf9-b896-4947-aedb-a6271fbe5f6a",
-            "title": "Scorched Earth",
-            "scoreParams": [
-                {title: 'Tactics Complete', id: 'tactics', value: 4, completed: false},
-                {title: 'One', id: 'one', value: 2, completed: false},
-                {title: 'Two and More', id: 'twoAndMore', value: 2, completed: false},
-                {title: 'More Than Opp', id: 'moreThan', value: 2, completed: false}
-            ]
-        },
-        {
-            "id": "49c4348b-f9c3-4e6c-8ea1-9b8c50542b71",
-            "title": "The Better Part of Valour",
-            "scoreParams": [
-                {title: 'Tactics Complete', id: 'tactics', value: 4, completed: false},
-                {title: 'One', id: 'one', value: 2, completed: false},
-                {title: 'Two and More', id: 'twoAndMore', value: 2, completed: false},
-                {title: 'More Than Opp', id: 'moreThan', value: 2, completed: false}
-            ]
-        },
-        {
-            "id": "aac58435-a144-4260-a633-c17558c2014f",
-            "title": "The Vice",
-            "scoreParams": [
-                {title: 'Tactics Complete', id: 'tactics', value: 4, completed: false},
-                {title: 'One', id: 'one', value: 2, completed: false},
-                {title: 'Two and More', id: 'twoAndMore', value: 2, completed: false, round: '3-'},
-                {title: 'More Than Opp', id: 'moreThan', value: 2, completed: false},
-                {title: 'No Enemy Units Near', id: 'noEnemyUnitsNear', value: 2, completed: false, round: '4+'}
-            ]
-        },
-        {
-            "id": "c9352833-c2e9-4883-86b5-f54ee37f2e70",
-            "title": "Close to the Chest",
-            "scoreParams": [
-                {title: 'Tactics Complete', id: 'tactics', value: 4, completed: false},
-                {title: 'One', id: 'one', value: 1, completed: false},
-                {title: 'Two and More', id: 'twoAndMore', value: 1, completed: false},
-                {title: 'More Than Opp', id: 'moreThan', value: 2, completed: false},
-                {title: 'Primary Objective', id: 'primaryObjective', value: 2, completed: false}
-            ]
-        },
-        {
-            "id": "feb5d29e-a134-4842-ad59-9b06ff5846de",
-            "title": "Limited Resources",
-            "scoreParams": [
-                {title: 'Tactics Complete', id: 'tactics', value: 4, completed: false},
-                {title: 'One', id: 'one', value: 2, completed: false},
-                {title: 'Two and More', id: 'twoAndMore', value: 2, completed: false},
-                {title: 'More Than Opp', id: 'moreThan', value: 2, completed: false}
-            ]
-        },
-        {
-            "id": "86dbc020-5032-4f29-8753-e9d11e41c2e3",
-            "title": "Border War",
-            "scoreParams": [
-                {title: 'Tactics Complete', id: 'tactics', value: 4, completed: false},
-                {title: 'Friendly Objective', id: 'friendlyObjective', value: 1, completed: false},
-                {title: 'First Border Objective', id: 'firstBorderObjective', value: 2, completed: false},
-                {title: 'Second Border Objective', id: 'secondBorderObjective', value: 2, completed: false},
-                {title: 'Enemy Objective', id: 'enemyObjective', value: 5, completed: false}
-            ],
-            "maxForObjectives": 6
-        }
-    ],
     toastParams: {
         position: 'bottom-center',
         autoClose: 2000,
@@ -486,12 +261,6 @@ const Constants = {
         'Artillery': false,
         'Swarm': false,
         'Fortification': false
-    },
-    defaultIsCollapseRegimentAlliances: {
-        'Imperium': false,
-        'Imperium - Adeptus Astartes': false,
-        'Chaos': false,
-        'Xenos': false
     },
     vanilSpaceMarinesId: '01623188-9470-4441-96b0-e06eb2572bb5',
     vanilSpaceMarinesCodexId: '58c77720-0edd-418f-a8ab-56a774bfc8bf',

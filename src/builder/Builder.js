@@ -15,7 +15,7 @@ import includes from 'lodash/includes'
 
 import Styles from './styles/Builder.module.css'
 
-const dataBase = require('../dataBase.json')
+const dataBase = require('../utilities/db')
 
 const pointsLimits = ['1000', '2000', '3000']
 

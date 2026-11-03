@@ -26,25 +26,6 @@ export const search = {
     }
 }
 
-export const builderFilters = {
-    hidePotentialLegends: false,
-    showLegends: false
-}
-
-export const singlePlayer = {
-    firstPlayer: {...Constants.newPlayer},
-    secondPlayer: {...Constants.newPlayer},
-    battleplan: {
-        name: '',
-        id: ''
-    },
-    rounds: [],
-    currentRound: 1,
-    gameStarted: false,
-    gameOver: false,
-    underdog: 0
-}
-
 export const calc = {
     units: [{...Constants.newCalcUnit}]
 }
@@ -54,5 +35,3 @@ export const navigationState = {
 }
 
 export const isCollapseUnitsTypes = Constants.defaultIsCollapseUnitsTypes
-
-export const isCollapseRegimentAlliances = Constants.defaultIsCollapseRegimentAlliances

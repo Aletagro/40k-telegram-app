@@ -7,7 +7,7 @@ import find from 'lodash/find'
 
 import Styles from './styles/Lists.module.css'
 
-const dataBase = require('../dataBase.json')
+const dataBase = require('../utilities/db')
 
 // const lists = [
 //     {

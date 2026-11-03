@@ -8,7 +8,7 @@ import filter from 'lodash/filter'
 
 import Styles from './styles/ChooseEnhancement.module.css'
 
-const dataBase = require('../dataBase.json')
+const dataBase = require('../utilities/db')
 
 const ChooseWargear = () => {
     const navigate = useNavigate()

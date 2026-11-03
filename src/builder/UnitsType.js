@@ -11,7 +11,7 @@ import forEach from 'lodash/forEach'
 
 import Styles from './styles/UnitsType.module.css'
 
-const dataBase = require('../dataBase.json')
+const dataBase = require('../utilities/db')
 
 const UnitsType = ({unitsType, factionId, forceUpdate, isAllied, alliedFactionIds}) => {
     const navigate = useNavigate()

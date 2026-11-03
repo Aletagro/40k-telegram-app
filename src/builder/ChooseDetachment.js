@@ -10,7 +10,7 @@ import forEach from 'lodash/forEach'
 
 import Styles from './styles/ChooseEnhancement.module.css'
 
-const dataBase = require('../dataBase.json')
+const dataBase = require('../utilities/db')
 
 const ChooseDetachment = () => {
     const {detachments} = useLocation().state

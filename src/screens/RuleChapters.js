@@ -1,13 +1,12 @@
 import React from 'react';
 import {useLocation} from 'react-router-dom'
 import Row from '../components/Row'
-import Battleplans from '../components/Battleplans'
 import Rules from './Rules'
 
 import map from 'lodash/map'
 import filter from 'lodash/filter'
 
-const dataBase = require('../dataBase.json')
+const dataBase = require('../utilities/db')
 
 const RuleChapters = () => {
     const {chapter} = useLocation().state
@@ -27,9 +26,7 @@ const RuleChapters = () => {
                 {ruleChapters && map(ruleChapters, renderRow)}
             </div>
         </>
-        : chapter.name === 'Battleplans'
-            ? <Battleplans id={chapter.id} />
-            : <Rules info={chapter} />
+        : <Rules info={chapter} />
 }
 
 export default RuleChapters

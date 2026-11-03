@@ -12,7 +12,7 @@ import filter from 'lodash/filter'
 
 import Styles from './styles/Detachment.module.css'
 
-const dataBase = require('../dataBase.json')
+const dataBase = require('../utilities/db')
 
 const Detachment = () => {
     const {detachment, detachmentId} = useLocation().state

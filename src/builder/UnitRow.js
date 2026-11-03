@@ -13,7 +13,7 @@ import isNumber from 'lodash/isNumber'
 
 import Styles from './styles/UnitRow.module.css'
 
-const dataBase = require('../dataBase.json')
+const dataBase = require('../utilities/db')
 
 const UnitRow = ({
     unit, unitIndex, isAddUnit, onClick, onDelete, onCopy, withoutMargin, withoutCopy, factionId, isLimit, onChooseWarlord, onClearWarlord, isAllied

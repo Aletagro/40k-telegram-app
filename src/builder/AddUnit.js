@@ -15,7 +15,7 @@ import difference from 'lodash/difference'
 
 // import Styles from './styles/AddUnit.module.css'
 
-const dataBase = require('../dataBase.json')
+const dataBase = require('../utilities/db')
 
 const AddUnit = () => {
     window.scrollTo(0, 0)

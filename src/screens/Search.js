@@ -14,7 +14,7 @@ import lowerCase from 'lodash/lowerCase'
 
 import Styles from './styles/Search.module.css'
 
-const dataBase = require('../dataBase.json')
+const dataBase = require('../utilities/db')
 
 const Search = () => {
     const [value, setValue] = useState(search.value)

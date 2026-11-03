@@ -17,10 +17,6 @@
   align-items: center;
 }
 
-#titleSubContainer {
-  display: flex;
-}
-
 #text {
   color: white;
   font-size: 18px;
@@ -33,22 +29,6 @@
   color: white;
   font-size: 18px;
   line-height: 24px;
-}
-
-#rightBlock {
-  display: flex;
-  align-items: center;
-}
-
-#button {
-  background: rgb(245, 201, 80);
-  color: black;
-  margin-bottom: 16px;
-  margin-left: 4px;
-  border-radius: 4px;
-  border-width: 0px;
-  padding: 8px;
-  font-size: 14px;
 }
 
 #addUnitContainer {
@@ -65,26 +45,4 @@
   border-width: 0px;
   padding: 8px 12px;
   font-size: 18px;
-}
-
-#deleteButton {
-  background: transparent;
-  border-radius: 4px;
-  border-width: 0px;
-  padding: 4px;
-  margin-left: 16px;
-}
-
-#subTitle {
-  background: rgb(46, 46, 49);
-  color: white;
-  margin-bottom: 16px;
-  border-radius: 4px;
-  border-width: 0px;
-  padding: 7px 8px;
-  margin: 0px;
-  margin-left: 4px;
-  margin-bottom: 16px;
-  font-size: 16px;
-  display: inline-block;
 }

@@ -5,6 +5,8 @@ import HeaderImage from '../components/HeaderImage'
 
 import Styles from './styles/Main.module.css'
 
+const {LANGUAGES, getLanguage, setLanguage} = require('../utilities/db')
+
 const Main = () => {
     // const navigate = useNavigate()
 
@@ -16,8 +18,13 @@ const Main = () => {
             <Row title='Rules' navigateTo='mainRules' />
             <Row title='Builder' navigateTo='chooseGrandFaction' />
             {/* <Row title='Builder' navigateTo='lists' /> */}
-            {/* <Row title='Battle Dashboard' navigateTo='singlePlayer' /> */}
             {/* <Row title='Damage Calculator' navigateTo='calculator' /> */}
+            <div id={Styles.languageBlock}>
+                <span>Rules language</span>
+                <select id={Styles.languageSelect} value={getLanguage()} onChange={(e) => setLanguage(e.target.value)}>
+                    {LANGUAGES.map(({id, name}) => <option key={id} value={id}>{name}</option>)}
+                </select>
+            </div>
             <p id={Styles.feedbackText}>Card number for support - 5536 9141 9279 5999 (Rukosuev Nikita)</p>
             <p id={Styles.feedbackText}>For feedback - @RukosuevKrasavchik</p>
             <p id={Styles.feedbackText}>The database was last updated on 03.05.2025</p>

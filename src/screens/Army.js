@@ -13,7 +13,7 @@ import includes from 'lodash/includes'
 
 import Styles from './styles/Army.module.css'
 
-const dataBase = require('../dataBase.json')
+const dataBase = require('../utilities/db')
 
 const Army = () => {
     const {faction, grandFaction} = useLocation().state

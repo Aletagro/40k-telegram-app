@@ -17,7 +17,7 @@ import includes from 'lodash/includes'
 import findIndex from 'lodash/findIndex'
 import lowerCase from 'lodash/lowerCase'
 
-const dataBase = require('../dataBase.json')
+const dataBase = require('./db')
 
 export const sortByName = (array, param) => param
     ? array.sort((a,b) => (a[param] > b[param]) ? 1 : ((b[param] > a[param]) ? -1 : 0))
@@ -34,19 +34,6 @@ export const unitsSortesByType = (units) => {
         }
     }
     return filter(map(Constants.unitsTypes, getUnitsByType), Boolean)
-}
-
-export const regimentSortesByGrandAlliances = (regiments) => {
-    const getRegimentByGrandAlliances = (grandAlliance) => {
-        const _regiments = filter(regiments, regiment => includes(regiment.keywords, grandAlliance.name))
-        if (_regiments.length > 0) {
-            sortByName(_regiments)
-            return {regiments: _regiments, title: grandAlliance.name}
-        } else {
-            return null
-        }
-    }
-    return filter(map(Constants.grandAlliances, getRegimentByGrandAlliances), Boolean)
 }
 
 export const getErrors = (roster) => {
@@ -215,18 +202,6 @@ export const getValue = (value) => {
     }
 }
 
-export const capitalizeFirstLetter = (text) => {
-    return String(text).charAt(0).toUpperCase() + String(text).slice(1);
-}
-
-export const camelCaseToWords = (text) => {
-    if (text) {
-        const result = text.replace(/([A-Z])/g, ' $1');
-        return result.charAt(0).toUpperCase() + result.slice(1);
-    }
-    return text
-}
-
 export const getWoundsCount = (roster) => {
     let woundsCount = 0
     forEach(roster.regiments, regiment => {
@@ -260,71 +235,6 @@ export const replaceAsterisks = (string) => {
 
 export const removeAsterisks = (string) => replace(string, /\*/g, '')
 
-export const replaceQuotation = (string) => replace(string, '’', "'")
-
-export const randomFromInterval = (min, max) => {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  }
-
-export const getScoreParams = (battleplan) => {
-    const data = find(Constants.battleplans, _battleplan => _battleplan.id === battleplan.id)
-    if (data.maxForObjectives) {
-        return {score: [...data.scoreParams], maxForObjectives: data.maxForObjectives}
-    } else {
-        return {score: data.scoreParams}
-    }
-}
-
-export const getNewRound = (battleplan) => {
-    const newRound = {
-        firstPlayer: {
-            tactics: {name: '', id: ''},
-            vp: 0,
-            objectiveVp: 0,
-            ...getScoreParams(battleplan)
-        },
-        secondPlayer: {
-            tactics: {name: '', id: ''},
-            vp: 0,
-            objectiveVp: 0,
-            ...getScoreParams(battleplan)
-        }
-    }
-    return newRound
-}
-
-export const setTacticColor = (tactic) => {
-    const match = tactic.match(/Keywords:\s*(\S+)/)
-    if (match) {
-        const keyword = match[1].replaceAll('*', '')
-        return Constants.tacticsTypes[keyword] || Constants.tacticsTypes.UNIVERSAL
-    }
-    return Constants.tacticsTypes.UNIVERSAL
-}
-
-export const getInfo = (screen, faction) => {
-    let abilitiesGroup = dataBase.data[screen.groupName].filter((item) => 
-        item.factionId === faction.id &&
-        item.abilityGroupType === screen.abilityGroupType &&
-        (screen.includesTexts
-            ? Boolean(screen.includesTexts.find(text => item.name.includes(text)))
-            : true
-        )
-    )
-    if (screen.abilityGroupType === 'battleTraits') {
-        abilitiesGroup = [abilitiesGroup.find(({name})=> replaceQuotation(name).includes(replaceQuotation(faction.name)))]
-    }
-    const abilitiesRules = abilitiesGroup.map(formation => dataBase.data[screen.ruleName].filter((item) => item[screen.ruleIdName] === formation?.id))
-    const abilities = abilitiesGroup.map((formation, index) => {
-        return {name: formation?.name, id: formation?.id, abilities: abilitiesRules[index]}
-    })
-    if (abilities.length > 0) {
-        return {title: screen.title, abilities}
-    } else {
-        return null
-    }
-}
-
 export const getCalcUnit = (unit) => {
     if (unit) {
         const weapons = unit.weapons.map(getCalcWeapon)
@@ -342,91 +252,6 @@ export const getCalcWeapon = (weapon) => {
         return {...weapon}
     }
     return {critOn: {modificator: 1, title: '6+'}}
-}
-
-const hasKeyword = (unitKeywords, requiredKeywords , excludedKeywords) => {
-    let isHas = false
-    // Проверка, что все кейворды обязательные имеются
-    const filtredKeywords = unitKeywords.filter(Keyword => requiredKeywords.find(requiredKeyword => requiredKeyword.id === Keyword.keywordId))
-    if (requiredKeywords?.length === filtredKeywords?.length) {
-        // Проверка, что нет исключающих кейвордов
-        if (!unitKeywords.find(unitKeyword => {
-            return find(excludedKeywords, ['id', unitKeyword.keywordId])
-        })) {
-            isHas = true
-        }
-    }
-    return isHas
-}
-
-export const getRegimentOption = (option, unit) => {
-    const publicationId = find(dataBase.data.warscroll_publication, ['warscrollId', unit.id])?.publicationId
-    let factionId = find(dataBase.data.publication, ['id', publicationId])?.factionKeywordId
-    const warscrollIds = dataBase.data.warscroll_faction_keyword.filter((item) => item.factionKeywordId === factionId).map(item => item.warscrollId)
-    // определяем всех юнитов фракции
-    const allUnits = warscrollIds.map(warscrollId => dataBase.data.warscroll.find(scroll => scroll.id === warscrollId)).filter(unit => !unit.isSpearhead && !unit.isLegends && unit.points !== null)
-    // определяем кейворды всех юнитов фракции
-    const allUnitsKeywordsIds = allUnits.map(unit => dataBase.data.warscroll_keyword.filter(keyword => keyword.warscrollId === unit.id))
-    let units = []
-    if (option.childQuantity === 'any') {
-        if (option.requiredWarscrollId) {
-                const requiredUnit = allUnits.find(warscroll => warscroll.id === option.requiredWarscrollId)
-                if (requiredUnit) {
-                    return {
-                        screen: 'datasheet',
-                        title: requiredUnit.name,
-                        data: {unit: requiredUnit}
-                    }
-                }
-        } else {
-            // находим кейворды обязательных опций
-            const optionRequiredKeywords = dataBase.data.warscroll_regiment_option_required_keyword.filter(({warscrollRegimentOptionId}) => warscrollRegimentOptionId === option.id)
-            const requiredKeywords = optionRequiredKeywords.map(keyword => dataBase.data.keyword.find(({id}) => id === keyword?.keywordId))
-            // // находим кейворды исключающих опций
-            const optionExcludedKeywords = dataBase.data.warscroll_regiment_option_excluded_keyword.filter(({warscrollRegimentOptionId}) => warscrollRegimentOptionId === option.id)
-            const excludedKeywords = optionExcludedKeywords.map(keyword => dataBase.data.keyword.find(({id}) => id === keyword?.keywordId))
-            // // ищем нужных нам юнитов
-            const legalUnits = allUnitsKeywordsIds.filter(unitKeywordsIds => hasKeyword(unitKeywordsIds, requiredKeywords, excludedKeywords))
-            const legalUnitsIds = legalUnits.map(unit => unit[0].warscrollId)
-            units = legalUnitsIds.map(legalUnitsId => allUnits.find(unit => unit.id === legalUnitsId))
-        }
-    }  else if (option.childQuantity === 'zeroToOne' || option.childQuantity === 'one') {
-        if (option.requiredWarscrollId) {
-            const requiredUnit = allUnits.find(warscroll => warscroll.id === option.requiredWarscrollId)
-            if (requiredUnit) {
-                return {
-                    screen: 'datasheet',
-                    title: requiredUnit.name,
-                    data: {unit: requiredUnit}
-                }
-            }
-        } else {
-            // находим кейворды обязательных опций
-            const requiredKeywordId = dataBase.data.warscroll_regiment_option_required_keyword.find(keyword => keyword.warscrollRegimentOptionId === option.id)?.keywordId
-            const warscrollIds =  dataBase.data.warscroll_keyword.filter(warscrollKeyword => warscrollKeyword.keywordId === requiredKeywordId)
-            // находим кейворды исключающих опций
-            const excludedKeywordId = dataBase.data.warscroll_regiment_option_excluded_keyword.find(keyword => keyword.warscrollRegimentOptionId === option.id)?.keywordId
-            const excludedKeyword =  dataBase.data.keyword.find(keyword => keyword.id === excludedKeywordId)?.name
-            const warscrolls = warscrollIds.map(({warscrollId}) => {
-                const _warscroll = allUnits.find(warscroll => warscroll.id === warscrollId && !warscroll.referenceKeywords.includes(excludedKeyword))
-                if (_warscroll) {
-                    return {..._warscroll, onlyOne: option.id}
-                }
-                return null
-            }).filter(Boolean)
-            if (warscrolls.length) {
-                units = [...units, ...warscrolls]
-            }
-        }
-    }
-    if (size(units)) {
-        return {
-            screen: 'units',
-            title: 'Units',
-            data: {units}
-        }
-    }
-    return {}
 }
 
 export const removeDuplicates = (arr) => {

@@ -18,7 +18,7 @@ import upperCase from 'lodash/upperCase'
 
 import Styles from './styles/Datasheet.module.css'
 
-const dataBase = require('../dataBase.json')
+const dataBase = require('../utilities/db')
 
 const Datasheet = () => {
     window.scrollTo(0, 0)

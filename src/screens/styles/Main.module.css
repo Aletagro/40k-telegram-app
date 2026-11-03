@@ -17,3 +17,25 @@
   margin-top: 16px;
   margin-bottom: 24px;
 }
+#languageBlock {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 12px 0;
+  padding: 10px 14px;
+  border: 1px solid #d8c88a;
+  border-radius: 8px;
+  background: #fff;
+  color: #1d1810;
+  font-size: 15px;
+}
+
+#languageSelect {
+  border: 1px solid #c9b36a;
+  border-radius: 6px;
+  padding: 6px 8px;
+  background: #fff;
+  color: #1d1810;
+  font-size: 15px;
+}

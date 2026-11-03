@@ -13,7 +13,7 @@ import filter from 'lodash/filter'
 import forEach from 'lodash/forEach'
 import includes from 'lodash/includes'
 
-const dataBase = require('../dataBase.json')
+const dataBase = require('../utilities/db')
 
 const ChooseEnhancement = () => {
     const {unit, unitIndex} = useLocation().state

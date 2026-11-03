@@ -7,7 +7,7 @@ import Constants from '../Constants'
 import map from 'lodash/map'
 import filter from 'lodash/filter'
 
-const dataBase = require('../dataBase.json')
+const dataBase = require('../utilities/db')
 
 const CoreRules = () => {
     const documents = sortByName(filter(dataBase.data.rule_section, ['publicationId', Constants.coreRulesId]), 'displayOrder')

@@ -9,7 +9,7 @@ import map from 'lodash/map'
 import size from 'lodash/size'
 import filter from 'lodash/filter'
 
-const dataBase = require('../dataBase.json')
+const dataBase = require('../utilities/db')
 
 const RuleSections = () => {
     const {document} = useLocation().state

@@ -19,10 +19,6 @@
   width: 100%;
 }
 
-#note {
-  margin: 0px;
-}
-
 #errorsContainer {
   background-color: darkred;
   margin-bottom: 16px;

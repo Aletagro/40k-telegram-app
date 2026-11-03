@@ -11,7 +11,7 @@ import includes from 'lodash/includes'
 
 import Styles from './styles/Main.module.css'
 
-const dataBase = require('../dataBase.json')
+const dataBase = require('../utilities/db')
 
 const MainRules = () => {
     const factions = filter(dataBase.data.faction_keyword, faction => 

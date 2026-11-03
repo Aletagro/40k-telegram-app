@@ -9,7 +9,7 @@ import filter from 'lodash/filter'
 
 import Styles from './styles/ArmyRules.module.css'
 
-const dataBase = require('../dataBase.json')
+const dataBase = require('../utilities/db')
 
 const ArmyRules = () => {
     const {faction, data} = useLocation().state
