@@ -1,12 +1,9 @@
 import React from 'react';
 import {useLocation} from 'react-router-dom'
-import Row from '../components/Row'
-import HeaderImage from '../components/HeaderImage'
+import {ListCard, ListItem} from '../components/ListCard'
 import {sortByName} from '../utilities/utils'
-import Constants from '../Constants'
 
 import map from 'lodash/map'
-import size from 'lodash/size'
 import filter from 'lodash/filter'
 
 const dataBase = require('../utilities/db')
@@ -14,19 +11,16 @@ const dataBase = require('../utilities/db')
 const RuleSections = () => {
     const {document} = useLocation().state
     const ruleContainers = sortByName(filter(dataBase.data.rule_container, ['ruleSectionId', document.id]), 'displayOrder')
-    const ruleSections = sortByName(filter(dataBase.data.rule_section, ['parentId', document.id]), 'displayOrder')
-    let startContainers = []
-    let endContainers = []
-    if (document.id === '211c642c-438b-4b9b-886f-1a551a29a88d') {
-        startContainers = filter(ruleContainers, ['id', 'd02413a0-4316-4e24-90d8-80f98af615b8'])
-        endContainers = filter(ruleContainers, container => container.id !== 'd02413a0-4316-4e24-90d8-80f98af615b8')
-    }
+    // document - это либо раздел (его подразделы и правила), либо публикация (её корневые разделы)
+    const ruleSections = sortByName(filter(dataBase.data.rule_section, section =>
+        section.parentId === document.id || (section.publicationId === document.id && !section.parentId)
+    ), 'displayOrder')
 
     const renderContainer = (paragraph) => {
         if (paragraph.containerType === 'introduction') {
             return null
         }
-        return <Row
+        return <ListItem
             key={paragraph.id}
             title={paragraph.title}
             subtitle={paragraph.subtitle}
@@ -35,26 +29,19 @@ const RuleSections = () => {
         />
     }
 
-    const renderSection = (document) => <Row
+    const renderSection = (document) => <ListItem
         key={document.id}
         title={document.name}
         navigateTo='ruleSections'
         state={{document}}
     />
 
-    return <>
-        <HeaderImage src={Constants.coreRulesImage} alt={document.name} />
-        <div id='column' className='Chapter'>
-            {ruleContainers
-                ? size(startContainers)
-                    ? map(startContainers, renderContainer)
-                    : map(ruleContainers, renderContainer)
-                : null
-            }
-            {ruleSections && map(ruleSections, renderSection)}
-            {size(endContainers) && map(endContainers, renderContainer)}
-        </div>
-    </>
+    return <div id='column' className='Chapter'>
+        <ListCard>
+            {map(ruleContainers, renderContainer)}
+            {map(ruleSections, renderSection)}
+        </ListCard>
+    </div>
 }
 
 export default RuleSections

@@ -1,5 +1,10 @@
 import Constants from '../Constants'
 
+// Данные текущего пользователя Telegram
+export const main = {
+    tgId: undefined
+}
+
 export const roster = {
     grandFaction: '',
     faction: '',

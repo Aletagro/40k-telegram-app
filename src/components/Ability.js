@@ -1,25 +1,60 @@
 import React from 'react'
-import {ToastContainer, toast} from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import {toast} from 'react-toastify'
 import Constants from '../Constants'
 import {replaceAsterisks, removeAsterisks} from '../utilities/utils'
 
+import join from 'lodash/join'
+import size from 'lodash/size'
 import includes from 'lodash/includes'
 import startCase from 'lodash/startCase'
 
 import Styles from './styles/Ability.module.css'
 
-const Ability = ({ability, keyword, onClick, isEnchancement}) => {
+// Тип способности задаёт цвет шапки и метку справа: аура, психика, бондсмен, боль, способность армии.
+// kind можно передать явно (например, 'rule' для дополнительных правил и 'damaged' для сниженных характеристик)
+const KIND_LABELS = {aura: 'Aura', psychic: 'Psychic', bondsman: 'Bondsman', pain: 'Pain', faction: 'Faction'}
 
-    const borderColor = ability.isPsychic
-        ? '#323282'
-        : ability.isAura || includes(ability.name, '(Aura)')  || ability.key === 'opponentsTurn'
-            ? '#962424'
-            : ability.isBondsman || ability.key === 'eitherPlayer'
-                ? '#166a25'
-                : isEnchancement || ability.key === 'yourTurn'
-                    ? '#184b72'
-                    : 'black'
+const getKind = ({ability, isEnchancement, kind}) => {
+    if (kind) {
+        return kind
+    }
+    // Стратагемы: цвет по тому, чей это ход
+    if (ability.key === 'yourTurn' || ability.key === 'opponentsTurn' || ability.key === 'eitherPlayer') {
+        return ability.key
+    }
+    if (ability.isAura || includes(ability.name, '(Aura)')) {
+        return 'aura'
+    }
+    if (ability.isPsychic) {
+        return 'psychic'
+    }
+    if (ability.isBondsman) {
+        return 'bondsman'
+    }
+    if (ability.isPain) {
+        return 'pain'
+    }
+    if (ability.abilityType === 'faction' || ability.armyRuleId) {
+        return 'faction'
+    }
+    if (isEnchancement) {
+        return 'enhancement'
+    }
+    return 'default'
+}
+
+// Метки в шапке: у способности может быть сразу несколько признаков (например, аура и психика)
+const getLabels = (ability) => [
+    ability.isAura || includes(ability.name, '(Aura)') ? KIND_LABELS.aura : null,
+    ability.isPsychic ? KIND_LABELS.psychic : null,
+    ability.isBondsman ? KIND_LABELS.bondsman : null,
+    ability.isPain ? KIND_LABELS.pain : null,
+    ability.abilityType === 'faction' || ability.armyRuleId ? KIND_LABELS.faction : null
+].filter(Boolean)
+
+const Ability = ({ability, keyword, phases, onClick, isEnchancement, kind: kindProp}) => {
+    const kind = getKind({ability, isEnchancement, kind: kindProp})
+    const labels = getLabels(ability)
 
     const handlleClick = () => {
         if (onClick) {
@@ -34,54 +69,31 @@ ${ability.cpCost ? `\nCP Cost: ${ability.cpCost}` : ''}${ability.invul ? `\nInvu
     }
 
     return <>
-        <button id={Styles.ability} onClick={handlleClick} style={{border: `1px solid ${borderColor}`}}>
-            <div id={ability.name ? Styles.header : Styles.onlyHeader} style={{background: borderColor}}>
-                <b id={Styles.headerText}>{ability.name}</b>
-                {ability.basePointsCost ? <b id={Styles.cpCost}>{ability.basePointsCost}&nbsp;Pts</b> : null}
-                {ability.cpCost ? <b id={Styles.cpCost}>{ability.cpCost}&nbsp;CP</b> : null}
-                {ability.invul
-                    ? <div id={Styles.invulContainer}>
-                        <p id={Styles.invul}>{ability.invul}</p>
-                    </div>
-                    : null
-                }
+        <button type='button' className={`${Styles.ability} ${Styles[kind]}`} onClick={handlleClick}>
+            <div className={ability.name ? Styles.header : Styles.onlyHeader}>
+                <b className={Styles.headerText}>{ability.name}</b>
+                <div className={Styles.badges}>
+                    {labels.map(label => <span key={label} className={Styles.badge}>{label}</span>)}
+                    {ability.basePointsCost ? <b className={Styles.badge}>{ability.basePointsCost}&nbsp;Pts</b> : null}
+                    {ability.cpCost ? <b className={Styles.badge}>{ability.cpCost}&nbsp;CP</b> : null}
+                    {ability.invul ? <span className={Styles.invul}>{ability.invul}</span> : null}
+                </div>
             </div>
-            {ability.category
-                ? <div id={Styles.container}>
-                    <p id={Styles.text}>{startCase(ability.category)}</p>
-                </div>
+            {ability.category || size(phases)
+                ? <p className={Styles.meta}>{[startCase(ability.category), size(phases) ? `${join(phases, ', ')} phase` : ''].filter(Boolean).join(' · ')}</p>
                 : null
             }
-            {ability.whenRules
-                ? <div id={Styles.container}>
-                    <p id={Styles.text}><b>When:</b> {replaceAsterisks(ability.whenRules)}</p>
-                </div>
+            {ability.whenRules ? <p className={Styles.text}><b>When:</b> {replaceAsterisks(ability.whenRules)}</p> : null}
+            {ability.targetRules ? <p className={Styles.text}><b>Target:</b> {replaceAsterisks(ability.targetRules)}</p> : null}
+            {ability.effectRules ? <p className={Styles.text}><b>Effect:</b> {replaceAsterisks(ability.effectRules)}</p> : null}
+            {ability.restrictionRules ? <p className={Styles.text}><b>Restrictions:</b> {replaceAsterisks(ability.restrictionRules)}</p> : null}
+            {ability.secondaryEffect
+                ? <p className={Styles.text}><b>Secondary effect{ability.secondaryEffectAdditionalCPCost ? ` (+${ability.secondaryEffectAdditionalCPCost}CP)` : ''}:</b> {replaceAsterisks(ability.secondaryEffect)}</p>
                 : null
             }
-            {ability.targetRules
-                ? <div id={Styles.container}>
-                    <p id={Styles.text}><b>Target:</b> {replaceAsterisks(ability.targetRules)}</p>
-                </div>
-                : null
-            }
-            {ability.effectRules
-                ? <div id={Styles.container}>
-                    <p id={Styles.text}><b>Effect:</b> {replaceAsterisks(ability.effectRules)}</p>
-                </div>
-                : null
-            }
-            {ability.rules
-                ? <div id={Styles.container}>
-                    <p id={Styles.text}>{replaceAsterisks(ability.rules)}</p>
-                </div>
-                : null
-            }
-            {keyword
-                ? <p id={Styles.keyword}><b>Keyword:</b> {keyword}</p>
-                : null
-            }
+            {ability.rules ? <p className={Styles.text}>{replaceAsterisks(ability.rules)}</p> : null}
+            {keyword ? <p className={Styles.keyword}><b>Keyword:</b> {keyword}</p> : null}
         </button>
-        <ToastContainer />
     </>
 }
 

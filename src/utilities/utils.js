@@ -324,6 +324,21 @@ export const getCompositions = (miniatures) => {
     return compositions
 }
 
+// Фазы, в которые можно использовать стратагему: 'commandPhase' -> 'Command'
+export const getStratagemPhases = (stratagemId) => filter(dataBase.data.stratagem_phase, ['stratagemId', stratagemId])
+    .map(({phase}) => replace(phase, /Phase$/, '').replace(/([A-Z])/g, ' $1').replace(/^./, char => char.toUpperCase()).trim())
+
+// Основная книга армии: не боевой патруль, не Imperial Armour и не Legends
+export const getCodexInfo = (factionId) => find(dataBase.data.publication, publication =>
+    publication.factionKeywordId === factionId && !publication.isCombatPatrol && !publication.isLegends
+)
+
+// Книга родительской армии (например, Space Marines для орденов)
+export const getParentCodexId = (faction) => {
+    const parentFactionId = find(dataBase.data.faction_keyword, ['id', faction?.id])?.parentFactionKeywordId
+    return parentFactionId ? getCodexInfo(parentFactionId)?.id : undefined
+}
+
 export const getUnitsSortesByType = (faction, codexInfo, condition, parentCodexId) => {
     let units = []
     if (codexInfo && codexInfo.id !== Constants.EmperorsChildrenCodexId && codexInfo.id !== Constants.AeldariCodexId) {
@@ -335,7 +350,7 @@ export const getUnitsSortesByType = (faction, codexInfo, condition, parentCodexI
     if (parentCodexId) {
         let parentFactionUnits = filter(dataBase.data.datasheet, datasheet => datasheet.publicationId === parentCodexId)
         // если родительская армия это спейсмары, то нужно добавить только ванильных маров
-        if (parentCodexId === Constants.vanilSpaceMarinesCodexId) {
+        if (find(dataBase.data.publication, ['id', parentCodexId])?.factionKeywordId === Constants.vanilSpaceMarinesId) {
             const notVanilSpaceMarinesArmies = filter(dataBase.data.faction_keyword, ['parentFactionKeywordId', Constants.vanilSpaceMarinesId])
             const notVanilSpaceMarinesUnitsIds = union(...map(notVanilSpaceMarinesArmies, army => map(filter(dataBase.data.datasheet_faction_keyword, (item) => item.factionKeywordId === army.id ), item => item.datasheetId)))
             parentFactionUnits = filter(parentFactionUnits, unit => !includes(notVanilSpaceMarinesUnitsIds, unit.id))

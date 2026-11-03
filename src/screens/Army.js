@@ -1,15 +1,14 @@
 import React from 'react'
 import {useLocation} from 'react-router-dom'
-import Row from '../components/Row'
+import Tile from '../components/Tile'
+import {ListCard, ListItem, SectionTitle} from '../components/ListCard'
 import HeaderImage from '../components/HeaderImage'
-import {sortByName} from '../utilities/utils'
+import {sortByName, getCodexInfo} from '../utilities/utils'
 import {roster, navigationState} from '../utilities/appState'
 
 import map from 'lodash/map'
-import find from 'lodash/find'
 import size from 'lodash/size'
 import filter from 'lodash/filter'
-import includes from 'lodash/includes'
 
 import Styles from './styles/Army.module.css'
 
@@ -17,17 +16,13 @@ const dataBase = require('../utilities/db')
 
 const Army = () => {
     const {faction, grandFaction} = useLocation().state
-    const codexInfo = find(dataBase.data.publication, publication => publication.factionKeywordId === faction.id && !publication.isCombatPatrol && !includes(publication.name, 'Imperial Armour'))
+    const codexInfo = getCodexInfo(faction.id)
     const detachments = sortByName(filter(dataBase.data.detachment, ['publicationId', codexInfo.id]))
     const armyRules = filter(dataBase.data.army_rule, ['publicationId', codexInfo.id])
-    const faq = filter(dataBase.data.faq, ['publicationId', codexInfo.id])
-    const errata = filter(dataBase.data.amendment, ['publicationId', codexInfo.id])
-    const grotErrataId = find(dataBase.data.rule_section, section => section.name === faction.name && section.parentId === '2258eed7-0511-4e18-9e51-206b959580b4')?.id
-    const grotErrataContainer = filter(dataBase.data.rule_container, ['ruleSectionId', grotErrataId])
-    const grotErrata = map(grotErrataContainer, container => {
-        const text = find(dataBase.data.rule_container_component, ['ruleContainerId', container.id])?.textContent
-        return {...container, text}
-    })
+    // В таблице faq лежат и вопросы с ответами (question), и эрраты (errataHeader)
+    const publicationFaq = filter(dataBase.data.faq, ['publicationId', codexInfo.id])
+    const faq = filter(publicationFaq, 'question')
+    const errata = filter(publicationFaq, 'errataHeader')
 
     let items = [
         {title: 'Datasheets', screen: 'units'}
@@ -42,9 +37,6 @@ const Army = () => {
     if (size(errata)) {
         items.push({title: 'Updates & Errata', screen: 'errata', data: errata})
     }
-    if (size(grotErrata)) {
-        items.push({title: 'Grotmas Detachments Errata', screen: 'errata', data: grotErrata})
-    }
 
     const handleClickBuilder = () => {
         roster.grandFaction = grandFaction
@@ -53,37 +45,46 @@ const Army = () => {
         navigationState.isBuilder = true
     }
 
-    const renderRow = (item) => <Row
+    const [datasheets, ...rules] = items
+
+    // если плиток нечётное число, последняя растягивается на всю ширину
+    const renderTile = (item, index) => <Tile
         key={item.title}
+        compact
+        wide={size(rules) % 2 === 1 && index === size(rules) - 1}
         title={item.title}
         navigateTo={item.screen}
         state={{faction, codexInfo, data: item.data}}
     />
 
-    const renderDetachment = (detachment) => <Row
+    const renderDetachment = (detachment) => <ListItem
         key={detachment.id}
         title={detachment.name}
-        navigateTo={'detachment'}
+        navigateTo='detachment'
         state={{detachment, faction}}
-    />
-
-
-    const renderBuilderRow = () => <Row
-        title='Builder'
-        navigateTo='builder'
-        state={{faction}}
-        onClick={handleClickBuilder}
     />
 
     return <>
         <HeaderImage src={faction.rosterHeaderImage} alt={faction.name} isWide />
         <div id='column' className='Chapter'>
-            {map(items, renderRow)}
-            {renderBuilderRow()}
+            <Tile
+                featured
+                title='Datasheets'
+                text='All units of the army'
+                navigateTo={datasheets.screen}
+                state={{faction, codexInfo}}
+            />
+            {size(rules)
+                ? <div className={Styles.grid}>{map(rules, renderTile)}</div>
+                : <div className={Styles.spacer} />
+            }
+            <ListCard>
+                <ListItem title='Builder' navigateTo='builder' state={{faction}} onClick={handleClickBuilder} />
+            </ListCard>
             {size(detachments)
                 ? <>
-                    <p id={Styles.title}>Detachments</p>
-                    {map(detachments, renderDetachment)}
+                    <SectionTitle>Detachments</SectionTitle>
+                    <ListCard>{map(detachments, renderDetachment)}</ListCard>
                 </>
                 : null
             }

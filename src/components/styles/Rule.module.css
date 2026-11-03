@@ -1,26 +1,76 @@
-#container {
-background: transparent;
-border-width: 0px;
-text-align: start;
-padding: 0px;
-width: 100%;
+.card {
+  margin-bottom: 14px;
+  padding: 14px 16px 6px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--card);
 }
-#lightgreyContainer {
-  background: lightgrey;
-  border-radius: 8px;
-  padding: 8px;
-  white-space: pre-line;
-  margin-bottom: 16px;
-  font-size: 18px;
-}
-#text {
-  white-space: pre-line;
+.rule {
   margin-bottom: 12px;
+  color: var(--text);
+}
+.rule b,
+.rule i,
+.rule k,
+.rule u {
+  color: inherit;
+}
+.rule k {
+  font-family: 'Minion Pro Bold';
+}
+.text,
+.header,
+.lore,
+.quote,
+.boxTitle,
+.boxText {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+.text {
+  color: var(--text);
+}
+.header {
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
   font-size: 18px;
 }
-#textItalic {
-  white-space: pre-line;
+.lore {
+  color: var(--muted);
   font-style: italic;
-  margin-bottom: 12px;
-  font-size: 18px;
+}
+.quote {
+  padding: 8px 12px;
+  border-left: 3px solid var(--gold);
+  background: rgba(200, 162, 75, 0.08);
+  border-radius: 0 8px 8px 0;
+  color: var(--text);
+}
+.box {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+}
+.boxTitle {
+  margin-bottom: 4px;
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+}
+.boxText {
+  margin-top: 4px;
+  color: var(--text);
+}
+.image {
+  display: block;
+  width: 100%;
+  border-radius: 10px;
+}
+.bullets {
+  margin: 0;
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.4;
 }

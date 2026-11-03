@@ -7,6 +7,15 @@ import DialogContent from '@mui/joy/DialogContent'
 
 import Styles from './styles/Modal.module.css'
 
+// Тёмное окно с золотой рамкой
+const dialogSx = {
+    bgcolor: 'var(--card)',
+    border: '1.5px solid var(--gold)',
+    borderRadius: '16px',
+    color: 'var(--text)',
+    width: 'calc(100vw - 32px)'
+}
+
 const CustomModal = ({title, text, visible, onClose}) => {
     const [_visible, setVisible] = useState(visible)
 
@@ -25,10 +34,10 @@ const CustomModal = ({title, text, visible, onClose}) => {
 
     return <>
         <Modal open={visible} onClose={handleClose}>
-        <ModalDialog layout='center'>
-            <ModalClose />
-            <DialogTitle>{title}</DialogTitle>
-            <DialogContent><p id={Styles.text}>{text}</p></DialogContent>
+        <ModalDialog layout='center' sx={dialogSx}>
+            <ModalClose sx={{color: 'var(--gold-light)'}} />
+            <DialogTitle sx={{color: 'var(--gold-light)', fontFamily: 'Minion Pro Bold'}}>{title}</DialogTitle>
+            <DialogContent><p className={Styles.text}>{text}</p></DialogContent>
         </ModalDialog>
         </Modal>
     </>

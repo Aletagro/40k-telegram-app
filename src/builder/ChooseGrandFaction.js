@@ -1,7 +1,10 @@
-import React from 'react';
+import React from 'react'
 import Constants from '../Constants'
 import {roster} from '../utilities/appState'
-import BuilderRow from './BuilderRow'
+import ImageCard from '../components/ImageCard'
+import {SectionTitle} from '../components/ListCard'
+
+import map from 'lodash/map'
 
 const ChooseGrandFaction = () => {
 
@@ -9,16 +12,19 @@ const ChooseGrandFaction = () => {
         roster.grandFaction = grandFaction.name
     }
 
-    const renderRow = (grandFaction, index) => <BuilderRow
-        key={index}
+    const renderCard = (grandFaction) => <ImageCard
+        key={grandFaction.name}
         title={grandFaction.name}
+        image={grandFaction.image}
+        size='lg'
         navigateTo='chooseFaction'
         state={{grandFaction}}
         onClick={handleClick}
     />
 
-    return  <div id='column' className='Chapter'>
-        {Constants.grandFactions.map(renderRow)}
+    return <div id='column' className='Chapter'>
+        <SectionTitle>Choose your Army</SectionTitle>
+        {map(Constants.grandFactions, renderCard)}
     </div>
 }
 

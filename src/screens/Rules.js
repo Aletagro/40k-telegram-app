@@ -1,32 +1,35 @@
-import React from 'react';
+import React from 'react'
 import {useLocation} from 'react-router-dom'
-import Rule from '../components/Rule'
+import {RuleCard, BehaviourCard} from '../components/Rule'
 import Ability from '../components/Ability'
-import {sortByName} from '../utilities/utils'
+import {sortByName, getStratagemPhases} from '../utilities/utils'
 
-import map from 'lodash/map'
 import find from 'lodash/find'
 import filter from 'lodash/filter'
 
-import Styles from './styles/Rules.module.css'
-
 const dataBase = require('../utilities/db')
 
-const Rules = ({info}) => {
+const Rules = () => {
     const {paragraph} = useLocation().state
 
     if (paragraph.containerType === 'stratagem') {
-        const ability = find(dataBase.data.stratagem, ['id', paragraph.stratagemId])
-        return <div id={Styles.abilityContainer}>
-           <Ability key={paragraph.id} ability={ability} />
+        const stratagem = find(dataBase.data.stratagem, ['id', paragraph.stratagemId])
+        return <div id='column' className='Chapter'>
+            {stratagem ? <Ability ability={stratagem} phases={getStratagemPhases(stratagem.id)} /> : null}
+        </div>
+    }
+
+    if (paragraph.containerType === 'behaviourType') {
+        const behaviour = find(dataBase.data.behaviour_type, ['id', paragraph.behaviourTypeId])
+        return <div id='column' className='Chapter'>
+            {behaviour ? <BehaviourCard behaviour={behaviour} /> : null}
         </div>
     }
 
     const rules = sortByName(filter(dataBase.data.rule_container_component, ['ruleContainerId', paragraph.id]), 'displayOrder')
-    const renderRule = (rule) => <Rule key={rule.id} rule={rule} />
 
-    return <div id={Styles.container}>
-        {map(rules, renderRule)}
+    return <div id='column' className='Chapter'>
+        <RuleCard rules={rules} />
     </div>
 }
 

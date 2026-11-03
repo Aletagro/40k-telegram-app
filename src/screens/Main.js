@@ -1,34 +1,29 @@
 import React from 'react'
-// import {useNavigate} from 'react-router-dom'
-import Row from '../components/Row'
+import Tile from '../components/Tile'
 import HeaderImage from '../components/HeaderImage'
+import LanguageSelect from '../components/LanguageSelect'
+import spaceMarine from '../images/spaceMarine.jpeg'
 
 import Styles from './styles/Main.module.css'
 
-const {LANGUAGES, getLanguage, setLanguage} = require('../utilities/db')
+const {metadata} = require('../utilities/db')
 
 const Main = () => {
-    // const navigate = useNavigate()
-
-    // const handleNavigateToTest = () => {navigate('/registration')}
-
     return <>
-        <HeaderImage src='https://w0.peakpx.com/wallpaper/632/404/HD-wallpaper-warhammer-40k-concept-art-warhammer.jpg' alt='main' />
-        <div id='column' className='Chapter'>
-            <Row title='Rules' navigateTo='mainRules' />
-            <Row title='Builder' navigateTo='chooseGrandFaction' />
-            {/* <Row title='Builder' navigateTo='lists' /> */}
-            {/* <Row title='Damage Calculator' navigateTo='calculator' /> */}
-            <div id={Styles.languageBlock}>
-                <span>Rules language</span>
-                <select id={Styles.languageSelect} value={getLanguage()} onChange={(e) => setLanguage(e.target.value)}>
-                    {LANGUAGES.map(({id, name}) => <option key={id} value={id}>{name}</option>)}
-                </select>
+        <div className={Styles.hero}>
+            <HeaderImage src={spaceMarine} alt='main' />
+            <div className={Styles.heroShade} />
+        </div>
+        <div className={Styles.menu}>
+            <Tile featured title='Builder' text='Build your army list' navigateTo='chooseGrandFaction' />
+            <div className={Styles.grid}>
+                <Tile compact wide title='Rules' text='Core rules, key documents and armies' navigateTo='mainRules' />
+                {/* <Tile compact title='Damage Calculator' text='Averages for any attack' navigateTo='calculator' /> */}
             </div>
-            <p id={Styles.feedbackText}>Card number for support - 5536 9141 9279 5999 (Rukosuev Nikita)</p>
-            <p id={Styles.feedbackText}>For feedback - @RukosuevKrasavchik</p>
-            <p id={Styles.feedbackText}>The database was last updated on 03.05.2025</p>
-            {/* <button id={Styles.testButton} onClick={handleNavigateToTest}>test</button> */}
+            <LanguageSelect />
+            <p className={Styles.footer}>Card number for support - 5536 9141 9279 5999 (Rukosuev Nikita)</p>
+            <p className={Styles.footer}>For feedback - <b>@RukosuevKrasavchik</b></p>
+            <p className={Styles.footer}>Database version {metadata?.data_version}</p>
         </div>
     </>
 }

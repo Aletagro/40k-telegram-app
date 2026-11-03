@@ -1,0 +1,85 @@
+.tile {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  min-height: 124px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--card);
+  box-sizing: border-box;
+  text-align: start;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.tile:active {
+  background: var(--card-active);
+}
+.tileBody {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.tileTitle {
+  color: var(--text);
+  font-family: 'Minion Pro Bold';
+  font-size: 18px;
+  line-height: 1.2;
+}
+.tileText {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.3;
+}
+/* Главная плитка: во всю ширину, с золотой рамкой */
+.featured {
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  min-height: 0;
+  border: 1.5px solid var(--gold);
+  background: linear-gradient(135deg, var(--feature-from), var(--feature-to));
+}
+.featured:active {
+  background: linear-gradient(135deg, #202023, #38301c);
+}
+.featured .tileBody {
+  flex: 1;
+}
+.featured .tileTitle {
+  color: var(--gold-light);
+  font-size: 22px;
+}
+.featured .tileText {
+  color: var(--muted);
+}
+.chevron {
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  margin-right: 6px;
+  border-top: 2px solid var(--gold);
+  border-right: 2px solid var(--gold);
+  transform: rotate(45deg);
+}
+.compact {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  padding: 11px 12px;
+}
+.compact .tileBody {
+  flex: 1;
+  min-width: 0;
+}
+.compact .tileTitle {
+  font-size: 17px;
+}
+.wide {
+  grid-column: 1 / -1;
+}

@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
-import {ToastContainer, toast} from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import {toast} from 'react-toastify'
 import Constants from '../Constants'
 import {roster} from '../utilities/appState'
 import {getErrors, getWarnings, getWoundsCount} from '../utilities/utils'
@@ -150,7 +149,6 @@ ${roster.points.all}/${roster.pointsLimit} Pts
         {map(roster.units, renderUnitsType)}
         <p id={Styles.text}>Wounds: {getWoundsCount(roster)}</p>
         <p id={Styles.text}>{roster.points.all}/{roster.pointsLimit} Pts</p>
-        <ToastContainer />
     </div>
 }
 

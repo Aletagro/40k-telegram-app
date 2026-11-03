@@ -1,5 +1,8 @@
 import {useEffect} from 'react'
 import {Route, Routes} from 'react-router-dom'
+import {ToastContainer} from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import {main} from './utilities/appState'
 import Main from './screens/Main'
 import MainRules from './screens/MainRules'
 import Armies from './screens/Armies'
@@ -16,9 +19,9 @@ import Search from './screens/Search'
 import CoreRules from './screens/CoreRules'
 import KeyDocuments from './screens/KeyDocuments'
 import RuleSections from './screens/RuleSections'
-import RuleChapters from './screens/RuleChapters'
 import Rules from './screens/Rules'
 import Header from './components/Header'
+import ScrollToTop from './components/ScrollToTop'
 import Lists from './builder/Lists'
 import ChooseGrandFaction from './builder/ChooseGrandFaction'
 import ChooseFaction from './builder/ChooseFaction'
@@ -33,10 +36,20 @@ import Developer from './screens/Developer'
 
 import './App.css'
 
-const tg = window.Telegram.WebApp
+// Вне Telegram (например, в браузере) window.Telegram может отсутствовать
+const tg = window.Telegram?.WebApp
+main.tgId = tg?.initDataUnsafe?.user?.id
+// Для локальных тестов: id из .env.development.local (в git не попадает) подставляется только при npm start.
+// В боевую сборку (npm run build / deploy) этот блок не попадает, поэтому запушить его по ошибке нельзя
+if (process.env.NODE_ENV === 'development' && process.env.REACT_APP_DEV_TG_ID) {
+  main.tgId = Number(process.env.REACT_APP_DEV_TG_ID)
+}
 
 function App() {
   useEffect(() => {
+    if (!tg) {
+      return
+    }
     tg.ready()
     if (!tg.isExpanded) {
       tg.expand()
@@ -47,7 +60,9 @@ function App() {
   }, [])
 
   return <div>
+    <ScrollToTop />
     <Header />
+    <ToastContainer />
     <Routes>
       <Route index element={<Main />} />
       <Route path={'mainRules'} element={<MainRules />} />
@@ -72,7 +87,6 @@ function App() {
       <Route path={'coreRules'} element={<CoreRules />} />
       <Route path={'keyDocuments'} element={<KeyDocuments />} />
       <Route path={'ruleSections'} element={<RuleSections />} />
-      <Route path={'ruleChapters'} element={<RuleChapters />} />
       <Route path={'rules'} element={<Rules />} />
       <Route path={'lists'} element={<Lists />} />
       <Route path={'chooseGrandFaction'} element={<ChooseGrandFaction />} />

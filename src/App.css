@@ -12,8 +12,23 @@
     src: local('Minion Pro Bold'), url('fonts/MinionPro-Bold.woff') format('woff');
 }
 
+/* Палитра: тёмная, с латунным акцентом */
+:root {
+    --bg: #0d0e10;
+    --card: #17191c;
+    --card-active: #22252a;
+    --border: #4a3f24;
+    --line: #2a2c30;
+    --gold: #c8a24b;
+    --gold-light: #ecd48a;
+    --text: #ece7da;
+    --muted: #9a9484;
+    --feature-from: #1a1a1d;
+    --feature-to: #2e2819;
+}
+
 body {
-    background: black;
+    background: var(--bg);
     padding: 0px;
     margin: 0px;
     font-family: 'Minion Pro Regular';
@@ -48,9 +63,41 @@ button {
 .Chapter {
     display: flex;
     padding: 8px 8px;
-    background: black;
+    background: var(--bg);
   }
 #column {
   flex-direction: column;
-  background: black;
+  background: var(--bg);
+}
+
+/* Списки из текстов правил: без огромных отступов слева */
+ul, ol {
+    margin: 6px 0;
+    padding-left: 22px;
+}
+li {
+    margin: 2px 0;
+}
+
+/* Тосты (react-toastify) в тёмной гамме */
+.Toastify__toast.toast {
+  min-height: 0;
+  margin: 0 12px 16px;
+  padding: 4px 8px;
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--gold-light);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55);
+  font-family: 'Minion Pro Bold';
+  font-size: 16px;
+  text-align: center;
+}
+.Toastify__toast-body.toastBody {
+  justify-content: center;
+  padding: 6px 8px;
+  color: var(--gold-light);
+}
+.Toastify__close-button {
+  display: none;
 }

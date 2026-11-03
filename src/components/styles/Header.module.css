@@ -2,7 +2,8 @@
   position: sticky;
   top: 0;
   padding: 8px 8px;
-  background: rgb(51 54 56);
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
   justify-content: space-between;
   align-items: center;
   display: flex;
@@ -10,7 +11,7 @@
   z-index: 2;
 }
 #title {
-  color: white;
+  color: var(--gold-light);
   margin: 0px;
   font-family: 'Minion Pro Bold';
   font-size: 18px;
@@ -22,7 +23,7 @@
   display: block;
 }
 #leftButton {
-  background: rgb(51 54 56);
+  background: var(--card);
   color: white;
   font-size: 14px;
   border: 0;
@@ -32,7 +33,7 @@
   position: relative;
 }
 #rightButton {
-  background: rgb(51 54 56);
+  background: var(--card);
   color: white;
   font-size: 14px;
   border: 0;

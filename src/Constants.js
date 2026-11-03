@@ -11,12 +11,13 @@ const Constants = {
                 {name: 'Astra Militarum', id: '9b847488-9663-48dc-b819-08ab93ac4382'},
                 {name: 'Grey Knights', id: '93423323-3abb-4a72-a51e-b8ac54f2f98d'},
                 {name: 'Imperial Agents', id: '2f81671f-3164-4ab0-93c0-4a99746b5996'},
-                {name: 'Imperial Knights', id: '5737b3b6-1c33-4cb3-828c-08b6909197aa'}
+                {name: 'Imperial Knights', id: '5737b3b6-1c33-4cb3-828c-08b6909197aa'},
+                {name: 'Titan Legions', id: 'fec6e6a5-f491-4d83-99c0-e46e510f29e8'}
             ],
             image: 'https://www.destructoid.com/wp-content/uploads/2024/07/imperium-vs-orks-warhammer-40k.jpg?fit=1200%2C675'
         },
         {
-            name: 'Imperium - Adeptus Astartes',
+            name: 'Adeptus Astartes',
             factions: [
                 {name: 'Black Templars', id: '28162de0-fd36-450b-87ee-39e973ead32d'},
                 {name: 'Blood Angels', id: '864734c9-d6c7-4486-92de-9b8271a6a1e5'},
@@ -38,6 +39,7 @@ const Constants = {
             factions: [
                 {name: 'Chaos Daemons', id: '40a70c91-675a-4ac5-aa97-daedb9cb6f11'},
                 {name: 'Chaos Knights', id: '2e79f9cd-94dc-48ca-bddf-6d5e877609c5'},
+                {name: 'Chaos Titan Legions', id: '46cec02c-a75a-4e1e-b53a-afab701e94c6'},
                 {name: 'Chaos Space Marines', id: 'd4162ab7-8356-4e4e-adb3-5e3b631d47e6'},
                 {name: 'Death Guard', id: '19176137-2faa-4d6e-adb4-2572510032b7'},
                 {name: 'Emperor’s Children', id: 'b63a417d-63ea-4d20-b7f0-85c66c56979e'},
@@ -61,10 +63,6 @@ const Constants = {
             image: 'https://static1.thegamerimages.com/wordpress/wp-content/uploads/wm/2025/01/tyranid-screamer-killer-4-final.jpg'
         }
     ],
-    coreRulesId: '1c03d77c-1762-4cf3-bea1-9f4ba5768552',
-    coreRulesImage: 'https://d3ocysny7bghv8.cloudfront.net/c1e62db9-036d-49fa-9d4d-6c6395a81d95',
-    keyDocumentsId: '085bb508-281f-4a92-a99b-801a5c95c165',
-    keyDocumentsImage: 'https://d3ocysny7bghv8.cloudfront.net/9ba4219a-2937-491d-814e-3fbd305c44dc',
     unitsTypes: [
         {
             name: 'Epic Hero'
@@ -228,8 +226,11 @@ const Constants = {
         hideProgressBar: true,
         closeOnClick: true,
         draggable: true,
-        theme: 'colored',
-        pauseOnHove: false
+        theme: 'dark',
+        icon: false,
+        pauseOnHover: false,
+        className: 'toast',
+        bodyClassName: 'toastBody'
     },
     newCalcUnit: {
         name: '',
@@ -263,7 +264,6 @@ const Constants = {
         'Fortification': false
     },
     vanilSpaceMarinesId: '01623188-9470-4441-96b0-e06eb2572bb5',
-    vanilSpaceMarinesCodexId: '58c77720-0edd-418f-a8ab-56a774bfc8bf',
     EmperorsChildrenCodexId: 'bc2940c7-b4e3-4d2b-ac39-5bc2df3ad21c',
     AeldariCodexId: '995328e1-ae96-4ef6-b548-c31fad1a06fc'
 }

@@ -1,22 +1,32 @@
-#container {
-  background: white;
-  margin: 12px;
-  padding: 12px;
-  border-radius: 8px;
+/* Карточка в тёмной теме: у вопроса золотой заголовок, у ответа обычный текст */
+.card {
+  margin-bottom: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--card);
 }
-#text {
+.date {
+  margin: 4px 2px 12px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.title {
+  margin-bottom: 8px;
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  font-size: 18px;
+  line-height: 1.3;
   white-space: pre-line;
-  font-size: 18px;
 }
-#title {
+.text {
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.4;
   white-space: pre-line;
-  font-style: italic;
-  padding-bottom: 8px;
-  font-size: 18px;
 }
-#errataDate {
-  color: white;
-  padding-left: 12px;
-  padding-top: 12px;
-  font-size: 18px;
+.card b,
+.card i {
+  color: inherit;
 }

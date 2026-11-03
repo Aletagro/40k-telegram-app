@@ -1,23 +1,24 @@
 import React, {useCallback, useReducer} from 'react'
 import {useLocation} from 'react-router-dom'
-import {getUnitsSortesByType} from '../utilities/utils'
+import {getUnitsSortesByType, getParentCodexId} from '../utilities/utils'
 import {isCollapseUnitsTypes} from '../utilities/appState'
-import Row from '../components/Row'
+import {ListCard, ListItem} from '../components/ListCard'
+import CollapseSection from '../components/CollapseSection'
 import HeaderImage from '../components/HeaderImage'
-import Accordion from '../components/Accordion'
+
+import map from 'lodash/map'
 
 const Units = () => {
     const {faction, codexInfo} = useLocation().state
-    // eslint-disable-next-line
-    const [_, forceUpdate] = useReducer((x) => x + 1, 0)
-    const units = getUnitsSortesByType(faction, codexInfo)
+    const [, forceUpdate] = useReducer((x) => x + 1, 0)
+    const units = getUnitsSortesByType(faction, codexInfo, undefined, getParentCodexId(faction))
 
-    const handleChangeExpand = useCallback((e) => {
-        isCollapseUnitsTypes[e.nativeEvent.target?.innerText] = !isCollapseUnitsTypes[e.nativeEvent.target?.innerText]
+    const handleToggle = useCallback((title) => {
+        isCollapseUnitsTypes[title] = !isCollapseUnitsTypes[title]
         forceUpdate()
     }, [])
 
-    const renderRow = (unit) => <Row
+    const renderRow = (unit) => <ListItem
         key={unit?.id}
         title={unit?.name}
         rightText={unit?.points ? `${unit?.points} pts` : undefined}
@@ -26,14 +27,14 @@ const Units = () => {
         state={{unit}}
     />
 
-    const renderUnitsType = (type) => <Accordion
+    const renderUnitsType = (type) => <CollapseSection
         key={type.title}
         title={type.title}
-        data={type.units}
-        renderItem={renderRow}
         expanded={!isCollapseUnitsTypes[type.title]}
-        onChangeExpand={handleChangeExpand}
-    />
+        onToggle={handleToggle}
+    >
+        <ListCard>{map(type.units, renderRow)}</ListCard>
+    </CollapseSection>
 
     return <>
         {faction?.rosterHeaderImage

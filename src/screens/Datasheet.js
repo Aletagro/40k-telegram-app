@@ -6,6 +6,7 @@ import {replaceAsterisks, sortByName, removeDuplicates, getCompositions} from '.
 import Ability from '../components/Ability'
 import HeaderImage from '../components/HeaderImage'
 import Modal from '../components/Modal'
+import {SectionTitle} from '../components/ListCard'
 import WeaponChoice from '../icons/weaponChoice.svg'
 // import Calculator from '../icons/calculator.svg'
 
@@ -20,13 +21,17 @@ import Styles from './styles/Datasheet.module.css'
 
 const dataBase = require('../utilities/db')
 
+const ShieldIcon = () => <svg className={Styles.shield} viewBox='0 0 24 24' aria-hidden='true'>
+    <path d='M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3z' />
+</svg>
+
 const Datasheet = () => {
     window.scrollTo(0, 0)
     const [modalData, setModalData] = useState({visible: false, title: '', text: ''})
     // const navigate = useNavigate()
     const unit = useLocation().state.unit
     const miniatures = sortByName(filter(dataBase.data.miniature, ['datasheetId', unit.id]), 'displayOrder')
-    const invul = find(dataBase.data.invulnerable_save, ['datasheetId', unit.id])
+    const invulSaves = filter(dataBase.data.invulnerable_save, ['datasheetId', unit.id])
     const wargearOptionGroups = filter(dataBase.data.wargear_option_group, wargearOptionGroup => wargearOptionGroup.datasheetId === unit.id)
     const wargearOptions = map(wargearOptionGroups, wargearOptionGroup => filter(dataBase.data.wargear_option, wargearOption => wargearOption.wargearOptionGroupId === wargearOptionGroup.id))
     const wargearItems = map(wargearOptions, wargearOption => map(wargearOption, option => find(dataBase.data.wargear_item, wargearItem => wargearItem.id === option.wargearItemId)))
@@ -96,65 +101,52 @@ const Datasheet = () => {
     //     navigate('/calculator', {state: {weapons: weaponsForCalculator, title: 'Damage Calculator'}})
     // }
 
-    const renderCellTitle = (cell, index) => <p key={index} id={Styles.cellTitle}>{cell}</p>
+    const renderCellTitle = (cell, index) => <span key={index} className={Styles.cellTitle}>{cell}</span>
 
-    const renderCellValue = (cell, index) => <p key={index} id={Styles.cellValue}>{cell}</p>
+    const renderCellValue = (cell, index) => <span key={index} className={Styles.cellValue}>{cell}</span>
 
     const renderWeaponAbility = (ability) => <button
+        type='button'
         onClick={handleOpenModal(ability.name, replaceAsterisks(ability.rules))}
         key={ability.name}
-        id={Styles.weaponAbilities}
+        className={Styles.chip}
     >
         {ability.name}
     </button>
 
-    const renderRangeWeapon = (weapon) => {
+    const renderWeapon = (titles, getValues) => (weapon) => {
         const weaponAbilities = getWeaponAbilities(weapon.id)
-        const titles = ['Rng', 'Atk', 'BS', 'Str', 'AP', 'Dmg']
-        const values = [weapon.range, weapon.attacks, weapon.ballisticSkill, weapon.strength, weapon.armourPenetration, weapon.damage]
-        return <div key={weapon.id} id={Styles.weaponContainer}>
-            <div id={Styles.weaponNameContainer}>
-                {weapon.weaponName === weapon.name
-                    ? null
-                    : <img id={Styles.weaponChoiceIcon} onClick={handleOpenModal(weapon.weaponName, 'Before selecting targets for this weapon, select one of its profiles to make attacks with.')} src={WeaponChoice} alt="" />
+        const isProfile = weapon.weaponName !== weapon.name
+        return <div key={weapon.id} className={Styles.weapon}>
+            <div className={Styles.weaponName}>
+                <span>{isProfile ? `${weapon.weaponName} - ${weapon.name}` : weapon.name}</span>
+                {isProfile
+                    ? <img
+                        className={Styles.weaponChoiceIcon}
+                        onClick={handleOpenModal(weapon.weaponName, 'Before selecting targets for this weapon, select one of its profiles to make attacks with.')}
+                        src={WeaponChoice}
+                        alt=''
+                    />
+                    : null
                 }
-                <p id={Styles.weaponName}>{weapon.weaponName === weapon.name ? weapon.name : `${weapon.weaponName} - ${weapon.name}`}</p>
             </div>
-            <div id={Styles.weaponCharacteristicsContainer}>
+            <div className={Styles.weaponTable} style={{gridTemplateColumns: `repeat(${size(titles)}, 1fr)`}}>
                 {map(titles, renderCellTitle)}
+                {map(getValues(weapon), renderCellValue)}
             </div>
-            <div id={Styles.weaponCharacteristicsContainer}>
-                {map(values, renderCellValue)}
-            </div>
-            <div id={Styles.weaponAbilityContainer}>
-                {map(weaponAbilities, renderWeaponAbility)}
-            </div>
+            {size(weaponAbilities) ? <div className={Styles.chips}>{map(weaponAbilities, renderWeaponAbility)}</div> : null}
         </div>
     }
 
-    const renderMeleeWeapon = (weapon) => {
-        const weaponAbilities = getWeaponAbilities(weapon.id)
-        const titles = ['Atk', 'WS', 'Str', 'AP', 'Dmg']
-        const values = [weapon.attacks, weapon.weaponSkill, weapon.strength, weapon.armourPenetration, weapon.damage]
-        return <div key={weapon.id} id={Styles.weaponContainer}>
-            <div id={Styles.weaponNameContainer}>
-                {weapon.weaponName === weapon.name
-                    ? null
-                    : <img id={Styles.weaponChoiceIcon} onClick={handleOpenModal(weapon.weaponName, 'Before selecting targets for this weapon, select one of its profiles to make attacks with.')} src={WeaponChoice} alt="" />
-                }
-                <p id={Styles.weaponName}>{weapon.weaponName === weapon.name ? weapon.name : `${weapon.weaponName} - ${weapon.name}`}</p>
-            </div>
-            <div id={Styles.weaponCharacteristicsContainer}>
-                {map(titles, renderCellTitle)}
-            </div>
-            <div id={Styles.weaponCharacteristicsContainer}>
-                {map(values, renderCellValue)}
-            </div>
-            <div id={Styles.weaponAbilityContainer}>
-                {map(weaponAbilities, renderWeaponAbility)}
-            </div>
-        </div>
-    }
+    const renderRangeWeapon = renderWeapon(
+        ['Rng', 'Atk', 'BS', 'Str', 'AP', 'Dmg'],
+        weapon => [weapon.range, weapon.attacks, weapon.ballisticSkill, weapon.strength, weapon.armourPenetration, weapon.damage]
+    )
+
+    const renderMeleeWeapon = renderWeapon(
+        ['Atk', 'WS', 'Str', 'AP', 'Dmg'],
+        weapon => [weapon.attacks, weapon.weaponSkill, weapon.strength, weapon.armourPenetration, weapon.damage]
+    )
 
     const renderSubAbility = (ability) => <Ability
         key={ability.id}
@@ -162,61 +154,77 @@ const Datasheet = () => {
         keyword={find(datasheetAbilities, ['id', ability.datasheetAbilityId])?.name}
     />
 
-    const renderAbility = (ability, index) => <>
-        <Ability key={ability.id} ability={ability} />
-        {size(datasheetSubAbilities[index])
-            ? map(datasheetSubAbilities[index], renderSubAbility)
+    const renderAbility = (ability, index) => <React.Fragment key={ability.id}>
+        <Ability ability={ability} />
+        {map(datasheetSubAbilities[index], renderSubAbility)}
+    </React.Fragment>
+
+    const renderCoreAbility = (ability) => <button
+        type='button'
+        onClick={handleOpenModal(ability.name, replaceAsterisks(ability.rules))}
+        key={ability.name}
+        className={Styles.coreChip}
+    >
+        {ability.name}
+    </button>
+
+    const renderAdditionalAbility = (ability) => <Ability key={ability.id} ability={ability} kind='rule' />
+
+    const renderCharacteristic = (characteristic) => <div key={characteristic.title} className={Styles.stat}>
+        <span className={Styles.statTitle}>{characteristic.title}</span>
+        <span className={Styles.statValue}>{characteristic.value}</span>
+    </div>
+
+    // Неуязвимое спасение: компактная строка внутри плашки характеристик
+    const renderInvul = (invul) => <div key={invul.id} className={Styles.invul}>
+        <ShieldIcon />
+        <span className={Styles.invulValue}>{invul.save || invul.rangedSave || invul.meleeSave}</span>
+        <span className={Styles.invulLabel}>Invulnerable Save</span>
+        {invul.rangedSave && invul.meleeSave && !invul.save
+            ? <span className={Styles.invulNote}>ranged {invul.rangedSave}, melee {invul.meleeSave}</span>
             : null
         }
-    </>
-
-    const renderAdditionalAbility = (ability, index) => <Ability key={ability.id} ability={ability} />
-
-    const renderCharacteristic = (characteristic, index) => <div key={index} id={Styles.characteristicSubContainer} style={{width: '20%'}}>
-        <p id={Styles.characteristicTitle}>{characteristic.title}</p>
-        <div id={Styles.characteristicValueContainer}>
-            <p id={characteristic.value?.length > 3 ? Styles.characteristicLongValue : Styles.characteristicValue}>
-                {characteristic.value}
-            </p>
-        </div>
+        {invul.rules ? <span className={Styles.invulNote}>{replaceAsterisks(invul.rules)}</span> : null}
     </div>
 
     const renderWargearRule = (wargearRule) =>
-        <p id={Styles.unitDetailsText}>{replaceAsterisks(wargearRule.rulesText)}</p>
+        <p key={wargearRule.id} className={Styles.text}>{replaceAsterisks(wargearRule.rulesText)}</p>
 
     const renderTableRow = (composition, unitIndex) => <React.Fragment key={unitIndex}>
-        {composition.models.map((model, modelIndex) => <>
-            {composition.title ? <b id={Styles.compositionTitle}>{composition.title}</b> : null}
-            <tr key={`${unitIndex}-${modelIndex}`} style={{'background': `${unitIndex % 2 === 1 ? '#ECECEC' : ''}`}}>
-                <td>{model.name}</td>
-                <td id={Styles.tableCount}>{model.count}</td>
-                {modelIndex === 0 && (
-                <td id={Styles.tableCount} rowSpan={composition.models.length}>
-                    {composition.points}
-                </td>
-                )}
-            </tr>
-        </>)}
+        {composition.title
+            ? <tr><td colSpan={3} className={Styles.compositionTitle}>{composition.title}</td></tr>
+            : null
+        }
+        {composition.models.map((model, modelIndex) => <tr key={`${unitIndex}-${modelIndex}`}>
+            <td>{model.name}</td>
+            <td className={Styles.tableCount}>{model.count}</td>
+            {modelIndex === 0
+                ? <td className={Styles.tableCount} rowSpan={composition.models.length}>{composition.points}</td>
+                : null
+            }
+        </tr>)}
     </React.Fragment>
 
-    const renderCompositionsTable = () => <div id={Styles.tableContainer}>
-        <table className={Styles.table}>
+    const renderCompositionsTable = () => <table className={Styles.table}>
         <thead>
             <tr>
-            <th>Model Name</th>
-            <th>Count</th>
-            <th>Points</th>
+                <th>Model Name</th>
+                <th>Count</th>
+                <th>Points</th>
             </tr>
         </thead>
         <tbody>
             {map(compositions, renderTableRow)}
         </tbody>
-        </table>
-    </div>
+    </table>
 
     const renderKeyword = (keyword, index) => <b key={keyword.id}>{upperCase(keyword.name)}{index + 1 === size(keywords) ? '' : ', '}</b>
 
-    const renderCharacteristics = (miniature) => {
+    // Общее неуязвимое спасение показываем в плашке первой видимой модели
+    const datasheetInvulSaves = filter(invulSaves, save => !save.miniatureId)
+    const firstVisibleMiniatureId = find(miniatures, miniature => !miniature.statlineHidden)?.id
+
+    const renderMiniature = (miniature) => {
         if (miniature.statlineHidden) {
             return null
         }
@@ -228,88 +236,71 @@ const Datasheet = () => {
             {value: miniature.leadership, title: 'LD'},
             {value: miniature.objectiveControl, title: 'OC'}
         ]
-        return <div key={miniature.id}>
-            {size(miniatures) > 1 ? <p id={Styles.miniatureName}>{miniature.name}</p> : null}
-            <div id={Styles.characteristicsContainer} className={Styles.flexContainer}>
+        return <div key={miniature.id} className={`${Styles.statCard} ${miniature.id === firstVisibleMiniatureId ? Styles.overlap : ''}`}>
+            {size(miniatures) > 1 ? <p className={Styles.miniatureName}>{miniature.name}</p> : null}
+            <div className={Styles.stats}>
                 {map(characteristics, renderCharacteristic)}
             </div>
+            {map(filter(invulSaves, ['miniatureId', miniature.id]), renderInvul)}
+            {miniature.id === firstVisibleMiniatureId ? map(datasheetInvulSaves, renderInvul) : null}
         </div>
     }
 
     return <>
         <HeaderImage src={unit.bannerImage} alt={unit.name} />
-        <div id={Styles.container}>
-            <div id={Styles.characteristicsBlockContainer}>
-                {map(miniatures, renderCharacteristics)}
-            </div>
-            {invul
-                ? <Ability ability={{
-                    name: 'Invulnerable Save',
-                    invul: invul.save,
-                    rules: invul.rules
-                }} />
-                : null
-            }
+        <div className={Styles.container}>
+            {map(miniatures, renderMiniature)}
+            {firstVisibleMiniatureId ? null : <div className={Styles.statCard}>{map(datasheetInvulSaves, renderInvul)}</div>}
             {size(rangeWeapons)
                 ? <>
-                    <div id={Styles.weaponTitleContainer}>
-                        <h3 id={Styles.warscrollChapterTitle}>Range Weapons</h3>
-                        {/* <button id={Styles.calculator} onClick={handleNavigateToCalculator}><img src={Calculator} alt="" /></button> */}
-                    </div>
+                    <SectionTitle>Ranged Weapons</SectionTitle>
                     {map(rangeWeapons, renderRangeWeapon)}
                 </>
                 : null
             }
             {size(meleeWeapons)
                 ? <>
-                    <div id={Styles.weaponTitleContainer}>
-                        <h3 id={Styles.warscrollChapterTitle}>Melee Weapons</h3>
-                        {/* <button id={Styles.calculator} onClick={handleNavigateToCalculator}><img src={Calculator} alt="" /></button> */}
-                    </div>
+                    <SectionTitle>Melee Weapons</SectionTitle>
                     {map(meleeWeapons, renderMeleeWeapon)}
                 </>
                 : null
             }
             {size(datasheetAbilities)
                 ? <>
-                    <h3 id={Styles.warscrollChapterTitle}>Abilities</h3>
+                    <SectionTitle>Abilities</SectionTitle>
                     {map(datasheetAbilities, renderAbility)}
                 </>
                 : null
             }
             {size(coreAbilities)
-                ? <div id={Styles.coreAbilitiesContainer}>
-                    <h3 id={Styles.warscrollChapterTitle}>Core Abilities</h3>
-                    {map(coreAbilities, renderWeaponAbility)}
-                </div>
+                ? <>
+                    <SectionTitle>Core Abilities</SectionTitle>
+                    <div className={Styles.coreChips}>{map(coreAbilities, renderCoreAbility)}</div>
+                </>
                 : null
             }
             {size(additionalAbilities)
                 ? <>
-                    <h3 id={Styles.warscrollChapterTitle}>Additional Abilities</h3>
+                    <SectionTitle>Additional Abilities</SectionTitle>
                     {map(additionalAbilities, renderAdditionalAbility)}
                 </>
                 : null
             }
-            {damagedInfo
-                ? <Ability ability={damagedInfo} />
-                : null
-            }
-            <div id={Styles.unitDetailsContainer}>
-                <p id={Styles.unitDetailsTitle}>Unit Composition</p>
-                <div id={Styles.unitDetailsSubContainer}>
-                    {unit.unitComposition ? <p id={Styles.unitDetailsText}>{replaceAsterisks(unit.unitComposition)}</p> : null}
-                    {size(wargearRules) ? map(wargearRules, renderWargearRule) : null}
-                </div>
+            {damagedInfo ? <Ability ability={damagedInfo} kind='damaged' /> : null}
+            <SectionTitle>Unit Composition</SectionTitle>
+            <div className={Styles.card}>
+                {unit.unitComposition ? <p className={Styles.text}>{replaceAsterisks(unit.unitComposition)}</p> : null}
+                {size(wargearRules) ? map(wargearRules, renderWargearRule) : null}
+                {unit.baseSize ? <p className={Styles.muted}>Base size: {unit.baseSize}</p> : null}
             </div>
             {size(compositions) ? renderCompositionsTable() : null}
-            {size(keywords)
-                ? <>
-                    <p id={Styles.keywords}>Keywords: {map(keywords, renderKeyword)}</p>
-                </>
+            {size(keywords) || factionKeyword
+                ? <div className={Styles.card}>
+                    {size(keywords) ? <p className={Styles.keywords}>Keywords: {map(keywords, renderKeyword)}</p> : null}
+                    {factionKeyword ? <p className={Styles.keywords}>Faction Keyword: <b>{upperCase(factionKeyword)}</b></p> : null}
+                </div>
                 : null
             }
-            {factionKeyword ? <p id={Styles.keywords}>Faction Keyword: <b>{upperCase(factionKeyword)}</b></p> : null}
         </div>
         <Modal {...modalData} onClose={handleCloseModal} />
     </>

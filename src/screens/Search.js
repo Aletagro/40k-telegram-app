@@ -1,11 +1,12 @@
 import React, {useState, useReducer} from 'react'
 import useDebounce from '../utilities/useDebounce'
-import {sortByName} from '../utilities/utils'
+import {sortByName, getUnitPounts, getStratagemPhases} from '../utilities/utils'
 import {search} from '../utilities/appState'
-import Row from '../components/Row'
+import {ListCard, ListItem} from '../components/ListCard'
+import CollapseSection from '../components/CollapseSection'
 import Ability from '../components/Ability'
-import Accordion from '../components/Accordion'
 
+import map from 'lodash/map'
 import size from 'lodash/size'
 import find from 'lodash/find'
 import filter from 'lodash/filter'
@@ -18,22 +19,21 @@ const dataBase = require('../utilities/db')
 
 const Search = () => {
     const [value, setValue] = useState(search.value)
-    // eslint-disable-next-line
-    const [_, forceUpdate] = useReducer((x) => x + 1, 0)
+    const [, forceUpdate] = useReducer((x) => x + 1, 0)
 
     useDebounce(() => {
         if (value) {
-            const datasheets = filter(dataBase.data.datasheet, (warscroll) => !warscroll.isSpearhead && includes(lowerCase(warscroll.name), lowerCase(value)))
-            search.Datasheets = sortByName(datasheets.splice(0, 20))
-            const rules = filter(dataBase.data.rule_container, (rule) => includes(lowerCase(rule.title), lowerCase(value)))
-            search.Rules = sortByName(rules.splice(0, 20), 'displayOrder')
-            const detachments = filter(dataBase.data.detachment, (detachment) => includes(lowerCase(detachment.name), lowerCase(value)))
-            search.Detachments = sortByName(detachments.splice(0, 20), 'displayOrder')
-            const stratagems = filter(dataBase.data.stratagem, (stratagem) => includes(lowerCase(stratagem.name), lowerCase(value)))
-            search.Stratagems = sortByName(stratagems.splice(0, 20))
+            const query = lowerCase(value)
+            const find20 = (table, field, order) => sortByName(filter(dataBase.data[table], item => includes(lowerCase(item[field]), query)).slice(0, 20), order)
+            search.Datasheets = find20('datasheet', 'name')
+            search.Rules = find20('rule_container', 'title', 'displayOrder')
+            search.Detachments = find20('detachment', 'name', 'displayOrder')
+            search.Stratagems = find20('stratagem', 'name')
         } else {
             search.Datasheets = []
             search.Rules = []
+            search.Detachments = []
+            search.Stratagems = []
         }
         forceUpdate()
       }, [value], 300
@@ -44,22 +44,21 @@ const Search = () => {
         setValue(e.target.value)
     }
 
-    const handleChangeExpand = (e) => {
-        const type = e.nativeEvent.target?.innerText
+    const handleToggle = (type) => {
         search.expand[type] = !search.expand[type]
         forceUpdate()
     }
 
-    const renderWarscroll = (unit) => <Row
+    const renderDatasheet = (unit) => <ListItem
         key={unit.id}
         title={unit.name}
-        rightText={unit?.points ? `${unit?.points} pts` : undefined}
-        image={unit?.rowImage}
+        rightText={getUnitPounts(unit) ? `${getUnitPounts(unit)} pts` : undefined}
+        image={unit.rowImage}
         navigateTo='datasheet'
         state={{unit}}
     />
 
-    const renderRule = (rule) => <Row
+    const renderRule = (rule) => <ListItem
         key={rule.id}
         title={rule.title}
         subtitle={rule.subtitle || 'rule'}
@@ -67,39 +66,43 @@ const Search = () => {
         state={{paragraph: rule}}
     />
 
-    const renderDetachment = (detachment) => {
-        const faction = find(dataBase.data.publication, ['id', detachment.publicationId])
-        return <Row
-            key={detachment.id}
-            title={detachment.name}
-            subtitle={faction.name}
-            navigateTo='detachment'
-            state={{detachment}}
-        />
-    }
+    const renderDetachment = (detachment) => <ListItem
+        key={detachment.id}
+        title={detachment.name}
+        subtitle={find(dataBase.data.publication, ['id', detachment.publicationId])?.name}
+        navigateTo='detachment'
+        state={{detachment}}
+    />
 
     const renderStratagem = (stratagem) => <Ability
         key={stratagem.id}
         ability={stratagem}
+        phases={getStratagemPhases(stratagem.id)}
     />
 
-    const renderAccordion = (type, renderItem) => <Accordion
-        title={type}
-        data={search[type]}
-        renderItem={renderItem}
-        expanded={search.expand[type]}
-        onChangeExpand={handleChangeExpand}
-    />
+    const renderGroup = (type, renderItem, asCards) => size(search[type])
+        ? <CollapseSection key={type} title={type} count={size(search[type])} expanded={search.expand[type]} onToggle={handleToggle}>
+            {asCards ? map(search[type], renderItem) : <ListCard>{map(search[type], renderItem)}</ListCard>}
+        </CollapseSection>
+        : null
 
     return <>
-        <div id={Styles.container}>
-            <input id={Styles.input} onChange={handleChange} autoFocus placeholder='Start Typing' type='search' name='search' size={40} />
+        <div className={Styles.searchBar}>
+            <input
+                className={Styles.input}
+                defaultValue={search.value}
+                onChange={handleChange}
+                autoFocus
+                placeholder='Search datasheets, rules, stratagems'
+                type='search'
+                name='search'
+            />
         </div>
         <div id='column' className='Chapter'>
-            {size(search.Datasheets) ? renderAccordion('Datasheets', renderWarscroll) : null}
-            {size(search.Rules) ? renderAccordion('Rules', renderRule) : null}
-            {size(search.Detachments) ? renderAccordion('Detachments', renderDetachment) : null}
-            {size(search.Stratagems) ? renderAccordion('Stratagems', renderStratagem) : null}
+            {renderGroup('Datasheets', renderDatasheet)}
+            {renderGroup('Rules', renderRule)}
+            {renderGroup('Detachments', renderDetachment)}
+            {renderGroup('Stratagems', renderStratagem, true)}
         </div>
     </>
 }

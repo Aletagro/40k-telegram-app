@@ -1,11 +1,24 @@
-#input {
-  margin-bottom: 16px;
-  margin-top: 2px;
-  height: 40px;
-  padding: 8px 8px;
-  border-radius: 8px;
+.searchBar {
+  padding: 4px 12px 10px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
 }
-#container {
-  background: rgb(51 54 56);
-  padding: 0px 8px;
+.input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Minion Pro Regular';
+  font-size: 17px;
+  outline: none;
+}
+.input:focus {
+  border-color: var(--gold);
+}
+.input::placeholder {
+  color: var(--muted);
 }

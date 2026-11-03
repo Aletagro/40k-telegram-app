@@ -1,0 +1,43 @@
+.section {
+  margin-bottom: 4px;
+}
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin: 6px 0 10px;
+  padding: 4px 2px;
+  border: 0;
+  background: none;
+  text-align: start;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.title {
+  color: var(--text);
+  font-family: 'Minion Pro Bold';
+  font-size: 20px;
+  line-height: 1.2;
+}
+.header::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--gold), rgba(200, 162, 75, 0));
+}
+.chevron {
+  order: 3;
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  margin: -4px 4px 0 0;
+  border-right: 2px solid var(--gold);
+  border-bottom: 2px solid var(--gold);
+  transform: rotate(45deg);
+  transition: transform 0.15s;
+}
+.open {
+  margin-top: 4px;
+  transform: rotate(-135deg);
+}

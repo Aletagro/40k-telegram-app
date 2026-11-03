@@ -1,194 +1,248 @@
-#container {
-  background: white;
-  margin: 0px;
-  padding: 0px 16px;
-  padding-bottom: 16px;
+/* Датащит в тёмной теме */
+.container {
+  padding: 0 12px 24px;
 }
-#weaponContainer {
-  flex: 1;
-  border: 1px solid rgb(46, 46, 49);
-  margin-bottom: 16px;
-  border-radius: 8px;
+
+/* ---------- Характеристики ---------- */
+.statCard {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 12px;
+  padding: 12px 0 10px;
+  border: 1.5px solid var(--gold);
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--feature-from), var(--feature-to));
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
 }
-#weaponNameContainer {
-  background: rgb(46, 46, 49);
-  border-radius: 4px 4px 0px 0px;
-  padding: 12px 16px;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
+/* Первая плашка заходит на картинку */
+.overlap {
+  margin-top: -28px;
 }
-#weaponCharacteristicsContainer {
-  display: flex;
-  justify-content: space-between;
-}
-#weaponName {
-  color: white;
-  margin: 0px;
-  font-size: 16px;
-}
-#weaponAbilityContainer {
-  display: flex;
-  padding: 12px;
-}
-#cellTitle {
-  color: #525252;
-  font-size: 16px;
-  margin-top: 0px;
-  flex: 1;
-  text-align: center;
-}
-#cellValue {
-  font-size: 24px;
-  font-weight: bold;
-  margin-top: 0px;
-  margin-bottom: 8px;
-  flex: 1;
-  text-align: center;
-}
-.flexContainer {
-  display: flex;
-  padding-bottom: 12px;
-}
-#weaponAbilities {
-  background: white;
-  color: #525252;
+.miniatureName {
+  margin: 0 14px 8px;
+  color: var(--gold-light);
   font-family: 'Minion Pro Bold';
+  font-size: 17px;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+}
+.stat {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  min-width: 0;
+  padding: 0 4px;
+  border-left: 1px solid rgba(200, 162, 75, 0.4);
+}
+.stat:first-child {
+  border-left: 0;
+}
+.statValue {
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  font-size: 26px;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+.statTitle {
+  margin-top: 2px;
+  color: #d8c88a;
+  font-family: 'Minion Pro Bold';
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ---------- Неуязвимое спасение: одна строка внутри плашки ---------- */
+.invul {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  margin: 10px 14px 0;
+  padding-top: 9px;
+  border-top: 1px solid rgba(200, 162, 75, 0.3);
+  color: var(--text);
   font-size: 14px;
-  border: 1px dashed #8B8B8B;
-  border-radius: 4px;
-  padding: 4px 8px;
-  margin-right: 4px;
+  line-height: 1.3;
 }
-#keywords {
-  background-color: #E8E8E8;
-  border-radius: 8px;
-  padding: 8px;
-  margin-bottom: 8px;
+.shield {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  fill: rgba(200, 162, 75, 0.18);
+  stroke: var(--gold);
+  stroke-width: 1.8;
+  stroke-linejoin: round;
 }
-#characteristicsContainer {
-  flex-direction: row;
-  justify-content: space-between;
-  background: rgb(51 54 56);
-  margin-top: -8px;
-  margin-left: -16px;
-  margin-right: -16px;
-  padding: 18px 12px;
-}
-#characteristicSubContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-#characteristicValueContainer {
-  background: rgb(46, 46, 49);
-  padding: 4px;
-  width: 40px;
-  height: 40px;
-}
-#characteristicValue {
-  background: white;
-  padding-top: 6px;
-  padding-bottom: 6px;
-  font-size: 24px;
-  font-family: 'Minion Pro Bold';
-  text-align: center;
-}
-#characteristicLongValue {
-  background: white;
-  padding-top: 6px;
-  padding-bottom: 6px;
-  font-size: 24px;
-  font-family: 'Minion Pro Bold';
-  text-align: center;
-}
-#characteristicTitle {
-  color: white;
-  text-align: center;
-  font-family: 'Minion Pro Bold';
-  font-size: 16px;
-  padding-top: 4px
-}
-#unitDetailsContainer {
-  border: 1px solid rgb(46, 46, 49);
-  margin-bottom: 16px;
-  align-items: center;
-  border-radius: 8px;
-}
-#unitDetailsSubContainer {
-  padding-left: 8px;
-  padding-right: 8px;
-}
-#unitDetailsTitle {
-  background: rgb(46, 46, 49);
-  color: white;
+.invulValue {
+  color: var(--gold-light);
   font-family: 'Minion Pro Bold';
   font-size: 18px;
-  border-radius: 4px 4px 0px 0px;
-  padding: 16px;
-  margin: 0px;
-  margin-bottom: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
-#unitDetailsText {
-  margin: 8px 0px;
-  white-space: pre-line;
+.invulLabel {
+  color: var(--text);
+  font-family: 'Minion Pro Bold';
 }
-#weaponTitleContainer {
-  display: flex;
-  justify-content: space-between;
+.invulNote {
+  color: var(--muted);
 }
-#calculator {
-  background: transparent;
-  border-width: 0px;
+.invulNote i,
+.invulNote b {
+  color: inherit;
 }
-#warscrollChapterTitle {
-  margin: 12px 0px;
-}
-#coreAbilitiesContainer {
-  padding-bottom: 16px;
-}
-#tableContainer {
-  border: 1px solid rgb(51 54 56);
-  border-radius: 8px;
+
+/* ---------- Оружие ---------- */
+.weapon {
+  margin-bottom: 12px;
   overflow: hidden;
-  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
 }
-.table {
-  width: 100%;
-  border-collapse: collapse;
+.weaponName {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 14px;
+  background: var(--card-active);
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  font-size: 17px;
 }
-.table th {
-  background-color: rgb(51 54 56);
-  color: white;
-  text-align: left;
-  padding: 8px;
+.weaponChoiceIcon {
+  flex: 0 0 auto;
+  width: 20px;
+  cursor: pointer;
 }
-.table td {
-  padding: 8px;
-}
-#tableCount {
+.weaponTable {
+  display: grid;
+  row-gap: 4px;
+  padding: 10px 6px 6px;
   text-align: center;
 }
-#weaponChoiceIcon {
-  padding-right: 8px;
-  width: 20px;
-  height: 14px;
+.cellTitle {
+  color: var(--muted);
+  font-size: 14px;
 }
-#compositionTitle {
-  padding: 8px;
+.cellValue {
+  color: var(--text);
+  font-family: 'Minion Pro Bold';
+  font-size: 21px;
+  line-height: 1.2;
+}
+.chips {
   display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 12px 12px;
 }
-#characteristicsBlockContainer {
-  margin-bottom: 16px;
+/* Способности оружия: небольшие тихие метки */
+.chip {
+  padding: 2px 8px;
+  border: 1px solid rgba(200, 162, 75, 0.28);
+  border-radius: 6px;
+  background: rgba(200, 162, 75, 0.1);
+  color: var(--gold-light);
+  font-size: 13px;
+  line-height: 1.4;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
-#miniatureName {
-  background: #52718f;
-  color: white;
-  flex: 1;
-  margin-left: -16px;
-  margin-right: -16px;
-  padding: 16px
+.chip:active {
+  background: rgba(200, 162, 75, 0.22);
+}
+
+/* Основные способности: заметные золотые значки */
+.coreChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.coreChip {
+  padding: 6px 14px;
+  border: 1.5px solid var(--gold);
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--feature-from), var(--feature-to));
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.coreChip:active {
+  background: var(--card-active);
+}
+
+/* ---------- Карточки текста ---------- */
+.card {
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+}
+.text {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+.text b,
+.text i,
+.keywords b {
+  color: inherit;
+}
+.muted {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+}
+.keywords {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.4;
+}
+.keywords b {
+  color: var(--text);
+}
+
+/* ---------- Состав отряда ---------- */
+.table {
+  width: 100%;
+  margin-bottom: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--text);
+  font-size: 16px;
+}
+.table th {
+  padding: 8px 12px;
+  background: var(--card-active);
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  text-align: start;
+}
+.table td {
+  padding: 8px 12px;
+  border-top: 1px solid var(--line);
+}
+.tableCount {
+  text-align: center;
+}
+.compositionTitle {
+  color: var(--gold);
+  font-family: 'Minion Pro Bold';
 }

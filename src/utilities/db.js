@@ -36,6 +36,13 @@ const setLanguage = (language) => {
   window.location.reload()
 }
 
+// В базе встречаются html-сущности (&#x20; и т.п.), показываем их как обычные символы
+const decodeEntities = (value) => typeof value === 'string' && value.indexOf('&') !== -1
+  ? value
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, code) => String.fromCharCode(parseInt(code, 16)))
+    .replace(/&quot;/g, '"')
+  : value
+
 const isFilled = (value) => value !== null && value !== undefined && value !== ''
 
 const localize = (data, language) => {
@@ -61,6 +68,9 @@ const localize = (data, language) => {
           }
         })
       }
+      Object.keys(row).forEach((key) => {
+        row[key] = decodeEntities(row[key])
+      })
     }
   })
 }

@@ -4,14 +4,13 @@ import Modal from '@mui/joy/Modal'
 import ModalDialog from '@mui/joy/ModalDialog'
 import {roster} from '../utilities/appState'
 import UnitsType from './UnitsType'
-import {getWoundsCount, sortByName, getUnitsSortesByType} from '../utilities/utils'
+import {getWoundsCount, sortByName, getUnitsSortesByType, getCodexInfo, getParentCodexId} from '../utilities/utils'
 import WhiteInfo from '../icons/whiteInfo.svg'
 
 import map from 'lodash/map'
 import size from 'lodash/size'
 import find from 'lodash/find'
 import filter from 'lodash/filter'
-import includes from 'lodash/includes'
 
 import Styles from './styles/Builder.module.css'
 
@@ -25,12 +24,11 @@ const Builder = () => {
     const navigate = useNavigate()
     // eslint-disable-next-line
     const [_, forceUpdate] = useReducer((x) => x + 1, 0)
-    const codexInfo = find(dataBase.data.publication, publication => publication.factionKeywordId === faction.id && !publication.isCombatPatrol && !includes(publication.name, 'Imperial Armour'))
+    const codexInfo = getCodexInfo(faction.id)
     const detachmentsIds = filter(dataBase.data.detachment_faction_keyword, ['factionKeywordId', faction.id])
     const detachments = sortByName(map(detachmentsIds, item => find(dataBase.data.detachment, ['id', item.detachmentId])))
     const detachementCondition = find(dataBase.data.conditional_keyword, ['requiredDetachmentId', roster.detachmentId])
-    const parentFactionId = find(dataBase.data.faction_keyword, ['id', faction.id])?.parentFactionKeywordId
-    const parentCodexId = find(dataBase.data.publication, ['factionKeywordId', parentFactionId])?.id
+    const parentCodexId = getParentCodexId(faction)
     const unitsTypes = useMemo(() => getUnitsSortesByType(faction, codexInfo, detachementCondition, parentCodexId), [faction, codexInfo, detachementCondition, parentCodexId])
     let alliedFactionIds = filter(dataBase.data.faction_keyword_allied_faction, ['factionKeywordId', faction.id])
     if (size(alliedFactionIds)) {

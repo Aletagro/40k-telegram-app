@@ -1,3 +1,14 @@
-#text {
+.text {
+  margin: 0;
+  color: var(--text);
   font-family: 'Minion Pro Regular';
+  font-size: 16px;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+.text b,
+.text i,
+.text k,
+.text u {
+  color: inherit;
 }

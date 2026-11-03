@@ -1,12 +1,13 @@
-import React from 'react';
+import React from 'react'
 import {useLocation} from 'react-router-dom'
 import {roster, navigationState} from '../utilities/appState'
-import BuilderRow from './BuilderRow'
-import HeaderImage from '../components/HeaderImage'
+import ImageCard from '../components/ImageCard'
+import {SectionTitle} from '../components/ListCard'
 
 import map from 'lodash/map'
+import find from 'lodash/find'
 
-import Styles from './styles/ChooseFaction.module.css'
+const dataBase = require('../utilities/db')
 
 const ChooseFaction = () => {
     const {grandFaction} = useLocation().state
@@ -16,22 +17,24 @@ const ChooseFaction = () => {
         roster.factionId = faction.id
         navigationState.isBuilder = true
     }
-    
-    const renderRow = (faction, index) => <BuilderRow
-        key={faction.id}
-        title={faction.name}
-        navigateTo='builder'
-        state={{faction}}
-        onClick={handleClick}
-    />
 
-    return <>
-        <HeaderImage src={grandFaction.image} alt={grandFaction.name} />
-        <div id='column' className='Chapter'>
-            <h4 id={Styles.title}>Choose your Faction</h4>
-            {map(grandFaction.factions, renderRow)}
-        </div>
-    </>
+    const renderCard = (faction) => {
+        // в Constants у армии только имя и id, картинка лежит в базе
+        const image = find(dataBase.data.faction_keyword, ['id', faction.id])?.armySelectionImage
+        return <ImageCard
+            key={faction.id}
+            title={faction.name}
+            image={image}
+            navigateTo='builder'
+            state={{faction}}
+            onClick={handleClick}
+        />
+    }
+
+    return <div id='column' className='Chapter'>
+        <SectionTitle>Choose your Faction</SectionTitle>
+        {map(grandFaction.factions, renderCard)}
+    </div>
 }
 
 export default ChooseFaction

@@ -1,30 +1,31 @@
 import React from 'react';
-import Row from '../components/Row'
-import HeaderImage from '../components/HeaderImage'
+import {ListCard, ListItem} from '../components/ListCard'
 import {sortByName} from '../utilities/utils'
-import Constants from '../Constants'
 
 import map from 'lodash/map'
+import some from 'lodash/some'
 import filter from 'lodash/filter'
 
 const dataBase = require('../utilities/db')
 
+// Ключевые документы - все публикации, у которых есть разделы правил, кроме основных правил
 const KeyDocuments = () => {
-    const documents = sortByName(filter(dataBase.data.rule_section, ['publicationId', Constants.keyDocumentsId]), 'displayOrder')
+    const documents = sortByName(filter(dataBase.data.publication, publication =>
+        !publication.isCoreRules && some(dataBase.data.rule_section, ['publicationId', publication.id])
+    ))
 
-    const renderRow = (document) => <Row
+    const renderRow = (document) => <ListItem
         key={document.id}
         title={document.name}
         navigateTo='ruleSections'
         state={{document}}
     />
 
-    return <>
-        <HeaderImage src={Constants.keyDocumentsImage} alt='Core Documents' />
-        <div id='column' className='Chapter'>
+    return <div id='column' className='Chapter'>
+        <ListCard>
             {documents && map(documents, renderRow)}
-        </div>
-    </>
+        </ListCard>
+    </div>
 }
 
 export default KeyDocuments
