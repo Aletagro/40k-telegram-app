@@ -72,7 +72,7 @@ const Header = () => {
             ? null
             : <button id={Styles.leftButton} onClick={handleGoBack}><img src={ArrowBack} alt='' /></button>
         }
-        <p id={Styles.title}>{state?.title}</p>
+        <p id={Styles.title}>{state?.title || 'Warhammer 40K'}</p>
         {renderRightButton()}
     </div>
 }

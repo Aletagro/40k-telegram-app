@@ -330,7 +330,7 @@ export const getStratagemPhases = (stratagemId) => filter(dataBase.data.stratage
 
 // Основная книга армии: не боевой патруль, не Imperial Armour и не Legends
 export const getCodexInfo = (factionId) => find(dataBase.data.publication, publication =>
-    publication.factionKeywordId === factionId && !publication.isCombatPatrol && !publication.isLegends
+    publication.factionKeywordId === factionId && !publication.isCombatPatrol && !publication.isLegends && !includes(publication.name, 'Imperial Armour: Tyranids')
 )
 
 // Книга родительской армии (например, Space Marines для орденов)
