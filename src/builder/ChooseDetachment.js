@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React, {useReducer} from 'react'
 import {useLocation, useNavigate} from 'react-router-dom'
 import {roster} from '../utilities/appState'
@@ -22,7 +23,7 @@ const ChooseDetachment = () => {
     const used = getUsedDetachmentPoints()
 
     const notifyRemoved = (removed) => {
-        if (removed.length) toast.info(`Removed (not available in the chosen detachments): ${removed.join(', ')}`, {...Constants.toastParams, autoClose: 5000})
+        if (removed.length) toast.info(t('Removed (not available in the chosen detachments): {{names}}', {names: removed.join(', ')}), {...Constants.toastParams, autoClose: 5000})
     }
 
     const apply = (ids) => {
@@ -36,9 +37,9 @@ const ChooseDetachment = () => {
             apply(without(roster.detachmentIds, detachment.id))
         } else if (getDetachmentKeywordConflict(detachment.id)) {
             const {keyword, detachment: other} = getDetachmentKeywordConflict(detachment.id)
-            toast.warn(`A detachment with the "${keyword}" keyword is already chosen: ${other.name}`, Constants.toastParams)
+            toast.warn(t('A detachment with the "{{keyword}}" keyword is already chosen: {{name}}', {keyword, name: other.name}), Constants.toastParams)
         } else if (used + getDetachmentPoints(detachment.id) > limit) {
-            toast.warn(`Not enough detachment points: ${limit - used} DP left`, Constants.toastParams)
+            toast.warn(t('Not enough detachment points: {{count}} DP left', {count: limit - used}), Constants.toastParams)
         } else {
             apply([...roster.detachmentIds, detachment.id])
         }
@@ -50,7 +51,7 @@ const ChooseDetachment = () => {
 
     return <div id='column' className='Chapter'>
         <div className={Styles.dpInfo}>
-            <span>Detachment points</span>
+            <span>{t('Detachment points')}</span>
             <b className={used > limit ? Styles.over : ''}>{used} / {limit} DP · {Math.max(limit - used, 0)} left</b>
         </div>
         {map(detachments, detachment => {
@@ -68,12 +69,12 @@ const ChooseDetachment = () => {
             />
         })}
         {roster.detachmentIds.length
-            ? <Button type='secondary' className={Styles.fullButton} onClick={handleClear}>Remove all detachments</Button>
+            ? <Button type='secondary' className={Styles.fullButton} onClick={handleClear}>{t('Remove all detachments')}</Button>
             : null
         }
         {roster.detachmentIds.length
             ? <div className={Styles.doneBar}>
-                <Button className={Styles.fullButton} onClick={() => navigate(-1)}>Done</Button>
+                <Button className={Styles.fullButton} onClick={() => navigate(-1)}>{t('Done')}</Button>
             </div>
             : null
         }

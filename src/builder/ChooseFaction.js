@@ -1,9 +1,11 @@
+import {t} from '../utilities/i18n'
 import React from 'react'
 import {useLocation} from 'react-router-dom'
 import {roster, navigationState} from '../utilities/appState'
 import {resetRoster} from '../utilities/rosterModel'
 import ImageCard from '../components/ImageCard'
 import {SectionTitle} from '../components/ListCard'
+import {getFactionLabel} from '../utilities/utils'
 
 import map from 'lodash/map'
 import find from 'lodash/find'
@@ -26,7 +28,7 @@ const ChooseFaction = () => {
         const image = find(dataBase.data.faction_keyword, ['id', faction.id])?.armySelectionImage
         return <ImageCard
             key={faction.id}
-            title={faction.name}
+            title={getFactionLabel(faction.id, faction.name)}
             image={image}
             navigateTo='builder'
             state={{faction}}
@@ -35,7 +37,7 @@ const ChooseFaction = () => {
     }
 
     return <div id='column' className='Chapter'>
-        <SectionTitle>Choose your Faction</SectionTitle>
+        <SectionTitle>{t('Choose your Faction')}</SectionTitle>
         {map(grandFaction.factions, renderCard)}
     </div>
 }

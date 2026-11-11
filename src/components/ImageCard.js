@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React, {useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 
@@ -37,7 +38,7 @@ const ImageCard = ({title, image, badge, size = 'md', navigateTo, state, onClick
     // Дополнительная кнопка (например, инфо) лежит поверх карточки, а не внутри кнопки
     return <div className={Styles.wrap}>
         {card}
-        <button type='button' className={`${Styles.action} ${Styles[`action_${size}`]}`} onClick={onAction} aria-label='Info'>{actionLabel}</button>
+        <button type='button' className={`${Styles.action} ${Styles[`action_${size}`]}`} onClick={onAction} aria-label={t('Info')}>{actionLabel}</button>
     </div>
 }
 

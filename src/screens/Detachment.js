@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React from 'react'
 import {useLocation} from 'react-router-dom'
 import {sortByName, replaceAsterisks} from '../utilities/utils'
@@ -42,11 +43,11 @@ const Detachment = () => {
         <div id='column' className='Chapter'>
             <div className={Styles.grid}>
                 {size(stratagems)
-                    ? <Tile compact title='Stratagems' navigateTo='stratagems' state={{detachment: _detachment, data: stratagems}} />
+                    ? <Tile compact title={t('Stratagems')} navigateTo='stratagems' state={{detachment: _detachment, data: stratagems}} />
                     : null
                 }
                 {size(enhancements)
-                    ? <Tile compact title='Enhancements' navigateTo='enhancements' state={{detachment: _detachment, data: enhancements}} />
+                    ? <Tile compact title={t('Enhancements')} navigateTo='enhancements' state={{detachment: _detachment, data: enhancements}} />
                     : null
                 }
             </div>

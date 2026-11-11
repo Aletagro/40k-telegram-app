@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React, {useCallback, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {toast} from 'react-toastify'
@@ -30,9 +31,9 @@ const LinkAccounts = () => {
         setIsSending(true)
         const ok = await generateLinkCode(main.user.id)
         if (ok) {
-            toast.success('Code sent to you by the bot', Constants.toastParams)
+            toast.success(t('Code sent to you by the bot'), Constants.toastParams)
         } else {
-            toast.error('Could not get a code, try again later', Constants.toastParams)
+            toast.error(t('Could not get a code, try again later'), Constants.toastParams)
         }
         setIsSending(false)
     }, [])
@@ -45,10 +46,10 @@ const LinkAccounts = () => {
         if (ok) {
             const data = await fetchUser()
             if (data?.exists) main.user = data.user
-            toast.success('Accounts linked', Constants.toastParams)
+            toast.success(t('Accounts linked'), Constants.toastParams)
             navigate('/')
         } else {
-            toast.error('Invalid code', Constants.toastParams)
+            toast.error(t('Invalid code'), Constants.toastParams)
         }
         setIsSending(false)
     }, [code, navigate])
@@ -56,23 +57,23 @@ const LinkAccounts = () => {
     return <div id='column' className='Chapter'>
         {hasAccount
             ? <>
-                <InfoNote title='Link accounts'>
-                    <p>Use your lists in both Telegram and VK.</p>
+                <InfoNote title={t('Link accounts')}>
+                    <p>{t('Use your lists in both Telegram and VK.')}</p>
                     <p>Tap "Get code": the bot will send you a short code in a private message. Then open the app in {otherApp}, choose to link an existing account and enter the code there.</p>
                 </InfoNote>
-                <Button className={Styles.button} disabled={isSending} onClick={handleGetCode}>Get code</Button>
+                <Button className={Styles.button} disabled={isSending} onClick={handleGetCode}>{t('Get code')}</Button>
             </>
             : <>
-                <InfoNote title='Link accounts'>
+                <InfoNote title={t('Link accounts')}>
                     <p>Already have an account in {otherApp}? Open the app there, go to "Link accounts" and tap "Get code". Then enter the code from the bot here, and this {thisApp} account will be linked to it.</p>
                 </InfoNote>
                 <FloatingLabelInput
                     style={inputStyle}
                     onChange={handleChangeCode}
-                    label='Code'
+                    label={t('Code')}
                     value={code}
                 />
-                <Button className={Styles.button} disabled={!code || isSending} onClick={handleSendCode}>Link account</Button>
+                <Button className={Styles.button} disabled={!code || isSending} onClick={handleSendCode}>{t('Link account')}</Button>
             </>
         }
     </div>

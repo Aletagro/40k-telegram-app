@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React from 'react'
 
 import map from 'lodash/map'
@@ -18,7 +19,7 @@ const ListStatus = ({issues, expanded, onToggle, statusRef, getAction}) => {
             {action
                 ? <button type='button' className={Styles.issueButton} onClick={action}>
                     <span className={Styles.issueText}>{issue.message}</span>
-                    <span className={Styles.issueFix}>Fix<Svg><path d='M9 5l7 7-7 7' /></Svg></span>
+                    <span className={Styles.issueFix}>{t('Fix')}<Svg><path d='M9 5l7 7-7 7' /></Svg></span>
                 </button>
                 : issue.message
             }
@@ -31,8 +32,8 @@ const ListStatus = ({issues, expanded, onToggle, statusRef, getAction}) => {
                 <Svg>{hasIssues ? <path d='M12 7v6M12 17h.01' /> : <path d='M5 12.5l4.5 4.5L19 7.5' />}</Svg>
             </span>
             <span className={Styles.text}>
-                <span className={Styles.title}>{hasIssues ? 'List needs fixes' : 'List is ready'}</span>
-                <span className={Styles.subtitle}>{hasIssues ? `${size(issues)} ${size(issues) === 1 ? 'issue' : 'issues'}` : 'No errors found'}</span>
+                <span className={Styles.title}>{hasIssues ? t('List needs fixes') : t('List is ready')}</span>
+                <span className={Styles.subtitle}>{hasIssues ? t('{{count}} issue|{{count}} issues', {count: size(issues)}) : t('No errors found')}</span>
             </span>
             {hasIssues ? <span className={`${Styles.chevron} ${expanded ? Styles.chevronOpen : ''}`}><Svg><path d='M6 9l6 6 6-6' /></Svg></span> : null}
         </button>

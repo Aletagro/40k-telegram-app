@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React from 'react'
 import {toast} from 'react-toastify'
 import Constants from '../Constants'
@@ -17,7 +18,7 @@ const Rule = ({rule}) => {
     const handleClickRule = () => {
         if (rule.textContent) {
             navigator.clipboard.writeText(removeAsterisks(rule.textContent))
-            toast.success('Rule Copied', Constants.toastParams)
+            toast.success(t('Rule Copied'), Constants.toastParams)
         }
     }
 
@@ -44,8 +45,8 @@ const Rule = ({rule}) => {
             case 'triggerEffectAccordion':
                 return <div className={Styles.box}>
                     {rule.title ? <p className={Styles.boxTitle}>{rule.title}</p> : null}
-                    {rule.trigger ? <p className={Styles.boxText}><b>Trigger:</b> {replaceAsterisks(rule.trigger)}</p> : null}
-                    {rule.effect ? <p className={Styles.boxText}><b>Effect:</b> {replaceAsterisks(rule.effect)}</p> : null}
+                    {rule.trigger ? <p className={Styles.boxText}><b>{t('Trigger:')}</b> {replaceAsterisks(rule.trigger)}</p> : null}
+                    {rule.effect ? <p className={Styles.boxText}><b>{t('Effect:')}</b> {replaceAsterisks(rule.effect)}</p> : null}
                 </div>
             case 'image':
                 return rule.imageUrl ? <img className={Styles.image} src={rule.imageUrl} alt={rule.altText || ''} loading='lazy' /> : null

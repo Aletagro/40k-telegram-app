@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React, {useState} from 'react'
 import {toast} from 'react-toastify'
 import Constants from '../Constants'
@@ -150,7 +151,7 @@ const Export = () => {
 
     const handleCopy = () => {
         navigator.clipboard.writeText(`${size(issues) ? `Roster errors:\n${map(issues, issue => `- ${issue.message}`).join('\n')}\n\n` : ''}${getRosterText(model)}`)
-        toast.success('List Copied', Constants.toastParams)
+        toast.success(t('List Copied'), Constants.toastParams)
         setIsCopy(true)
     }
 
@@ -165,8 +166,8 @@ const Export = () => {
     </div>
 
     return <div id='column' className='Chapter'>
-        <Button className={Styles.fullButton} onClick={handleCopy}>{isCopy ? 'Copied' : 'Copy List'}</Button>
-        <Button type='secondary' className={Styles.fullButton} onClick={handleClickSaveButton}>Save List</Button>
+        <Button className={Styles.fullButton} onClick={handleCopy}>{isCopy ? t('Copied') : t('Copy List')}</Button>
+        <Button type='secondary' className={Styles.fullButton} onClick={handleClickSaveButton}>{t('Save List')}</Button>
         {size(issues)
             ? <div className={Styles.exportWarn}>
                 <b>{size(issues)} {size(issues) === 1 ? 'issue' : 'issues'} in the list</b>

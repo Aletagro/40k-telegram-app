@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React from 'react'
 import {useLocation, useNavigate} from 'react-router-dom'
 import {roster} from '../utilities/appState'
@@ -38,10 +39,10 @@ const ChooseUnitAllegiance = () => {
                 <b>{ability.name}</b>
                 <span>{replaceAsterisks(ability.rules)}</span>
             </button>)
-            : <p className={Styles.empty}>Nothing to choose for this unit</p>
+            : <p className={Styles.empty}>{t('Nothing to choose for this unit')}</p>
         }
         {unit?.allegianceAbilityId
-            ? <Button type='danger' className={Styles.fullButton} onClick={handleDelete}>{select?.isChoice ? 'Clear choice' : 'Remove selection'}</Button>
+            ? <Button type='danger' className={Styles.fullButton} onClick={handleDelete}>{select?.isChoice ? t('Clear choice') : t('Remove selection')}</Button>
             : null
         }
     </div>

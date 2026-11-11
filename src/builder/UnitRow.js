@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React, {useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {roster} from '../utilities/appState'
@@ -94,7 +95,7 @@ const UnitRow = ({unit, issues, onChange, onLocate}) => {
 
     const handleWargear = () => navigate('/chooseWargear', {state: {title: 'Wargear', uid: unit.uid}})
 
-    const handleAttach = () => navigate('/chooseAttach', {state: {title: 'Attach to', uid: unit.uid}})
+    const handleAttach = () => navigate('/chooseAttach', {state: {title: t('Attach to'), uid: unit.uid}})
 
     const handleEnhancement = () => navigate('/chooseEnhancement', {state: {title: 'Enhancement', unit}})
 
@@ -151,17 +152,17 @@ const UnitRow = ({unit, issues, onChange, onLocate}) => {
                 <span className={Styles.info}>
                     <span className={Styles.name}>{datasheet?.name}</span>
                     <span className={Styles.models}>
-                        {getModelCount(unit)} models
-                        <span className={`${Styles.points} ${isRaised ? Styles.raised : ''}`}>{total} pts</span>
+                        {t('{{count}} model|{{count}} models', {count: getModelCount(unit)})}
+                        <span className={`${Styles.points} ${isRaised ? Styles.raised : ''}`}>{t('{{count}} pts', {count: total})}</span>
                         {invulSave
-                            ? <span className={Styles.invul} title='Invulnerable save'><ShieldIcon />{invulSave}</span>
+                            ? <span className={Styles.invul} title={t('Invulnerable save')}><ShieldIcon />{invulSave}</span>
                             : null
                         }
                     </span>
                 </span>
             </button>
-            <button type='button' className={Styles.iconButton} disabled={!canCopy} onClick={handleCopy} aria-label='Copy'><CopyIcon /></button>
-            <button type='button' className={`${Styles.iconButton} ${Styles.delete}`} onClick={handleDelete} aria-label='Delete'><CloseIcon /></button>
+            <button type='button' className={Styles.iconButton} disabled={!canCopy} onClick={handleCopy} aria-label={t('Copy')}><CopyIcon /></button>
+            <button type='button' className={`${Styles.iconButton} ${Styles.delete}`} onClick={handleDelete} aria-label={t('Delete')}><CloseIcon /></button>
         </div>
         {size(compositions) > 1
             ? <div className={Styles.compositions}>{map(compositions, renderComposition)}</div>
@@ -170,8 +171,8 @@ const UnitRow = ({unit, issues, onChange, onLocate}) => {
         {map(getCompositionModels(unit.compositionId), renderRange)}
         {leadTarget || size(leaders)
             ? <div className={Styles.links}>
-                {leadTarget ? renderLink('Leads', leadTarget) : null}
-                {map(leaders, leader => renderLink('Led by', leader))}
+                {leadTarget ? renderLink(t('Leads'), leadTarget) : null}
+                {map(leaders, leader => renderLink(t('Led by'), leader))}
             </div>
             : null
         }
@@ -198,12 +199,12 @@ const UnitRow = ({unit, issues, onChange, onLocate}) => {
                     : null
                 }
                 {hasWargear
-                    ? <button type='button' className={`${Styles.chip} ${size(loadoutChanges) ? Styles.active : ''}`} onClick={handleWargear}>Wargear</button>
+                    ? <button type='button' className={`${Styles.chip} ${size(loadoutChanges) ? Styles.active : ''}`} onClick={handleWargear}>{t('Wargear')}</button>
                     : null
                 }
-                {isCharacter ? <button type='button' className={`${Styles.chip} ${unit.isWarlord ? Styles.active : ''}`} onClick={handleWarlord}>Warlord</button> : null}
+                {isCharacter ? <button type='button' className={`${Styles.chip} ${unit.isWarlord ? Styles.active : ''}`} onClick={handleWarlord}>{t('Warlord')}</button> : null}
                 {canAttach
-                    ? <button type='button' className={`${Styles.chip} ${leadTarget ? Styles.active : ''}`} onClick={handleAttach}>{leadTarget ? 'Change unit' : 'Attach to unit'}</button>
+                    ? <button type='button' className={`${Styles.chip} ${leadTarget ? Styles.active : ''}`} onClick={handleAttach}>{leadTarget ? t('Change unit') : t('Attach to unit')}</button>
                     : null
                 }
                 {hasEnhancements

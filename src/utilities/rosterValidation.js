@@ -1,3 +1,4 @@
+import {t} from './i18n'
 import {roster} from './appState'
 import {
     getRosterPoints, getUnitTotalPoints, getAvailableDatasheetIds, getDatasheetType, isCharacterDatasheet, getUnitLimit, getUnitCount, getBattleSize, getAvailableEnhancements, getUsedDetachmentPoints, getDetachmentPointsLimit, getForceDispositionOptions, getConditionalKeywordIds, isCompositionAvailable, getAllegianceGroups, getAllegianceAbilities, getAllegianceUnits, getDetachmentKeywordConflict
@@ -70,17 +71,17 @@ const getWarlordIssues = () => {
     const issues = []
     const warlord = find(roster.units, 'isWarlord')
     if (!warlord) {
-        if (roster.units.length) issues.push({message: 'Warlord is not chosen', fix: 'warlord'})
+        if (roster.units.length) issues.push({message: t('Warlord is not chosen'), fix: 'warlord'})
         return issues
     }
     const name = getName(warlord.datasheetId)
     if (!canBeWarlord(warlord)) {
-        issues.push({uid: warlord.uid, message: `${name} cannot be the Warlord`})
+        issues.push({uid: warlord.uid, message: t('{{name}} cannot be the Warlord', {name})})
     }
     const mandatory = getMandatoryWarlordMiniatureIds()
     if (mandatory.length && !some(getMiniatures(warlord.datasheetId), miniature => mandatory.includes(miniature.id))) {
         const names = uniq(map(mandatory, id => getName(find(dataBase.data.miniature, ['id', id])?.datasheetId)))
-        issues.push({uid: warlord.uid, message: `Warlord must be: ${names.join(' or ')}`})
+        issues.push({uid: warlord.uid, message: t('Warlord must be: {{names}}', {names: names.join(' or ')})})
     }
     return issues
 }
@@ -149,9 +150,9 @@ const getAttachIssues = (unit) => {
     if (!unit.attachedToUid) return []
     const name = getName(unit.datasheetId)
     const target = find(roster.units, ['uid', unit.attachedToUid])
-    if (!target) return [{uid: unit.uid, message: `${name}: the unit it was attached to is not in the list`}]
+    if (!target) return [{uid: unit.uid, message: t('{{name}}: the unit it was attached to is not in the list', {name})}]
     if (!findAttachGroup(unit, target)) {
-        return [{uid: unit.uid, message: `${name} cannot be attached to ${getName(target.datasheetId)}`}]
+        return [{uid: unit.uid, message: t('{{name}} cannot be attached to {{target}}', {name, target: getName(target.datasheetId)})}]
     }
     return []
 }
@@ -166,7 +167,7 @@ const getBodyguardIssues = () => {
         const byType = groupBy(leaders, leader => findAttachGroup(leader, target)?.bodyguardType || 'leader')
         forEach(byType, (list, type) => {
             if (list.length > 1) {
-                issues.push({uid: target.uid, message: `${getName(target.datasheetId)} has more than one ${type} attached`})
+                issues.push({uid: target.uid, message: t('{{name}} has more than one {{type}} attached', {name: getName(target.datasheetId), type: t(type)})})
             }
         })
     })
@@ -186,24 +187,24 @@ const getEnhancementIssues = (unit) => {
     const type = getDatasheetType(unit.datasheetId)
     const miniatures = getMiniatures(unit.datasheetId)
 
-    if (!detachmentIds().includes(enhancement.detachmentId)) add('does not belong to the chosen detachment')
-    if (type === 'Epic Hero' && !enhancement.isEquipableByEpicHero) add('cannot be taken by an Epic Hero')
-    if (!isCharacterDatasheet(unit.datasheetId, unit) && !enhancement.isEquipableByNonCharacterUnit) add('can only be taken by a Character')
-    if (unit.isWarlord && enhancement.cannotBeWarlord) add('cannot be taken by the Warlord')
-    if (some(miniatures, 'excludedFromEnhancements')) add('this unit cannot take enhancements')
+    if (!detachmentIds().includes(enhancement.detachmentId)) add(t('does not belong to the chosen detachment'))
+    if (type === 'Epic Hero' && !enhancement.isEquipableByEpicHero) add(t('cannot be taken by an Epic Hero'))
+    if (!isCharacterDatasheet(unit.datasheetId, unit) && !enhancement.isEquipableByNonCharacterUnit) add(t('can only be taken by a Character'))
+    if (unit.isWarlord && enhancement.cannotBeWarlord) add(t('cannot be taken by the Warlord'))
+    if (some(miniatures, 'excludedFromEnhancements')) add(t('this unit cannot take enhancements'))
     const excluded = map(filter(dataBase.data.enhancement_excluded_keyword, ['enhancementId', enhancement.id]), 'keywordId')
     if (excluded.length) {
         const keywords = getDatasheetKeywords(unit.datasheetId)
         const bad = find(excluded, id => keywords.has(id))
-        if (bad) add(`cannot be taken by units with ${find(dataBase.data.keyword, ['id', bad])?.name}`)
+        if (bad) add(t('cannot be taken by units with {{keyword}}', {keyword: find(dataBase.data.keyword, ['id', bad])?.name}))
     }
-    if (!find(getAvailableEnhancements(unit), ['id', enhancement.id])) add('is not available for this unit')
+    if (!find(getAvailableEnhancements(unit), ['id', enhancement.id])) add(t('is not available for this unit'))
 
     const wargear = map(filter(dataBase.data.enhancement_required_wargear_item, ['enhancementId', enhancement.id]), 'wargearItemId')
     if (wargear.length) {
         const items = getUnitWargearItems(unit)
         const missing = find(wargear, id => !items[id])
-        if (missing) add(`requires ${find(dataBase.data.wargear_item, ['id', missing])?.name}`)
+        if (missing) add(t('requires {{item}}', {item: find(dataBase.data.wargear_item, ['id', missing])?.name}))
     }
 
     const groups = filter(dataBase.data.enhancement_bodyguard_group, ['enhancementId', enhancement.id])
@@ -211,7 +212,7 @@ const getEnhancementIssues = (unit) => {
         const target = find(roster.units, ['uid', unit.attachedToUid])
         const allowed = uniq(groups.flatMap(group => map(filter(dataBase.data.enhancement_bodyguard_group_datasheet, ['enhancementBodyguardGroupId', group.id]), 'datasheetId')))
         if (!target || !allowed.includes(target.datasheetId)) {
-            add(`requires leading ${map(allowed, getName).join(' or ') || 'a specific unit'}`)
+            add(t('requires leading {{names}}', {names: map(allowed, getName).join(' / ') || t('a specific unit')}))
         }
     }
     return issues
@@ -222,11 +223,11 @@ const getEnhancementRosterIssues = () => {
     const withEnhancement = filter(roster.units, 'enhancementId')
     const counted = filter(withEnhancement, unit => find(dataBase.data.enhancement, ['id', unit.enhancementId])?.isIncludedInEnhancementLimit)
     const limit = getBattleSize()?.enhancementLimit
-    if (limit && counted.length > limit) issues.push({uids: map(counted, 'uid'), message: `Too many enhancements: ${counted.length} of ${limit}`})
+    if (limit && counted.length > limit) issues.push({uids: map(counted, 'uid'), message: t('Too many enhancements: {{count}} of {{limit}}', {count: counted.length, limit})})
     forEach(groupBy(withEnhancement, 'enhancementId'), (units, id) => {
         const enhancement = find(dataBase.data.enhancement, ['id', id])
         if (enhancement && units.length > (enhancement.limit || 1)) {
-            issues.push({uids: map(units, 'uid'), message: `${enhancement.name} can be taken only ${enhancement.limit || 1} time(s)`})
+            issues.push({uids: map(units, 'uid'), message: t('{{name}} can be taken only {{count}} time|{{name}} can be taken only {{count}} times', {name: enhancement.name, count: enhancement.limit || 1})})
         }
     })
     return issues
@@ -239,7 +240,7 @@ const getDuplicateIssues = () => {
     forEach(uniq(map(roster.units, 'datasheetId')), datasheetId => {
         const count = getUnitCount(datasheetId)
         const limit = getUnitLimit(datasheetId)
-        if (count > limit) issues.push({uids: map(filter(roster.units, ['datasheetId', datasheetId]), 'uid'), message: `${getName(datasheetId)}: ${count} of maximum ${limit}`})
+        if (count > limit) issues.push({uids: map(filter(roster.units, ['datasheetId', datasheetId]), 'uid'), message: t('{{name}}: {{count}} of maximum {{limit}}', {name: getName(datasheetId), count, limit})})
     })
     return issues
 }
@@ -301,17 +302,17 @@ const getAlliedIssues = () => {
 
         if (faction.requiredWarlordMiniatureId && !warlordMiniatureIds.includes(faction.requiredWarlordMiniatureId)) {
             const warlordName = getName(find(dataBase.data.miniature, ['id', faction.requiredWarlordMiniatureId])?.datasheetId)
-            issues.push({fix: 'warlord', message: `${name}: allies require ${warlordName} as the Warlord`})
+            issues.push({fix: 'warlord', message: t('{{name}}: allies require {{warlordName}} as the Warlord', {name, warlordName})})
         }
 
         const limit = getAlliedPointsLimit(id)
         const points = sumBy(units, getUnitTotalPoints)
-        if (limit !== null && points > limit) issues.push({uids: map(units, 'uid'), message: `${name}: ${points} of ${limit} pts allowed for allies`})
+        if (limit !== null && points > limit) issues.push({uids: map(units, 'uid'), message: t('{{name}}: {{points}} of {{limit}} pts allowed for allies', {name, points, limit})})
 
         forEach(units, unit => {
-            if (unit.isWarlord) issues.push({uid: unit.uid, message: `${getName(unit.datasheetId)}: an allied unit cannot be the Warlord`})
+            if (unit.isWarlord) issues.push({uid: unit.uid, message: t('{{name}}: an allied unit cannot be the Warlord', {name: getName(unit.datasheetId)})})
             if (unit.enhancementId && !faction.canTakeEnhancements) {
-                issues.push({uid: unit.uid, message: `${getName(unit.datasheetId)}: ${name} allies cannot take enhancements`})
+                issues.push({uid: unit.uid, message: t('{{unit}}: {{name}} allies cannot take enhancements', {unit: getName(unit.datasheetId), name})})
             }
         })
 
@@ -325,10 +326,10 @@ const getAlliedIssues = () => {
             const count = getKeywordSlotCount(units, keywordLimit)
             const keywordName = find(dataBase.data.keyword, ['id', keywordLimit.keywordId])?.name
             if (count > 0) used.push(keywordName)
-            if (count > allowed) issues.push({uids: map(units, 'uid'), message: `${name}: ${keywordName} ${count} of ${allowed} allowed`})
+            if (count > allowed) issues.push({uids: map(units, 'uid'), message: t('{{name}}: {{keywordName}} {{count}} of {{allowed}} allowed', {name, keywordName, count, allowed})})
         })
         if (faction.isMutuallyExclusiveKeywordLimit && used.length > 1) {
-            issues.push({uids: map(units, 'uid'), message: `${name}: only one of ${used.join(', ')} can be taken`})
+            issues.push({uids: map(units, 'uid'), message: t('{{name}}: only one of {{names}} can be taken', {name, names: used.join(', ')})})
         }
     })
     return issues
@@ -359,10 +360,10 @@ const getRestrictionIssues = () => {
         const min = Math.max(0, ...map(limits, item => item.minRosterLimit || 0))
         const name = map(keywordIds, id => find(dataBase.data.keyword, ['id', id])?.name).join(' ')
         if (max !== null && units.length > max) {
-            const message = `${name}: no more than ${max} per list`
-            issues.push(...(max === 0 ? map(units, unit => ({uid: unit.uid, message: `${name}: cannot be taken in this list`})) : [{uids: map(units, 'uid'), message}]))
+            const message = t('{{name}}: no more than {{max}} per list', {name, max})
+            issues.push(...(max === 0 ? map(units, unit => ({uid: unit.uid, message: t('{{name}}: cannot be taken in this list', {name})})) : [{uids: map(units, 'uid'), message}]))
         }
-        if (min && units.length < min) issues.push({message: `${name}: at least ${min} required`})
+        if (min && units.length < min) issues.push({message: t('{{name}}: at least {{min}} required', {name, min})})
     })
     return issues
 }
@@ -374,13 +375,13 @@ const getAllegianceIssues = () => {
         const abilityIds = map(getAllegianceAbilities(group.id), 'id')
         if (group.isMandatory) {
             forEach(getAllegianceUnits(group), unit => {
-                if (!abilityIds.includes(unit.allegianceAbilityId)) issues.push({uid: unit.uid, message: `${group.name}: choose an ability`})
+                if (!abilityIds.includes(unit.allegianceAbilityId)) issues.push({uid: unit.uid, message: t('{{name}}: choose an ability', {name: group.name})})
             })
             return
         }
         const count = filter(roster.units, unit => abilityIds.includes(unit.allegianceAbilityId)).length
-        if (group.maxRosterLimit && count > group.maxRosterLimit) issues.push({uids: map(filter(roster.units, unit => abilityIds.includes(unit.allegianceAbilityId)), 'uid'), message: `${group.name}: no more than ${group.maxRosterLimit} units can be selected`})
-        if (group.minRosterLimit && count < group.minRosterLimit) issues.push({uids: map(getAllegianceUnits(group), 'uid'), message: `${group.name}: select ${group.minRosterLimit} units (${count} selected)`})
+        if (group.maxRosterLimit && count > group.maxRosterLimit) issues.push({uids: map(filter(roster.units, unit => abilityIds.includes(unit.allegianceAbilityId)), 'uid'), message: t('{{name}}: no more than {{maxRosterLimit}} units can be selected', {name: group.name, maxRosterLimit: group.maxRosterLimit})})
+        if (group.minRosterLimit && count < group.minRosterLimit) issues.push({uids: map(getAllegianceUnits(group), 'uid'), message: t('{{name}}: select {{minRosterLimit}} units ({{count}} selected)', {name: group.name, minRosterLimit: group.minRosterLimit, count})})
     })
     return issues
 }
@@ -388,20 +389,20 @@ const getAllegianceIssues = () => {
 // Составы, требующие детачмента (например, C'tan только в Pantheon of Woe)
 const getCompositionIssues = () => compact(map(roster.units, unit => isCompositionAvailable(unit.compositionId)
     ? null
-    : {uid: unit.uid, message: `${getName(unit.datasheetId)}: requires a specific detachment`}))
+    : {uid: unit.uid, message: t('{{name}}: requires a specific detachment', {name: getName(unit.datasheetId)})}))
 
 // Все проблемы ростера
 export const getRosterIssues = () => {
     const issues = []
-    if (getRosterPoints() > roster.pointsLimit) issues.push({fix: 'size', message: `More than ${roster.pointsLimit} points`})
-    if (!detachmentIds().length) issues.push({message: 'Detachment is not chosen', fix: 'detachments'})
-    if (getUsedDetachmentPoints() > getDetachmentPointsLimit()) issues.push({message: `Detachment points: ${getUsedDetachmentPoints()} / ${getDetachmentPointsLimit()} DP`, fix: 'detachments'})
+    if (getRosterPoints() > roster.pointsLimit) issues.push({fix: 'size', message: t('More than {{pointsLimit}} points', {pointsLimit: roster.pointsLimit})})
+    if (!detachmentIds().length) issues.push({message: t('Detachment is not chosen'), fix: 'detachments'})
+    if (getUsedDetachmentPoints() > getDetachmentPointsLimit()) issues.push({message: t('Detachment points: {{used}} / {{limit}} DP', {used: getUsedDetachmentPoints(), limit: getDetachmentPointsLimit()}), fix: 'detachments'})
     forEach(detachmentIds(), id => {
         const conflict = getDetachmentKeywordConflict(id)
         const detachment = find(dataBase.data.detachment, ['id', id])
-        if (conflict && detachment.id < conflict.detachment.id) issues.push({message: `${detachment.name} and ${conflict.detachment.name} cannot be taken together (${conflict.keyword})`, fix: 'detachments'})
+        if (conflict && detachment.id < conflict.detachment.id) issues.push({message: t('{{first}} and {{second}} cannot be taken together ({{keyword}})', {first: detachment.name, second: conflict.detachment.name, keyword: conflict.keyword}), fix: 'detachments'})
     })
-    if (detachmentIds().length && !roster.forceDispositionId && size(getForceDispositionOptions())) issues.push({message: 'Force Disposition is not chosen', fix: 'forceDisposition'})
+    if (detachmentIds().length && !roster.forceDispositionId && size(getForceDispositionOptions())) issues.push({message: t('Force Disposition is not chosen'), fix: 'forceDisposition'})
     issues.push(...getWarlordIssues(), ...getDuplicateIssues(), ...getEnhancementRosterIssues(), ...getBodyguardIssues(), ...getAlliedIssues(), ...getRestrictionIssues(), ...getAllegianceIssues(), ...getCompositionIssues())
     forEach(roster.units, unit => issues.push(...getAttachIssues(unit), ...getEnhancementIssues(unit)))
     return issues

@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React, {useReducer, useMemo} from 'react'
 import {useLocation, useNavigate} from 'react-router-dom'
 import {roster} from '../utilities/appState'
@@ -8,7 +9,7 @@ import ListStatus from './ListStatus'
 import Button from '../components/Button'
 import useSaveList from './useSaveList'
 import CollapseSection from '../components/CollapseSection'
-import {sortByName, getUnitsSortesByType, getCodexInfo, getParentCodexId} from '../utilities/utils'
+import {sortByName, getUnitsSortesByType, getCodexInfo, getParentCodexId, getFactionLabel} from '../utilities/utils'
 import {getRosterPoints, setBattleSize, getDatasheetType, getUnitTotalPoints, getUsedDetachmentPoints, getDetachmentPointsLimit, getForceDispositionOptions} from '../utilities/rosterModel'
 
 import map from 'lodash/map'
@@ -66,7 +67,7 @@ const Builder = () => {
 
     const handleDispositionInfo = () => navigate('/forceDispositionInfo', {state: {title: forceDisposition.name, forceDispositionId: forceDisposition.id}})
 
-    const handleForceDisposition = () => navigate('/chooseForceDisposition', {state: {title: 'Force Disposition'}})
+    const handleForceDisposition = () => navigate('/chooseForceDisposition', {state: {title: t('Force Disposition')}})
 
     const handleArmyRules = () => {
         let data = []
@@ -75,11 +76,11 @@ const Builder = () => {
         } else {
             data = map(filter(dataBase.data.army_rule_faction_keyword, ['factionKeywordId', faction.id]), rule => find(dataBase.data.army_rule, ['id', rule.armyRuleId]))
         }
-        if (size(data)) navigate('/armyRules', {state: {title: 'Army Rules', faction, data}})
+        if (size(data)) navigate('/armyRules', {state: {title: t('Army Rules'), faction, data}})
     }
 
     const handleAdd = (unitsType, isAllied) => () => navigate('/addUnit', {state: {
-        unitsType, factionId: faction.id, isAllied, alliedFactionIds, title: `Add ${unitsType.title}`
+        unitsType, factionId: faction.id, isAllied, alliedFactionIds, title: t('Add {{type}}', {type: unitsType.label || t(unitsType.title)})
     }})
 
     // Переход к юниту списка: раскрываем его группу, прокручиваем экран и подсвечиваем карточку
@@ -106,9 +107,9 @@ const Builder = () => {
     const renderGroup = (unitsType, isAllied) => {
         const units = getGroupUnits(unitsType.title)
         const addButton = <button type='button' className={size(units) ? Styles.addButton : Styles.addButtonAlone} onClick={handleAdd(unitsType, isAllied)}>
-            + Add {unitsType.title}
+            + {t('Add {{type}}', {type: unitsType.label || t(unitsType.title)})}
         </button>
-        return <CollapseSection key={unitsType.title} title={`${unitsType.title}${size(units) ? ` (${size(units)})` : ''}`} meta={size(units) ? `${sumBy(units, getUnitTotalPoints)} pts` : ''} expanded={!collapsed[unitsType.title]} onToggle={() => handleToggle(unitsType.title)}>
+        return <CollapseSection key={unitsType.title} title={`${unitsType.label || t(unitsType.title)}${size(units) ? ` (${size(units)})` : ''}`} meta={size(units) ? t('{{count}} pts', {count: sumBy(units, getUnitTotalPoints)}) : ''} expanded={!collapsed[unitsType.title]} onToggle={() => handleToggle(unitsType.title)}>
             {unitsType.title === ALLIED_TITLE && size(getAlliedUsage())
                 ? <div className={Styles.allyUsage}>
                     {map(getAlliedUsage(), ally => <p key={ally.id} className={ally.limit !== null && ally.points > ally.limit ? Styles.over : ''}>
@@ -150,8 +151,8 @@ const Builder = () => {
     return <div id='column' className='Chapter'>
         <div className={Styles.summary} ref={summaryRef}>
             <div className={Styles.faction}>
-                <span className={Styles.factionName}>{roster.faction}</span>
-                <button type='button' className={Styles.infoButton} onClick={handleArmyRules} aria-label='Army rules'>i</button>
+                <span className={Styles.factionName}>{getFactionLabel(roster.factionId, roster.faction)}</span>
+                <button type='button' className={Styles.infoButton} onClick={handleArmyRules} aria-label={t('Army rules')}>i</button>
             </div>
             <span className={Styles.muted}>{roster.grandFaction}</span>
             <div className={Styles.pointsRow}>
@@ -180,8 +181,8 @@ const Builder = () => {
                 />)}
                 <button type='button' className={Styles.detachment} onClick={handleChooseDetachment}>
                     <span className={Styles.detachmentBody}>
-                        <span className={Styles.detachmentLabel}>Detachments</span>
-                        <span className={Styles.detachmentName}>{size(chosenDetachments) ? 'Edit Detachments' : 'Choose Detachments'}</span>
+                        <span className={Styles.detachmentLabel}>{t('Detachments')}</span>
+                        <span className={Styles.detachmentName}>{size(chosenDetachments) ? t('Edit Detachments') : t('Choose Detachments')}</span>
                     </span>
                     <span className={`${Styles.detachmentName} ${getUsedDetachmentPoints() > getDetachmentPointsLimit() ? Styles.over : ''}`}>{getUsedDetachmentPoints()} / {getDetachmentPointsLimit()} DP</span>
                 </button>
@@ -189,12 +190,12 @@ const Builder = () => {
                     ? <div className={Styles.dispositionRow}>
                         <button type='button' className={Styles.detachment} onClick={handleForceDisposition}>
                             <span className={Styles.detachmentBody}>
-                                <span className={Styles.detachmentLabel}>Force Disposition</span>
-                                <span className={Styles.detachmentName}>{forceDisposition?.name || 'Choose Force Disposition'}</span>
+                                <span className={Styles.detachmentLabel}>{t('Force Disposition')}</span>
+                                <span className={Styles.detachmentName}>{forceDisposition?.name || t('Choose Force Disposition')}</span>
                             </span>
                         </button>
                         {forceDisposition
-                            ? <button type='button' className={`${Styles.infoButton} ${Styles.dispositionInfo}`} onClick={handleDispositionInfo} aria-label='Force Disposition info'>i</button>
+                            ? <button type='button' className={`${Styles.infoButton} ${Styles.dispositionInfo}`} onClick={handleDispositionInfo} aria-label={t('Force Disposition info')}>i</button>
                             : null
                         }
                     </div>
@@ -205,11 +206,11 @@ const Builder = () => {
         }
         {map(unitsTypes, unitsType => renderGroup(unitsType, false))}
         {size(alliedFactionIds) ? renderGroup({title: ALLIED_TITLE}, true) : null}
-        <Button type='secondary' className={Styles.fullButton} onClick={() => navigate('/export', {state: {title: 'Export List'}})}>Export</Button>
+        <Button type='secondary' className={Styles.fullButton} onClick={() => navigate('/export', {state: {title: t('Export List')}})}>{t('Export')}</Button>
         <div className={Styles.saveBar}>
             <div className={Styles.saveInfo}>
                 <span className={`${Styles.savePoints} ${isOver ? Styles.over : ''}`}>{points} / {roster.pointsLimit} pts</span>
-                <span className={Styles.saveHint}>{size(errors) ? `${size(errors)} ${size(errors) === 1 ? 'issue' : 'issues'} to fix` : 'List is ready'}</span>
+                <span className={Styles.saveHint}>{size(errors) ? t('{{count}} issue to fix|{{count}} issues to fix', {count: size(errors)}) : t('List is ready')}</span>
             </div>
             <Button type={size(errors) ? 'secondary' : 'primary'} className={Styles.saveButton} onClick={size(errors) ? handleReview : handleClickSaveButton}>
                 {size(errors) ? 'Review' : 'Save'}

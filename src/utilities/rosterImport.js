@@ -1,3 +1,4 @@
+import {t} from './i18n'
 import Constants from '../Constants'
 import {roster} from './appState'
 import {
@@ -13,6 +14,8 @@ import filter from 'lodash/filter'
 import flatMap from 'lodash/flatMap'
 import forEach from 'lodash/forEach'
 import includes from 'lodash/includes'
+import uniq from 'lodash/uniq'
+import {getFactionLabel} from './utils'
 import compact from 'lodash/compact'
 import size from 'lodash/size'
 
@@ -30,6 +33,10 @@ export const normalize = (value) => String(value || '')
     .replace(/[’‘`´]/g, "'")
     .replace(/[^a-z0-9']+/g, ' ')
     .trim()
+
+// Названия в базе показываются на выбранном языке, а список может прийти на английском (или наоборот):
+// сопоставляем и с названием на языке интерфейса, и с английским
+const sameName = (item, key) => normalize(item.name) === key || normalize(item.nameEn) === key
 
 const parsePoints = (value) => parseInt(String(value).replace(/[,.]/g, ''), 10) || 0
 
@@ -78,7 +85,7 @@ export const splitRosterText = (text) => {
     while (index < lines.length) {
         const line = lines[index]
         const unitHeader = parseUnitHeader(line)
-        const isBattleSize = unitHeader && find(dataBase.data.battle_size, item => normalize(item.name) === normalize(unitHeader.name))
+        const isBattleSize = unitHeader && find(dataBase.data.battle_size, item => sameName(item, normalize(unitHeader.name)))
         if (isSectionTitle(line) || /^attached unit/i.test(line) || (unitHeader && !isBattleSize)) break
         header.push(line)
         index++
@@ -115,7 +122,11 @@ export const splitRosterText = (text) => {
 
 // --- Шапка: армия, детачменты, доктрина, размер игры ---
 
-const getAllFactions = () => flatMap(Constants.grandFactions, grand => map(grand.factions, faction => ({...faction, grandFaction: grand.name})))
+// У армии несколько написаний: английское из Constants и название на языке интерфейса
+const getAllFactions = () => flatMap(Constants.grandFactions, grand => map(grand.factions, faction => {
+    const row = find(dataBase.data.faction_keyword, ['id', faction.id])
+    return {...faction, grandFaction: grand.name, labels: compact([faction.name, row?.name, row?.commonName, row?.nameEn, row?.commonNameEn]).map(normalize)}
+}))
 
 const parseHeader = (header, warnings) => {
     const result = {}
@@ -123,7 +134,7 @@ const parseHeader = (header, warnings) => {
     // Армия: последняя строка шапки без скобок, совпавшая с названием армии (первой идёт родительская, например Space Marines)
     const factionLines = filter(header, line => !line.includes('('))
     for (let i = factionLines.length - 1; i >= 0 && !result.faction; i--) {
-        result.faction = find(factions, faction => normalize(faction.name) === normalize(factionLines[i]))
+        result.faction = find(factions, faction => includes(faction.labels, normalize(factionLines[i])))
     }
     if (!result.faction) return result
 
@@ -135,16 +146,16 @@ const parseHeader = (header, warnings) => {
     let rest = text
     result.detachmentIds = []
     forEach(sorted, detachment => {
-        const name = ` ${normalize(detachment.name)} `
-        if (rest.includes(name)) {
+        const name = find(uniq([detachment.name, detachment.nameEn]), item => item && rest.includes(` ${normalize(item)} `))
+        if (name) {
             result.detachmentIds.push(detachment.id)
-            rest = rest.replace(name, ' ')
+            rest = rest.replace(` ${normalize(name)} `, ' ')
         }
     })
-    if (!result.detachmentIds.length) warnings.push('Detachment was not recognized — choose it in the builder')
+    if (!result.detachmentIds.length) warnings.push(t('Detachment was not recognized — choose it in the builder'))
 
-    result.forceDisposition = find(dataBase.data.force_disposition, item => some(header, line => normalize(line) === normalize(item.name)))
-    result.battleSize = find(dataBase.data.battle_size, item => some(header, line => normalize(line.replace(/\(.*?\)/g, '')) === normalize(item.name)))
+    result.forceDisposition = find(dataBase.data.force_disposition, item => some(header, line => sameName(item, normalize(line))))
+    result.battleSize = find(dataBase.data.battle_size, item => some(header, line => sameName(item, normalize(line.replace(/\(.*?\)/g, '')))))
     const pointsMatch = find(map(header, line => line.match(/\(\s*([\d,.]+)\s*points?\s*\)/i)), Boolean)
     if (pointsMatch) {
         const points = parsePoints(pointsMatch[1])
@@ -157,7 +168,7 @@ const parseHeader = (header, warnings) => {
 
 const findDatasheet = (name, availableIds, factionId) => {
     const key = normalize(name)
-    const candidates = filter(dataBase.data.datasheet, item => normalize(item.name) === key)
+    const candidates = filter(dataBase.data.datasheet, item => sameName(item, key))
     if (!candidates.length) return null
     return find(candidates, item => availableIds.has(item.id))
         || find(candidates, item => some(dataBase.data.datasheet_faction_keyword, link => link.datasheetId === item.id && link.factionKeywordId === factionId))
@@ -178,21 +189,34 @@ const NO_TEXT = ['warlord']
 const getAllegianceLine = (text) => {
     const match = text.match(/^([^:]+):\s*(.+)$/)
     if (!match) return null
-    const group = find(dataBase.data.allegiance_ability_group, item => normalize(item.name) === normalize(match[1]))
+    const group = find(dataBase.data.allegiance_ability_group, item => sameName(item, normalize(match[1])))
     return group ? {group, value: match[2].trim()} : null
 }
 
 const isInfoLine = (text) => /^attached as:/i.test(text) || /^enhancements?:/i.test(text) || includes(NO_TEXT, text.toLowerCase()) || Boolean(getAllegianceLine(text))
 
 // Группирует строки юнита на модели (строки с названием миниатюры) и снаряжение. Количества у снаряжения - итоговые
+// Снаряжение сравниваем по английским названиям: название из текста приводим к ним
+let wargearKeys = null
+const toEnglishKey = (key) => {
+    if (!wargearKeys) {
+        wargearKeys = {}
+        forEach(dataBase.data.wargear_item, item => { if (item.name && item.nameEn) wargearKeys[normalize(item.name)] = normalize(item.nameEn) })
+    }
+    return wargearKeys[key] || key
+}
+
 const parseUnitLines = (datasheetId, lines) => {
     const miniatures = filter(dataBase.data.miniature, ['datasheetId', datasheetId])
     const miniatureByName = {}
-    forEach(miniatures, miniature => { miniatureByName[normalize(miniature.name)] = miniature })
+    forEach(miniatures, miniature => {
+        miniatureByName[normalize(miniature.name)] = miniature
+        if (miniature.nameEn) miniatureByName[normalize(miniature.nameEn)] = miniature
+    })
     const models = []
     const items = {}
     const addItem = (name, count) => {
-        const key = normalize(name)
+        const key = toEnglishKey(normalize(name))
         if (key) items[key] = (items[key] || 0) + count
     }
     forEach(lines, ({text, sub}) => {
@@ -236,7 +260,8 @@ const pickComposition = (unit, models, listedPoints) => {
 const getItemsByName = (unit) => {
     const byName = {}
     forEach(getUnitWargearItems(unit), (count, itemId) => {
-        const key = normalize(find(dataBase.data.wargear_item, ['id', itemId])?.name)
+        const item = find(dataBase.data.wargear_item, ['id', itemId])
+        const key = normalize(item?.nameEn || item?.name)
         if (key && count) byName[key] = (byName[key] || 0) + count
     })
     return byName
@@ -277,7 +302,7 @@ const findEnhancement = (name) => {
     // В названиях улучшений для отрядов есть суффикс "(Upgrade)", поэтому сначала ищем точное совпадение
     const candidates = [normalize(name), normalize(name.replace(/\(.*?\)\s*$/, ''))]
     for (const key of candidates) {
-        const all = filter(dataBase.data.enhancement, item => normalize(item.name) === key)
+        const all = filter(dataBase.data.enhancement, item => sameName(item, key))
         const found = find(all, item => includes(roster.detachmentIds, item.detachmentId))
         if (found) return found
     }
@@ -298,17 +323,17 @@ const getRole = (lines) => {
 export const importRoster = (text) => {
     const warnings = []
     const parsed = splitRosterText(text)
-    if (!parsed || !size(parsed.units)) return {ok: false, error: 'No units found. Paste a list in the format of the official Warhammer 40,000 app.', warnings}
+    if (!parsed || !size(parsed.units)) return {ok: false, error: t('No units found. Paste a list in the format of the official Warhammer 40,000 app.'), warnings}
     const header = parseHeader(parsed.header, warnings)
-    if (!header.faction) return {ok: false, error: 'Could not recognize the army. The first lines of the list should contain the army name (for example, Space Marines).', warnings}
+    if (!header.faction) return {ok: false, error: t('Could not recognize the army. The first lines of the list should contain the army name (for example, Space Marines).'), warnings}
 
     resetRoster()
-    roster.name = parsed.title.name || header.faction.name
+    roster.name = parsed.title.name || getFactionLabel(header.faction.id, header.faction.name)
     roster.grandFaction = header.faction.grandFaction
     roster.faction = header.faction.name
     roster.factionId = header.faction.id
     if (header.battleSize) setBattleSize(header.battleSize.id)
-    else warnings.push('Battle size was not recognized, 2000 points is used')
+    else warnings.push(t('Battle size was not recognized, 2000 points is used'))
     roster.detachmentIds = header.detachmentIds || []
     if (header.forceDisposition && some(getForceDispositionOptions(), ['id', header.forceDisposition.id])) roster.forceDispositionId = header.forceDisposition.id
     else syncForceDisposition()
@@ -318,7 +343,7 @@ export const importRoster = (text) => {
     forEach(parsed.units, entry => {
         const datasheet = findDatasheet(entry.name, available, roster.factionId)
         if (!datasheet) {
-            warnings.push(`Unit not found and skipped: ${entry.name}`)
+            warnings.push(t('Unit not found and skipped: {{name}}', {name: entry.name}))
             return
         }
         const isAllied = entry.section === 'ALLIED UNITS'
@@ -327,13 +352,13 @@ export const importRoster = (text) => {
         unit = pickComposition(unit, models, entry.points)
         const fit = fitWargear(unit, items)
         unit = fit.unit
-        if (fit.distance > 0) warnings.push(`${datasheet.name}: some wargear was not recognized and the default set is used`)
+        if (fit.distance > 0) warnings.push(t('{{name}}: some wargear was not recognized and the default set is used', {name: datasheet.name}))
         if (some(entry.lines, ({text}) => text.toLowerCase() === 'warlord')) unit.isWarlord = true
         const enhancementLine = find(entry.lines, ({text}) => /^enhancements?:/i.test(text))
         if (enhancementLine) {
             const enhancement = findEnhancement(enhancementLine.text.replace(/^enhancements?:\s*/i, ''))
             if (enhancement) unit.enhancementId = enhancement.id
-            else warnings.push(`${datasheet.name}: enhancement "${enhancementLine.text.replace(/^enhancements?:\s*/i, '')}" was not found`)
+            else warnings.push(t('{{name}}: enhancement "{{enhancement}}" was not found', {name: datasheet.name, enhancement: enhancementLine.text.replace(/^enhancements?:\s*/i, '')}))
         }
         created.push({unit, entry, role: getRole(entry.lines)})
     })
@@ -357,15 +382,15 @@ export const importRoster = (text) => {
             if (!line) return
             const current = find(roster.units, ['uid', unit.uid])
             const select = getUnitAllegianceSelect(current)
-            const ability = find(select?.abilities, item => normalize(item.name) === normalize(line.value))
+            const ability = find(select?.abilities, item => sameName(item, normalize(line.value)))
             if (ability) setUnitAllegiance(unit.uid, ability.id)
-            else warnings.push(`${entry.name}: "${line.group.name}: ${line.value}" was not recognized`)
+            else warnings.push(t('{{name}}: "{{group}}: {{value}}" was not recognized', {name: entry.name, group: line.group.name, value: line.value}))
         })
     })
     // Очки из текста и расчёт приложения могут расходиться (например, из-за версии базы)
     forEach(created, ({unit, entry}) => {
         const points = getUnitTotalPoints(unit)
-        if (entry.points && points !== entry.points) warnings.push(`${entry.name}: ${entry.points} pts in the list, ${points} pts calculated`)
+        if (entry.points && points !== entry.points) warnings.push(t('{{name}}: {{listed}} pts in the list, {{calculated}} pts calculated', {name: entry.name, listed: entry.points, calculated: points}))
     })
     return {ok: true, warnings}
 }

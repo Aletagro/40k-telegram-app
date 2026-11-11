@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React from 'react'
 import {useLocation} from 'react-router-dom'
 import {getCombatPatrolUnits} from '../utilities/utils'
@@ -15,7 +16,7 @@ const CombatPatrolArmy = () => {
     const renderUnit = (unit) => <ListItem
         key={unit.id}
         title={unit.name}
-        subtitle={unit.isWarlord ? 'Warlord' : undefined}
+        subtitle={unit.isWarlord ? t('Warlord') : undefined}
         image={unit.rowImage}
         navigateTo='datasheet'
         state={{unit}}
@@ -27,11 +28,11 @@ const CombatPatrolArmy = () => {
             <Tile
                 featured
                 title={patrol.patrolName}
-                text='Detachment rules, stratagems and enhancements'
+                text={t('Detachment rules, stratagems and enhancements')}
                 navigateTo='detachment'
                 state={{detachment: patrol.detachment, faction: patrol.faction}}
             />
-            <SectionTitle>Datasheets</SectionTitle>
+            <SectionTitle>{t('Datasheets')}</SectionTitle>
             <ListCard>{map(units, renderUnit)}</ListCard>
         </div>
     </>

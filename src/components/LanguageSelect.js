@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React, {useState} from 'react'
 
 import Styles from './styles/LanguageSelect.module.css'
@@ -33,7 +34,7 @@ const LanguageSelect = () => {
     return <>
         <button type='button' className={Styles.row} onClick={handleOpen}>
             <span className={Styles.body}>
-                <span className={Styles.title}>Rules language</span>
+                <span className={Styles.title}>{t('Rules language')}</span>
                 <span className={Styles.text}>{currentName}</span>
             </span>
             <span className={Styles.chevron} aria-hidden='true' />
@@ -42,8 +43,8 @@ const LanguageSelect = () => {
             ? <div className={Styles.overlay} onClick={handleClose}>
                 <div className={Styles.sheet} onClick={(e) => e.stopPropagation()}>
                     <div className={Styles.handle} />
-                    <p className={Styles.sheetTitle}>Rules language</p>
-                    <p className={Styles.hint}>Missing translations are shown in English</p>
+                    <p className={Styles.sheetTitle}>{t('Rules language')}</p>
+                    <p className={Styles.hint}>{t('Missing translations are shown in English')}</p>
                     {LANGUAGES.map(renderLanguage)}
                 </div>
             </div>

@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React, {useEffect, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {toast} from 'react-toastify'
@@ -52,18 +53,18 @@ const UserLists = () => {
         setToDelete(null)
         const response = await deleteRoster(list.id, main.user?.id)
         if (!response) {
-            toast.error('Could not delete the list', Constants.toastParams)
+            toast.error(t('Could not delete the list'), Constants.toastParams)
             return
         }
         main.rosters = filter(main.rosters, item => item.id !== list.id)
         setLists(main.rosters)
-        toast.success('List deleted', Constants.toastParams)
+        toast.success(t('List deleted'), Constants.toastParams)
     }
 
     const renderList = (list) => {
         const army = find(dataBase.data.faction_keyword, ['id', list.faction_id])
         return <div className={Styles.listContainer} key={list.id}>
-            <button type='button' className={Styles.closeIcon} onClick={() => setToDelete(list)} aria-label='Delete list'>
+            <button type='button' className={Styles.closeIcon} onClick={() => setToDelete(list)} aria-label={t('Delete list')}>
                 <svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='3' strokeLinecap='round' aria-hidden='true'><path d='M6 6l12 12M18 6L6 18' /></svg>
             </button>
             <button type='button' className={Styles.button} onClick={handleOpen(list)}>
@@ -79,23 +80,23 @@ const UserLists = () => {
     const renderLimitNote = () => {
         if (includes(Constants.developersIds, main.tgId)) return null
         if (isSupporter(main.user)) {
-            return <InfoNote title='Thank you for your support!'>No limit on saved lists until {formatSupportDate(getSupportUntil(main.user))}.</InfoNote>
+            return <InfoNote title={t('Thank you for your support!')}>{t('No limit on saved lists until {{date}}.', {date: formatSupportDate(getSupportUntil(main.user))})}</InfoNote>
         }
-        return <InfoNote title={`You can save up to ${Constants.listsMax} army lists`}>
-            <p className={Styles.limitText}>Support the app with any donation from 1 EUR and the limit is removed for a month.</p>
-            <Button className={Styles.limitButton} onClick={openSupportPage}>Support the app</Button>
+        return <InfoNote title={t('You can save up to {{count}} army lists', {count: Constants.listsMax})}>
+            <p className={Styles.limitText}>{t('Support the app with any donation from 1 EUR and the limit is removed for a month.')}</p>
+            <Button className={Styles.limitButton} onClick={openSupportPage}>{t('Support the app')}</Button>
         </InfoNote>
     }
 
     return <div id='column' className='Chapter'>
-        <Button className={Styles.newRosterButton} onClick={handleNew}>New List</Button>
-        <Button className={Styles.newRosterButton} type='secondary' onClick={handlePaste}>Paste List</Button>
+        <Button className={Styles.newRosterButton} onClick={handleNew}>{t('New List')}</Button>
+        <Button className={Styles.newRosterButton} type='secondary' onClick={handlePaste}>{t('Paste List')}</Button>
         {renderLimitNote()}
         <div className={Styles.buttonContainer}>{map(lists, renderList)}</div>
-        <Modal visible={Boolean(toDelete)} title='Delete roster?' onClose={() => setToDelete(null)}>
+        <Modal visible={Boolean(toDelete)} title={t('Delete roster?')} onClose={() => setToDelete(null)}>
             <p className={Styles.modalText}>{toDelete?.name}</p>
-            <Button type='danger' className={Styles.newRosterButton} onClick={handleDelete}>Delete</Button>
-            <Button type='secondary' className={Styles.newRosterButton} onClick={() => setToDelete(null)}>Cancel</Button>
+            <Button type='danger' className={Styles.newRosterButton} onClick={handleDelete}>{t('Delete')}</Button>
+            <Button type='secondary' className={Styles.newRosterButton} onClick={() => setToDelete(null)}>{t('Cancel')}</Button>
         </Modal>
     </div>
 }

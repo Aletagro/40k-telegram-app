@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React, {useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {roster, navigationState} from '../utilities/appState'
@@ -42,8 +43,8 @@ const PasteList = () => {
     }
 
     return <div id='column' className='Chapter'>
-        <InfoNote title='Paste your army list'>
-            <p>Copy a list from the official Warhammer 40,000 app, Listhammer or from this app (Export → Copy List) and paste it below.</p>
+        <InfoNote title={t('Paste your army list')}>
+            <p>{t('Copy a list from the official Warhammer 40,000 app, Listhammer or from this app (Export → Copy List) and paste it below.')}</p>
         </InfoNote>
         <textarea
             className={Styles.textarea}
@@ -62,8 +63,8 @@ const PasteList = () => {
             : null
         }
         {warnings
-            ? <Button className={Styles.button} onClick={openBuilder}>Open list</Button>
-            : <Button className={Styles.button} disabled={!trim(text)} onClick={handleImport}>Import list</Button>
+            ? <Button className={Styles.button} onClick={openBuilder}>{t('Open list')}</Button>
+            : <Button className={Styles.button} disabled={!trim(text)} onClick={handleImport}>{t('Import list')}</Button>
         }
     </div>
 }

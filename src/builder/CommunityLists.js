@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React, {useCallback, useEffect, useReducer, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {lists, main, roster, navigationState} from '../utilities/appState'
@@ -44,9 +45,9 @@ const CommunityListCard = ({list, onClick}) => {
             <span className={Styles.cardPoints}>{points ? `${points} / ` : ''}{list.points_limit} pts</span>
         </span>
         <span className={Styles.cardArmy}>{army?.name || list.faction}</span>
-        {player ? <span className={Styles.cardRow}><b>Player</b> {player}</span> : null}
-        {size(detachments) ? <span className={Styles.cardRow}><b>Detachments</b> {detachments.join(', ')}</span> : null}
-        {forceDisposition ? <span className={Styles.cardRow}><b>Force Disposition</b> {forceDisposition}</span> : null}
+        {player ? <span className={Styles.cardRow}><b>{t('Player')}</b> {player}</span> : null}
+        {size(detachments) ? <span className={Styles.cardRow}><b>{t('Detachments')}</b> {detachments.join(', ')}</span> : null}
+        {forceDisposition ? <span className={Styles.cardRow}><b>{t('Force Disposition')}</b> {forceDisposition}</span> : null}
         {size(units) ? <span className={Styles.cardUnits}>{units.join(' · ')}</span> : null}
     </button>
 }
@@ -108,14 +109,14 @@ const CommunityLists = () => {
 
     const renderArmies = () => <div>
         {map(Constants.grandFactions, grand => <div key={grand.name}>
-            <p className={Styles.groupTitle}>{grand.name}</p>
+            <p className={Styles.groupTitle}>{t(grand.name)}</p>
             {map(grand.factions, faction => renderOption('faction_id', faction.id, faction.name))}
         </div>)}
     </div>
 
     const filters = [
-        {id: 'faction_id', label: find(flatMap(Constants.grandFactions, 'factions'), ['id', lists.filters.faction_id])?.name || 'Army', content: renderArmies},
-        {id: 'points_limit', label: lists.filters.points_limit ? `${lists.filters.points_limit} pts` : 'Points', content: () => map(POINTS_LIMITS, value => renderOption('points_limit', value, `${value} points`))}
+        {id: 'faction_id', label: find(flatMap(Constants.grandFactions, 'factions'), ['id', lists.filters.faction_id])?.name || t('Army'), content: renderArmies},
+        {id: 'points_limit', label: lists.filters.points_limit ? t('{{count}} pts', {count: lists.filters.points_limit}) : t('Points'), content: () => map(POINTS_LIMITS, value => renderOption('points_limit', value, t('{{count}} points', {count: value})))}
     ]
 
     const renderFilter = (filter) => <button
@@ -129,7 +130,7 @@ const CommunityLists = () => {
 
     return <>
         <div className={Styles.filters}>
-            <button type='button' className={lists.filters.all ? Styles.selectedFilter : Styles.filter} onClick={handleAll}>All</button>
+            <button type='button' className={lists.filters.all ? Styles.selectedFilter : Styles.filter} onClick={handleAll}>{t('All')}</button>
             {map(filters, renderFilter)}
         </div>
         <div id='column' className='Chapter'>
@@ -138,10 +139,10 @@ const CommunityLists = () => {
                     {map(lists.data, list => <CommunityListCard key={list.id} list={list} onClick={handleOpen} />)}
                     {lists.meta?.total_pages === lists.meta?.page
                         ? null
-                        : <Button className={Styles.nextPage} type='secondary' onClick={() => handleGetLists(lists.meta?.page + 1)}>Show Next Page</Button>
+                        : <Button className={Styles.nextPage} type='secondary' onClick={() => handleGetLists(lists.meta?.page + 1)}>{t('Show Next Page')}</Button>
                     }
                 </>
-                : <p className={Styles.empty}>Nobody plays this army yet, you can be the first!</p>
+                : <p className={Styles.empty}>{t('Nobody plays this army yet, you can be the first!')}</p>
             }
         </div>
         <Modal visible={Boolean(modal)} title={modal?.label} onClose={() => setModal(null)}>

@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React from 'react'
 import {useLocation} from 'react-router-dom'
 import Tile from '../components/Tile'
@@ -43,7 +44,8 @@ const Army = () => {
     const handleClickBuilder = () => {
         resetRoster()
         roster.grandFaction = grandFaction
-        roster.faction = faction.name
+        // в списке армия хранится по-английски, чтобы сохранённые списки не зависели от языка
+        roster.faction = faction.nameEn || faction.name
         roster.factionId = faction.id
         navigationState.isBuilder = true
     }
@@ -81,8 +83,8 @@ const Army = () => {
         <div id='column' className='Chapter'>
             <Tile
                 featured
-                title='Datasheets'
-                text='All units of the army'
+                title={t('Datasheets')}
+                text={t('All units of the army')}
                 navigateTo={datasheets.screen}
                 state={{faction, codexInfo}}
             />
@@ -91,12 +93,12 @@ const Army = () => {
                 : <div className={Styles.spacer} />
             }
             <ListCard>
-                <ListItem title='Builder' navigateTo='builder' state={{faction}} onClick={handleClickBuilder} />
-                <ListItem title='Community Lists' navigateTo='lists' onClick={handleOpenLists} />
+                <ListItem title={t('Builder')} navigateTo='builder' state={{faction}} onClick={handleClickBuilder} />
+                <ListItem title={t('Community Lists')} navigateTo='lists' onClick={handleOpenLists} />
             </ListCard>
             {size(detachments)
                 ? <>
-                    <SectionTitle>Detachments</SectionTitle>
+                    <SectionTitle>{t('Detachments')}</SectionTitle>
                     {map(detachments, renderDetachment)}
                 </>
                 : null

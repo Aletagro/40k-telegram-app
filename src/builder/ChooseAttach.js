@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React from 'react'
 import {useLocation, useNavigate} from 'react-router-dom'
 import {roster} from '../utilities/appState'
@@ -51,7 +52,7 @@ const ChooseAttach = () => {
         return <ListItem
             key={target.uid}
             title={datasheet?.name}
-            subtitle={`${getModelCount(target)} models${type === 'support' ? ' · support' : ''}${isCurrent ? ' · attached' : ''}`}
+            subtitle={`${t('{{count}} model|{{count}} models', {count: getModelCount(target)})}${type === 'support' ? ` · ${t('support')}` : ''}${isCurrent ? ` · ${t('attached')}` : ''}`}
             image={datasheet?.rowImage}
             onClick={handleChoose(target)}
         />
@@ -60,7 +61,7 @@ const ChooseAttach = () => {
     const renderPossible = (datasheet) => <ListItem
         key={datasheet.id}
         title={datasheet.name}
-        subtitle='Will be added to the list'
+        subtitle={t('Will be added to the list')}
         image={datasheet.rowImage}
         onClick={handleAddAndChoose(datasheet)}
     />
@@ -69,10 +70,10 @@ const ChooseAttach = () => {
         {size(targets)
             ? <ListCard>{map(targets, renderTarget)}</ListCard>
             : <>
-                <p className={Styles.empty}>There are no suitable units in the list yet. Choose one to add it and attach this character</p>
+                <p className={Styles.empty}>{t('There are no suitable units in the list yet. Choose one to add it and attach this character')}</p>
                 {size(possible)
                     ? <>
-                        <SectionTitle>Can lead</SectionTitle>
+                        <SectionTitle>{t('Can lead')}</SectionTitle>
                         <ListCard>{map(possible, renderPossible)}</ListCard>
                     </>
                     : null
@@ -80,7 +81,7 @@ const ChooseAttach = () => {
             </>
         }
         {leader?.attachedToUid
-            ? <Button type='danger' className={Styles.fullButton} onClick={handleDetach}>Detach</Button>
+            ? <Button type='danger' className={Styles.fullButton} onClick={handleDetach}>{t('Detach')}</Button>
             : null
         }
     </div>

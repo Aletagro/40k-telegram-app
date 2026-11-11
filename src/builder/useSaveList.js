@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React, {useEffect, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {toast} from 'react-toastify'
@@ -70,14 +71,14 @@ const useSaveList = () => {
             : await createRoster(data)
         setIsSaving(false)
         if (!response) {
-            toast.error('Could not save the list', Constants.toastParams)
+            toast.error(t('Could not save the list'), Constants.toastParams)
             return
         }
         roster.id = get(response, 'roster_id', roster.id)
         roster.name = name
         roster.isPublic = isPublic
         setIsOpen(false)
-        toast.success('List Saved', Constants.toastParams)
+        toast.success(t('List Saved'), Constants.toastParams)
     }
 
     const isListsLimit = rostersCount >= Constants.listsMax && !roster.id && hasListsLimit(main.user, main.tgId)
@@ -85,28 +86,28 @@ const useSaveList = () => {
     const handleDeleteList = (list) => async () => {
         const response = await deleteRoster(list.id, main.user?.id)
         if (!response) {
-            toast.error('Could not delete the list', Constants.toastParams)
+            toast.error(t('Could not delete the list'), Constants.toastParams)
             return
         }
         main.rosters = filter(main.rosters, item => item.id !== list.id)
         setRostersCount(size(main.rosters))
-        toast.success('List deleted', Constants.toastParams)
+        toast.success(t('List deleted'), Constants.toastParams)
     }
 
     const limitContent = <>
-        <p className={Styles.hint}>You can delete one of your lists or support the app from 1 EUR to remove the limit for a month.</p>
-        <Button className={Styles.fullButton} onClick={openSupportPage}>Support the app</Button>
+        <p className={Styles.hint}>{t('You can delete one of your lists or support the app from 1 EUR to remove the limit for a month.')}</p>
+        <Button className={Styles.fullButton} onClick={openSupportPage}>{t('Support the app')}</Button>
         {map(main.rosters, list => <Button key={list.id} type='secondary' className={Styles.fullButton} onClick={handleDeleteList(list)}>Delete: {list.name}</Button>)}
     </>
 
-    const saveModal = <Modal visible={isOpen} title={isListsLimit ? 'You have reached limit of saved lists' : 'Save Roster'} onClose={handleClose}>
+    const saveModal = <Modal visible={isOpen} title={isListsLimit ? t('You have reached limit of saved lists') : t('Save Roster')} onClose={handleClose}>
         {isListsLimit
             ? limitContent
             : <>
-                <input className={Styles.field} value={name} onChange={event => setName(event.target.value)} placeholder='List Name' />
-                <ToggleRow label='Save as public' hint='Other users will be able to see this list.' checked={isPublic} onChange={() => setIsPublic(!isPublic)} />
-                {roster.id ? <ToggleRow label='Save as new list' checked={saveAsNew} onChange={() => setSaveAsNew(!saveAsNew)} /> : null}
-                <Button className={Styles.fullButton} disabled={!name || isSaving} onClick={handleSave}>Save</Button>
+                <input className={Styles.field} value={name} onChange={event => setName(event.target.value)} placeholder={t('List Name')} />
+                <ToggleRow label={t('Save as public')} hint={t('Other users will be able to see this list.')} checked={isPublic} onChange={() => setIsPublic(!isPublic)} />
+                {roster.id ? <ToggleRow label={t('Save as new list')} checked={saveAsNew} onChange={() => setSaveAsNew(!saveAsNew)} /> : null}
+                <Button className={Styles.fullButton} disabled={!name || isSaving} onClick={handleSave}>{t('Save')}</Button>
             </>
         }
     </Modal>

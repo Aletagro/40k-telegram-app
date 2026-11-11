@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React from 'react'
 import {useNavigate} from 'react-router-dom'
 import {roster} from '../utilities/appState'
@@ -29,10 +30,10 @@ const ChooseForceDisposition = () => {
             >
                 <span className={Styles.detachmentBody}><span className={Styles.detachmentName}>{option.name}</span></span>
             </button>)
-            : <p className={Styles.empty}>Choose detachments first</p>
+            : <p className={Styles.empty}>{t('Choose detachments first')}</p>
         }
         {roster.forceDispositionId
-            ? <Button type='secondary' className={Styles.fullButton} onClick={handleChoose('')}>Clear</Button>
+            ? <Button type='secondary' className={Styles.fullButton} onClick={handleChoose('')}>{t('Clear')}</Button>
             : null
         }
     </div>

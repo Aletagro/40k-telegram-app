@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React, {useReducer, useState} from 'react'
 import {useLocation, useNavigate} from 'react-router-dom'
 import {roster} from '../utilities/appState'
@@ -33,7 +34,7 @@ const ChooseWargear = () => {
     const [infoSlot, setInfoSlot] = useState(null)
     const unit = find(roster.units, ['uid', uid])
 
-    if (!unit) return <div id='column' className='Chapter'><p className={Styles.empty}>Unit not found</p></div>
+    if (!unit) return <div id='column' className='Chapter'><p className={Styles.empty}>{t('Unit not found')}</p></div>
 
     const slots = getUnitSlots(unit)
     const models = getCompositionModels(unit.compositionId)
@@ -76,7 +77,7 @@ const ChooseWargear = () => {
         const value = counts[choice.id] || 0
         const isDefault = choice.id === slot.defaultId
         return <div key={choice.id} className={`${Styles.stepperRow} ${value > 0 ? Styles.selected : ''}`}>
-            <span className={Styles.label}>{choice.label}{isDefault ? <span className={Styles.tag}>Default</span> : null}</span>
+            <span className={Styles.label}>{choice.label}{isDefault ? <span className={Styles.tag}>{t('Default')}</span> : null}</span>
             {isDefault
                 ? <span className={Styles.count}>{value}</span>
                 : <span className={Styles.controls}>
@@ -95,9 +96,9 @@ const ChooseWargear = () => {
         const hasLimits = size(getSlotLimitInfo(unit, slot)) > 0
         return <div key={slot.id} className={Styles.slot}>
             <div className={Styles.slotHead}>
-                <p className={Styles.slotTitle}>{defaultChoice?.isEmpty ? 'Optional' : `Default: ${defaultChoice?.label}`}</p>
+                <p className={Styles.slotTitle}>{defaultChoice?.isEmpty ? t('Optional') : t('Default: {{name}}', {name: defaultChoice?.label})}</p>
                 {hasLimits
-                    ? <button type='button' className={Styles.infoButton} onClick={() => setInfoSlot(slot)} aria-label='Limits'>i</button>
+                    ? <button type='button' className={Styles.infoButton} onClick={() => setInfoSlot(slot)} aria-label={t('Limits')}>i</button>
                     : null
                 }
             </div>
@@ -117,19 +118,19 @@ const ChooseWargear = () => {
         const groupSlots = filter(slots, ['key', miniature.id])
         if (size(groupSlots)) groups.push(renderGroup(`${miniature.name} · ${getSlotTotal(unit, groupSlots[0])}`, groupSlots, miniature.id))
     })
-    groups.push(renderGroup('Whole unit', filter(slots, 'isUnitLevel'), 'unit'))
+    groups.push(renderGroup(t('Whole unit'), filter(slots, 'isUnitLevel'), 'unit'))
 
     const renderRule = ({choice, isDefault, limits}) => <div key={choice.id} className={Styles.rule}>
         <p className={Styles.ruleNames}>{choice.label}</p>
         {isDefault
-            ? <p>Default: taken by all models that do not choose another option</p>
+            ? <p>{t('Default: taken by all models that do not choose another option')}</p>
             : size(limits)
                 ? map(limits, (limit, index) => <div key={index}>
                     <p>Up to {limit.allowed} now ({limit.used} taken)</p>
                     <p className={Styles.ruleNow}>{formatTiers(limit.tiers)}{limit.duplicateLimit ? ` · same option up to ${limit.duplicateLimit}` : ''}</p>
                     {size(limit.sharedWith) ? <p className={Styles.ruleNow}>Limit is shared with: {limit.sharedWith.join(', ')}</p> : null}
                 </div>)
-                : <p>No limit: any number of models</p>
+                : <p>{t('No limit: any number of models')}</p>
         }
     </div>
 
@@ -145,14 +146,14 @@ const ChooseWargear = () => {
         {size(slots)
             ? <>
                 <div className={Styles.topBar}>
-                    <button type='button' className={Styles.resetButton} disabled={!isChanged} onClick={handleReset}>Reset to default</button>
+                    <button type='button' className={Styles.resetButton} disabled={!isChanged} onClick={handleReset}>{t('Reset to default')}</button>
                 </div>
                 {groups}
-                <Button className={Styles.done} onClick={handleDone}>Done</Button>
+                <Button className={Styles.done} onClick={handleDone}>{t('Done')}</Button>
             </>
-            : <p className={Styles.empty}>This unit has no wargear options</p>
+            : <p className={Styles.empty}>{t('This unit has no wargear options')}</p>
         }
-        <Modal visible={Boolean(infoSlot)} title='Options' onClose={handleCloseInfo}>{renderInfo()}</Modal>
+        <Modal visible={Boolean(infoSlot)} title={t('Options')} onClose={handleCloseInfo}>{renderInfo()}</Modal>
     </div>
 }
 

@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React from 'react'
 import {getCombatPatrols} from '../utilities/utils'
 import ImageCard from '../components/ImageCard'
@@ -14,14 +15,14 @@ const dataBase = require('../utilities/db')
 // Combat Patrol: готовые армии из коробок. Правила режима и армии, сгруппированные по гранд-фракциям
 const CombatPatrol = () => {
     const patrols = getCombatPatrols()
-    const rules = find(dataBase.data.publication, publication => !publication.isCombatPatrol && !publication.factionKeywordId && publication.name === 'Combat Patrol')
+    const rules = find(dataBase.data.publication, publication => !publication.isCombatPatrol && !publication.factionKeywordId && publication.nameEn === 'Combat Patrol')
 
     const renderGrandFaction = (grandFaction) => {
         const grandPatrols = filter(patrols, ['grandFaction', grandFaction.name])
         if (!size(grandPatrols)) return null
         return <ImageCard
             key={grandFaction.name}
-            title={grandFaction.name}
+            title={t(grandFaction.name)}
             image={grandFaction.image}
             size='lg'
             navigateTo='combatPatrolArmies'
@@ -32,14 +33,14 @@ const CombatPatrol = () => {
     return <div id='column' className='Chapter'>
         {rules
             ? <>
-                <SectionTitle>Rules</SectionTitle>
+                <SectionTitle>{t('Rules')}</SectionTitle>
                 <ListCard>
-                    <ListItem title='Combat Patrol Rules' navigateTo='ruleSections' state={{document: rules}} />
+                    <ListItem title={t('Combat Patrol Rules')} navigateTo='ruleSections' state={{document: rules}} />
                 </ListCard>
             </>
             : null
         }
-        <SectionTitle>Armies</SectionTitle>
+        <SectionTitle>{t('Armies')}</SectionTitle>
         {map(Constants.grandFactions, renderGrandFaction)}
     </div>
 }

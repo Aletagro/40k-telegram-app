@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React, {useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import Autocomplete from '@mui/joy/Autocomplete'
@@ -71,11 +72,11 @@ const Registration = () => {
     }
 
     return <div id='column' className='Chapter'>
-        <h2 className={Styles.regTitle}>To save the list, please register</h2>
-        <FloatingLabelInput style={inputStyle} onChange={e => setFirstname(e.target.value)} label='Name' value={firstname} />
-        <FloatingLabelInput style={inputStyle} onChange={e => setLastname(e.target.value)} label='Surname' value={lastname} />
+        <h2 className={Styles.regTitle}>{t('To save the list, please register')}</h2>
+        <FloatingLabelInput style={inputStyle} onChange={e => setFirstname(e.target.value)} label={t('Name')} value={firstname} />
+        <FloatingLabelInput style={inputStyle} onChange={e => setLastname(e.target.value)} label={t('Surname')} value={lastname} />
         <Autocomplete
-            placeholder='Country'
+            placeholder={t('Country')}
             onInputChange={(e, value) => setCountry(value || e?.target?.value || '')}
             options={countries}
             sx={inputStyle}
@@ -85,9 +86,9 @@ const Registration = () => {
             autoSelect
             freeSolo
         />
-        <FloatingLabelInput style={inputStyle} onChange={e => setCity(e.target.value)} label='City' value={city} />
-        {hasError ? <p className={Styles.regError}>Could not sign up. Please try again.</p> : null}
-        <Button className={Styles.fullButton} disabled={isDisabled} onClick={handleRegister}>Sign up</Button>
+        <FloatingLabelInput style={inputStyle} onChange={e => setCity(e.target.value)} label={t('City')} value={city} />
+        {hasError ? <p className={Styles.regError}>{t('Could not sign up. Please try again.')}</p> : null}
+        <Button className={Styles.fullButton} disabled={isDisabled} onClick={handleRegister}>{t('Sign up')}</Button>
     </div>
 }
 

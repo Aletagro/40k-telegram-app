@@ -23,12 +23,31 @@ export const sortByName = (array, param) => param
     ? array.sort((a,b) => (a[param] > b[param]) ? 1 : ((b[param] > a[param]) ? -1 : 0))
     : array.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
 
+// Название армии на выбранном языке по id (в Constants и в сохранённых списках армии хранятся по-английски)
+export const getFactionLabel = (factionId, fallback) => {
+    const faction = find(dataBase.data.faction_keyword, ['id', factionId])
+    return faction?.commonName || faction?.name || fallback
+}
+
+// Название ключевого слова на выбранном языке по английскому (Character -> Charaktermodell); если перевода нет - как есть
+let keywordLabels = null
+export const getKeywordLabel = (nameEn) => {
+    if (!keywordLabels) {
+        keywordLabels = {}
+        forEach(dataBase.data.keyword, keyword => {
+            if (keyword.nameEn && keyword.name && !keywordLabels[keyword.nameEn]) keywordLabels[keyword.nameEn] = keyword.name
+        })
+    }
+    return keywordLabels[nameEn] || nameEn
+}
+
 export const unitsSortesByType = (units) => {
     const getUnitsByType = (type) => {
         const _units = filter(units, unit => unit?.unitType === type.name && (type.withoutHero ? !unit.isCharacter : true))
         if (_units.length > 0) {
             sortByName(_units)
-            return {units: _units, title: replace(type.name, /,/g, '')}
+            // title - английский ключ группы (по нему идёт логика), label - то, что видит игрок
+            return {units: _units, title: replace(type.name, /,/g, ''), label: getKeywordLabel(replace(type.name, /,/g, ''))}
         } else {
             return null
         }
@@ -126,25 +145,25 @@ export const removeDuplicates = (arr) => {
 export const getUnitType = (miniatureId) => {
     const keywordsIds = sortByName(filter(dataBase.data.miniature_keyword, ['miniatureId', miniatureId]), 'displayOrder')
     const keywords = map(keywordsIds, keyword => find(dataBase.data.keyword, ['id', keyword.keywordId]))
-    const epicHeroIndex = findIndex(keywords, ['name', 'Epic Hero'])
+    const epicHeroIndex = findIndex(keywords, ['nameEn', 'Epic Hero'])
     if (epicHeroIndex >= 0) {
         return 'Epic Hero'
     }
-    const characterIndex = findIndex(keywords, ['name', 'Character'])
+    const characterIndex = findIndex(keywords, ['nameEn', 'Character'])
     if (characterIndex >= 0) {
         return 'Character'
     }
-    const battlelineIndex = findIndex(keywords, ['name', 'Battleline'])
+    const battlelineIndex = findIndex(keywords, ['nameEn', 'Battleline'])
     if (battlelineIndex >= 0) {
         return 'Battleline'
     }
-    const transportIndex = findIndex(keywords, ['name', 'Dedicated Transport'])
+    const transportIndex = findIndex(keywords, ['nameEn', 'Dedicated Transport'])
     if (transportIndex >= 0) {
         return 'Dedicated Transport'
     }
     // Первое ключевое слово может быть не типом юнита (например, Explosives): берём первый известный тип
     const typeNames = map(Constants.unitsTypes, 'name')
-    return find(keywords, keyword => includes(typeNames, keyword?.name))?.name || keywords[0]?.name
+    return find(keywords, keyword => includes(typeNames, keyword?.nameEn))?.nameEn || keywords[0]?.nameEn
 }
 
 export const getCompositions = (miniatures) => {
@@ -197,16 +216,16 @@ export const getDetachmentUnitType = (datasheetId, detachmentIds) => {
     const condition = find(dataBase.data.conditional_keyword, item => item.datasheetId === datasheetId
         && includes(ids, item.requiredDetachmentId)
         && !item.requiredWarlordMiniatureId
-        && includes(typeNames, find(dataBase.data.keyword, ['id', item.keywordId])?.name))
-    return condition ? find(dataBase.data.keyword, ['id', condition.keywordId]).name : undefined
+        && includes(typeNames, find(dataBase.data.keyword, ['id', item.keywordId])?.nameEn))
+    return condition ? find(dataBase.data.keyword, ['id', condition.keywordId]).nameEn : undefined
 }
 
 export const getCodexInfo = (factionId) => {
     const publications = filter(dataBase.data.publication, publication =>
-        publication.factionKeywordId === factionId && !publication.isCombatPatrol && !publication.isLegends && !includes(publication.name, 'Imperial Armour: Tyranids')
+        publication.factionKeywordId === factionId && !publication.isCombatPatrol && !publication.isLegends && !includes(publication.nameEn, 'Imperial Armour: Tyranids')
     )
     // У армии может быть несколько книг (например, Imperial Armour): основной считается кодекс или книга, не относящаяся к Imperial Armour
-    return find(publications, publication => !includes(publication.name, 'Imperial Armour')) || publications[0]
+    return find(publications, publication => !includes(publication.nameEn, 'Imperial Armour')) || publications[0]
 }
 
 // Книга родительской армии (например, Space Marines для орденов)
@@ -243,7 +262,7 @@ export const getUnitsSortesByType = (faction, codexInfo, detachmentIds, parentCo
         const notVanilSpaceMarinesUnitsIds = union(...map(notVanilSpaceMarinesArmies, army => map(filter(dataBase.data.datasheet_faction_keyword, (item) => item.factionKeywordId === army.id ), item => item.datasheetId)))
         units = filter(units, unit => !includes(notVanilSpaceMarinesUnitsIds, unit.id))
     }
-    const imperialArmourId = find(dataBase.data.publication, publication => publication.factionKeywordId === faction.id && includes(publication.name, 'Imperial Armour:'))?.id
+    const imperialArmourId = find(dataBase.data.publication, publication => publication.factionKeywordId === faction.id && includes(publication.nameEn, 'Imperial Armour:'))?.id
     const imperialArmourUnits = filter(dataBase.data.datasheet, ['publicationId', imperialArmourId])
     if (size(imperialArmourUnits)) {
         units = [...units, ...imperialArmourUnits]

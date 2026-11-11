@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React, {useState} from 'react'
 import {useLocation} from 'react-router-dom'
 // import Constants from '../Constants'
@@ -179,7 +180,7 @@ const Datasheet = () => {
     const renderInvul = (invul) => <div key={invul.id} className={Styles.invul}>
         <ShieldIcon />
         <span className={Styles.invulValue}>{invul.save || invul.rangedSave || invul.meleeSave}</span>
-        <span className={Styles.invulLabel}>Invulnerable Save</span>
+        <span className={Styles.invulLabel}>{t('Invulnerable Save')}</span>
         {invul.rangedSave && invul.meleeSave && !invul.save
             ? <span className={Styles.invulNote}>ranged {invul.rangedSave}, melee {invul.meleeSave}</span>
             : null
@@ -208,9 +209,9 @@ const Datasheet = () => {
     const renderCompositionsTable = () => <table className={Styles.table}>
         <thead>
             <tr>
-                <th>Model Name</th>
-                <th>Count</th>
-                <th>Points</th>
+                <th>{t('Model Name')}</th>
+                <th>{t('Count')}</th>
+                <th>{t('Points')}</th>
             </tr>
         </thead>
         <tbody>
@@ -253,41 +254,41 @@ const Datasheet = () => {
             {firstVisibleMiniatureId ? null : <div className={Styles.statCard}>{map(datasheetInvulSaves, renderInvul)}</div>}
             {size(rangeWeapons)
                 ? <>
-                    <SectionTitle>Ranged Weapons</SectionTitle>
+                    <SectionTitle>{t('Ranged Weapons')}</SectionTitle>
                     {map(rangeWeapons, renderRangeWeapon)}
                 </>
                 : null
             }
             {size(meleeWeapons)
                 ? <>
-                    <SectionTitle>Melee Weapons</SectionTitle>
+                    <SectionTitle>{t('Melee Weapons')}</SectionTitle>
                     {map(meleeWeapons, renderMeleeWeapon)}
                 </>
                 : null
             }
             {size(datasheetAbilities)
                 ? <>
-                    <SectionTitle>Abilities</SectionTitle>
+                    <SectionTitle>{t('Abilities')}</SectionTitle>
                     {map(datasheetAbilities, renderAbility)}
                 </>
                 : null
             }
             {size(coreAbilities)
                 ? <>
-                    <SectionTitle>Core Abilities</SectionTitle>
+                    <SectionTitle>{t('Core Abilities')}</SectionTitle>
                     <div className={Styles.coreChips}>{map(coreAbilities, renderCoreAbility)}</div>
                 </>
                 : null
             }
             {size(additionalAbilities)
                 ? <>
-                    <SectionTitle>Additional Abilities</SectionTitle>
+                    <SectionTitle>{t('Additional Abilities')}</SectionTitle>
                     {map(additionalAbilities, renderAdditionalAbility)}
                 </>
                 : null
             }
             {damagedInfo ? <Ability ability={damagedInfo} kind='damaged' /> : null}
-            <SectionTitle>Unit Composition</SectionTitle>
+            <SectionTitle>{t('Unit Composition')}</SectionTitle>
             <div className={Styles.card}>
                 {unit.unitComposition ? <p className={Styles.text}>{replaceAsterisks(unit.unitComposition)}</p> : null}
                 {size(wargearRules) ? map(wargearRules, renderWargearRule) : null}
@@ -297,7 +298,7 @@ const Datasheet = () => {
             {size(keywords) || factionKeyword
                 ? <div className={Styles.card}>
                     {size(keywords) ? <p className={Styles.keywords}>Keywords: {map(keywords, renderKeyword)}</p> : null}
-                    {factionKeyword ? <p className={Styles.keywords}>Faction Keyword: <b>{upperCase(factionKeyword)}</b></p> : null}
+                    {factionKeyword ? <p className={Styles.keywords}>{t('Faction Keyword:')} <b>{upperCase(factionKeyword)}</b></p> : null}
                 </div>
                 : null
             }

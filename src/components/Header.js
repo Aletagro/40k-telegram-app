@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React from 'react';
 import {useNavigate, useLocation} from 'react-router-dom';
 import {search, lists, navigationState, isCollapseUnitsTypes} from '../utilities/appState'
@@ -46,7 +47,7 @@ const Header = () => {
 
     const handleNavigateToSearch = () => {navigate('search')}
 
-    const handleNavigateToExport = () => {navigate('export', {state: {title: 'Export List'}})}
+    const handleNavigateToExport = () => {navigate('export', {state: {title: t('Export List')}})}
 
     const handleNavigateToHome = () => {
         navigate('/')

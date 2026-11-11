@@ -263,7 +263,7 @@ export const isCharacterType = (type) => type === 'Character' || type === 'Epic 
 // Юнит считается персонажем и по ключевому слову Character, полученному по условию (Houndpack Lance и т.п.)
 export const isCharacterDatasheet = (datasheetId, unit) => {
     if (isCharacterType(getDatasheetType(datasheetId))) return true
-    const characterIds = map(filter(dataBase.data.keyword, ['name', 'Character']), 'id')
+    const characterIds = map(filter(dataBase.data.keyword, ['nameEn', 'Character']), 'id')
     return some(getConditionalKeywordIds(datasheetId, unit), id => includes(characterIds, id))
 }
 
@@ -273,7 +273,7 @@ export const getUnitLimit = (datasheetId) => {
     const type = getDatasheetType(datasheetId)
     const miniature = find(dataBase.data.miniature, ['datasheetId', datasheetId])
     const isWarlordTitan = Boolean(miniature && find(dataBase.data.miniature_keyword, item => item.miniatureId === miniature.id
-        && find(dataBase.data.keyword, ['id', item.keywordId])?.name === 'Warlord Titan'))
+        && find(dataBase.data.keyword, ['id', item.keywordId])?.nameEn === 'Warlord Titan'))
     if (isWarlordTitan || type === 'Epic Hero') return 1
     const base = getBattleSize()?.duplicateUnitLimit || 3
     return type === 'Battleline' || type === 'Dedicated Transport' ? base * 2 : base

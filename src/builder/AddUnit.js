@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React from 'react'
 import {useLocation, useNavigate} from 'react-router-dom'
 import {ListCard, ListItem} from '../components/ListCard'
@@ -56,7 +57,7 @@ const AddUnit = () => {
         return <ListItem
             key={datasheet.id}
             title={datasheet.name}
-            subtitle={isLimit ? 'Limit reached' : undefined}
+            subtitle={isLimit ? t('Limit reached') : undefined}
             rightText={points ? `${points} pts` : undefined}
             image={datasheet.rowImage}
             onClick={isLimit ? undefined : handleClick(datasheet, alliedFactionId)}

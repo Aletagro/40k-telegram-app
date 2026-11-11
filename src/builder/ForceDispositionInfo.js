@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React from 'react'
 import {useLocation} from 'react-router-dom'
 import {SectionTitle} from '../components/ListCard'
@@ -40,8 +41,8 @@ const ForceDispositionInfo = () => {
     }
 
     return <div id='column' className='Chapter'>
-        <SectionTitle>Primary Missions</SectionTitle>
-        {size(missions) ? map(missions, renderMission) : <p className={Styles.empty}>No linked missions</p>}
+        <SectionTitle>{t('Primary Missions')}</SectionTitle>
+        {size(missions) ? map(missions, renderMission) : <p className={Styles.empty}>{t('No linked missions')}</p>}
     </div>
 }
 

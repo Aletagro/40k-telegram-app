@@ -61,6 +61,10 @@ const localize = (data, language) => {
       const selected = language !== DEFAULT_LANGUAGE ? loc[language] : null
       delete row.localisations
       Object.assign(row, en)
+      // Логика приложения опирается на английские названия (Character, Battleline ...), поэтому они сохраняются отдельно,
+      // а name и commonName показывают выбранный язык
+      if (en.name !== undefined) row.nameEn = en.name
+      if (en.commonName !== undefined) row.commonNameEn = en.commonName
       if (selected) {
         Object.keys(selected).forEach((key) => {
           if (isFilled(selected[key])) {

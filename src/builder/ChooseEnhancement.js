@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React from 'react'
 import {useLocation, useNavigate} from 'react-router-dom'
 import {roster} from '../utilities/appState'
@@ -29,7 +30,7 @@ const ChooseEnhancement = () => {
             // Энхансмент с лимитом 1 переходит от прежнего владельца
             forEach(others, item => updateUnit(item.uid, {enhancementId: ''}))
         } else if (size(others) >= limit) {
-            toast.warn(`${enhancement.name} can be taken only ${limit} times`, Constants.toastParams)
+            toast.warn(t('{{name}} can be taken only {{count}} time|{{name}} can be taken only {{count}} times', {name: enhancement.name, count: limit}), Constants.toastParams)
             return
         }
         updateUnit(unit.uid, {enhancementId: enhancement.id})
@@ -44,10 +45,10 @@ const ChooseEnhancement = () => {
     return <div id='column' className='Chapter'>
         {size(enhancements)
             ? map(enhancements, enhancement => <Ability key={enhancement.id} ability={enhancement} isEnchancement onClick={handleChoose} />)
-            : <p className={Styles.empty}>No enhancements available for this unit in the chosen detachment</p>
+            : <p className={Styles.empty}>{t('No enhancements available for this unit in the chosen detachment')}</p>
         }
         {current?.enhancementId
-            ? <Button type='danger' className={Styles.fullButton} onClick={handleDelete}>Remove Enhancement</Button>
+            ? <Button type='danger' className={Styles.fullButton} onClick={handleDelete}>{t('Remove Enhancement')}</Button>
             : null
         }
     </div>

@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React from 'react'
 import Constants from '../Constants'
 import {roster} from '../utilities/appState'
@@ -14,7 +15,7 @@ const ChooseGrandFaction = () => {
 
     const renderCard = (grandFaction) => <ImageCard
         key={grandFaction.name}
-        title={grandFaction.name}
+        title={t(grandFaction.name)}
         image={grandFaction.image}
         size='lg'
         navigateTo='chooseFaction'
@@ -23,7 +24,7 @@ const ChooseGrandFaction = () => {
     />
 
     return <div id='column' className='Chapter'>
-        <SectionTitle>Choose your Army</SectionTitle>
+        <SectionTitle>{t('Choose your Army')}</SectionTitle>
         {map(Constants.grandFactions, renderCard)}
     </div>
 }

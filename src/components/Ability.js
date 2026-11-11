@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React from 'react'
 import {toast} from 'react-toastify'
 import Constants from '../Constants'
@@ -22,7 +23,7 @@ const getKind = ({ability, isEnchancement, kind}) => {
     if (ability.key === 'yourTurn' || ability.key === 'opponentsTurn' || ability.key === 'eitherPlayer') {
         return ability.key
     }
-    if (ability.isAura || includes(ability.name, '(Aura)')) {
+    if (ability.isAura || includes(ability.nameEn || ability.name, '(Aura)')) {
         return 'aura'
     }
     if (ability.isPsychic) {
@@ -45,7 +46,7 @@ const getKind = ({ability, isEnchancement, kind}) => {
 
 // Метки в шапке: у способности может быть сразу несколько признаков (например, аура и психика)
 const getLabels = (ability) => [
-    ability.isAura || includes(ability.name, '(Aura)') ? KIND_LABELS.aura : null,
+    ability.isAura || includes(ability.nameEn || ability.name, '(Aura)') ? KIND_LABELS.aura : null,
     ability.isPsychic ? KIND_LABELS.psychic : null,
     ability.isBondsman ? KIND_LABELS.bondsman : null,
     ability.isPain ? KIND_LABELS.pain : null,
@@ -64,7 +65,7 @@ const Ability = ({ability, keyword, phases, onClick, isEnchancement, kind: kindP
 ${ability.cpCost ? `\nCP Cost: ${ability.cpCost}` : ''}${ability.invul ? `\nInvulnerable Save: ${ability.invul}` : ''}\n${ability.rules ? `\nRule: ${removeAsterisks(ability.rules)}` : ''}
 `
             navigator.clipboard.writeText(abilityText)
-            toast.success('Ability Copied', Constants.toastParams)
+            toast.success(t('Ability Copied'), Constants.toastParams)
         }
     }
 
@@ -83,16 +84,16 @@ ${ability.cpCost ? `\nCP Cost: ${ability.cpCost}` : ''}${ability.invul ? `\nInvu
                 ? <p className={Styles.meta}>{[startCase(ability.category), size(phases) ? `${join(phases, ', ')} phase` : ''].filter(Boolean).join(' · ')}</p>
                 : null
             }
-            {ability.whenRules ? <p className={Styles.text}><b>When:</b> {replaceAsterisks(ability.whenRules)}</p> : null}
-            {ability.targetRules ? <p className={Styles.text}><b>Target:</b> {replaceAsterisks(ability.targetRules)}</p> : null}
-            {ability.effectRules ? <p className={Styles.text}><b>Effect:</b> {replaceAsterisks(ability.effectRules)}</p> : null}
-            {ability.restrictionRules ? <p className={Styles.text}><b>Restrictions:</b> {replaceAsterisks(ability.restrictionRules)}</p> : null}
+            {ability.whenRules ? <p className={Styles.text}><b>{t('When:')}</b> {replaceAsterisks(ability.whenRules)}</p> : null}
+            {ability.targetRules ? <p className={Styles.text}><b>{t('Target:')}</b> {replaceAsterisks(ability.targetRules)}</p> : null}
+            {ability.effectRules ? <p className={Styles.text}><b>{t('Effect:')}</b> {replaceAsterisks(ability.effectRules)}</p> : null}
+            {ability.restrictionRules ? <p className={Styles.text}><b>{t('Restrictions:')}</b> {replaceAsterisks(ability.restrictionRules)}</p> : null}
             {ability.secondaryEffect
                 ? <p className={Styles.text}><b>Secondary effect{ability.secondaryEffectAdditionalCPCost ? ` (+${ability.secondaryEffectAdditionalCPCost}CP)` : ''}:</b> {replaceAsterisks(ability.secondaryEffect)}</p>
                 : null
             }
             {ability.rules ? <p className={Styles.text}>{replaceAsterisks(ability.rules)}</p> : null}
-            {keyword ? <p className={Styles.keyword}><b>Keyword:</b> {keyword}</p> : null}
+            {keyword ? <p className={Styles.keyword}><b>{t('Keyword:')}</b> {keyword}</p> : null}
         </button>
     </>
 }

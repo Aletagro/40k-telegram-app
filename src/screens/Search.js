@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React, {useState, useReducer} from 'react'
 import useDebounce from '../utilities/useDebounce'
 import {sortByName, getUnitPounts, getStratagemPhases} from '../utilities/utils'
@@ -61,7 +62,7 @@ const Search = () => {
     const renderRule = (rule) => <ListItem
         key={rule.id}
         title={rule.title}
-        subtitle={rule.subtitle || 'rule'}
+        subtitle={rule.subtitle || t('rule')}
         navigateTo='rules'
         state={{paragraph: rule}}
     />
@@ -81,7 +82,7 @@ const Search = () => {
     />
 
     const renderGroup = (type, renderItem, asCards) => size(search[type])
-        ? <CollapseSection key={type} title={type} count={size(search[type])} expanded={search.expand[type]} onToggle={handleToggle}>
+        ? <CollapseSection key={type} title={t(type)} count={size(search[type])} expanded={search.expand[type]} onToggle={handleToggle}>
             {asCards ? map(search[type], renderItem) : <ListCard>{map(search[type], renderItem)}</ListCard>}
         </CollapseSection>
         : null
@@ -93,7 +94,7 @@ const Search = () => {
                 defaultValue={search.value}
                 onChange={handleChange}
                 autoFocus
-                placeholder='Search datasheets, rules, stratagems'
+                placeholder={t('Search datasheets, rules, stratagems')}
                 type='search'
                 name='search'
             />

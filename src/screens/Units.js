@@ -29,9 +29,9 @@ const Units = () => {
 
     const renderUnitsType = (type) => <CollapseSection
         key={type.title}
-        title={type.title}
+        title={type.label || type.title}
         expanded={!isCollapseUnitsTypes[type.title]}
-        onToggle={handleToggle}
+        onToggle={() => handleToggle(type.title)}
     >
         <ListCard>{map(type.units, renderRow)}</ListCard>
     </CollapseSection>

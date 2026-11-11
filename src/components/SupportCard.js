@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React from 'react'
 import Button from './Button'
 import {main} from '../utilities/appState'
@@ -9,16 +10,16 @@ import Styles from './styles/SupportCard.module.css'
 const SupportCard = () => {
     if (isSupporter(main.user)) {
         return <div className={`${Styles.card} ${Styles.thanks}`}>
-            <p className={Styles.title}>Thank you for your support!</p>
+            <p className={Styles.title}>{t('Thank you for your support!')}</p>
             <p className={Styles.text}>No limit on saved lists until {formatSupportDate(getSupportUntil(main.user))}.</p>
-            <Button className={Styles.button} type='secondary' onClick={openSupportPage}>Support again</Button>
+            <Button className={Styles.button} type='secondary' onClick={openSupportPage}>{t('Support again')}</Button>
         </div>
     }
 
     return <div className={Styles.card}>
-        <p className={Styles.title}>Support the project</p>
-        <p className={Styles.text}>The app is free and runs on donations. Any donation from 1 EUR removes the limit on saved lists for a month.</p>
-        <Button className={Styles.button} onClick={openSupportPage}>Support the app</Button>
+        <p className={Styles.title}>{t('Support the project')}</p>
+        <p className={Styles.text}>{t('The app is free and runs on donations. Any donation from 1 EUR removes the limit on saved lists for a month.')}</p>
+        <Button className={Styles.button} onClick={openSupportPage}>{t('Support the app')}</Button>
     </div>
 }
 

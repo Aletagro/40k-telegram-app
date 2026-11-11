@@ -1,3 +1,4 @@
+import {t} from '../utilities/i18n'
 import React from 'react'
 import Tile from '../components/Tile'
 import HeaderImage from '../components/HeaderImage'
@@ -17,17 +18,17 @@ const Main = () => {
             <div className={Styles.heroShade} />
         </div>
         <div className={Styles.menu}>
-            <Tile featured title='Builder' text='Build and save your army lists' navigateTo='userLists' />
+            <Tile featured title={t('Builder')} text={t('Build and save your army lists')} navigateTo='userLists' />
             <div className={Styles.grid}>
-                <Tile compact title='Rules' text='Armies and core rules' navigateTo='mainRules' />
-                <Tile compact title='Community Lists' text='Lists from other players' navigateTo='lists' />
-                <Tile compact wide={!canLinkAccounts()} title='Combat Patrol' text='Ready-made boxed armies' navigateTo='combatPatrol' />
-                {canLinkAccounts() ? <Tile compact title='Link Accounts' text='Telegram and VK in one account' navigateTo='linkAccounts' /> : null}
+                <Tile compact title={t('Rules')} text={t('Armies and core rules')} navigateTo='mainRules' />
+                <Tile compact title={t('Community Lists')} text={t('Lists from other players')} navigateTo='lists' />
+                <Tile compact wide={!canLinkAccounts()} title={t('Combat Patrol')} text={t('Ready-made boxed armies')} navigateTo='combatPatrol' />
+                {canLinkAccounts() ? <Tile compact title={t('Link Accounts')} text={t('Telegram and VK in one account')} navigateTo='linkAccounts' /> : null}
                 {/* <Tile compact title='Damage Calculator' text='Averages for any attack' navigateTo='calculator' /> */}
             </div>
             <LanguageSelect />
             <SupportCard />
-            <p className={Styles.footer}>For feedback - <b>@RukosuevKrasavchik</b></p>
+            <p className={Styles.footer}>{t('For feedback -')} <b>@RukosuevKrasavchik</b></p>
             <p className={Styles.footer}>Database version {metadata?.data_version}</p>
         </div>
     </>
