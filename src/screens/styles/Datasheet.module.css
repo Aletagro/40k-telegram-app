@@ -76,6 +76,8 @@
   stroke: var(--gold);
   stroke-width: 1.8;
   stroke-linejoin: round;
+  /* Шрифт Minion Pro сидит в строке выше геометрического центра, поэтому щит поднимаем вместе с ним */
+  transform: translateY(-2px);
 }
 .invulValue {
   color: var(--gold-light);

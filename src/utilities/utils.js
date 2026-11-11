@@ -248,6 +248,9 @@ export const getUnitsSortesByType = (faction, codexInfo, detachmentIds, parentCo
     if (size(imperialArmourUnits)) {
         units = [...units, ...imperialArmourUnits]
     }
+    // Даташиты боевых патрулей (наборы из коробки) в обычный список не входят: у них нет очков, ими занимается отдельный режим
+    const combatPatrolPublicationIds = map(filter(dataBase.data.publication, 'isCombatPatrol'), 'id')
+    units = filter(units, unit => unit && !includes(combatPatrolPublicationIds, unit.publicationId))
     // убрать юниты, которые не доступны в определенной фракции
     units = filter(units, unit => !find(dataBase.data.faction_keyword_excluded_datasheet, datasheet => {
             return datasheet.datasheetId === unit.id && datasheet.factionKeywordId === faction.id
@@ -297,3 +300,34 @@ export const getUnitPounts = (unit) => {
     return get(compositions, '[0].points', 0)
 }
 
+
+
+// --- Combat Patrol: готовые наборы из коробки (детачмент + фиксированные даташиты, без очков) ---
+
+// Все боевые патрули: {publication, detachment, faction, name, grandFaction}
+export const getCombatPatrols = () => sortByName(compact(map(filter(dataBase.data.publication, 'isCombatPatrol'), publication => {
+    const detachment = find(dataBase.data.detachment, ['publicationId', publication.id])
+    const faction = find(dataBase.data.faction_keyword, ['id', publication.factionKeywordId])
+    if (!detachment || !faction) return null
+    const grandFaction = find(Constants.grandFactions, grand => find(grand.factions, ['id', faction.id]))
+    const factionName = faction.commonName || faction.name
+    return {
+        id: publication.id,
+        publication,
+        detachment,
+        faction,
+        grandFaction: grandFaction?.name,
+        patrolName: detachment.name,
+        name: `${factionName}: ${detachment.name}`
+    }
+})))
+
+// Даташиты патруля в формате списка юнитов (как в getUnitsSortesByType), Warlord помечен
+export const getCombatPatrolUnits = (detachment) => sortByName(compact(map(filter(dataBase.data.detachment_linked_datasheet, ['detachmentId', detachment.id]), link => {
+    const datasheet = find(dataBase.data.datasheet, ['id', link.datasheetId])
+    if (!datasheet) return null
+    const miniatures = sortByName(filter(dataBase.data.miniature, ['datasheetId', datasheet.id]), 'displayOrder')
+    if (!miniatures.length) return null
+    const compositions = getCompositions(miniatures)
+    return {...datasheet, unitType: getUnitType(miniatures[0].id), compositions, points: 0, isWarlord: link.isWarlord, count: link.count}
+})))

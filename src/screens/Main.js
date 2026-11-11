@@ -21,7 +21,8 @@ const Main = () => {
             <div className={Styles.grid}>
                 <Tile compact title='Rules' text='Armies and core rules' navigateTo='mainRules' />
                 <Tile compact title='Community Lists' text='Lists from other players' navigateTo='lists' />
-                {canLinkAccounts() ? <Tile compact wide title='Link Accounts' text='Telegram and VK in one account' navigateTo='linkAccounts' /> : null}
+                <Tile compact wide={!canLinkAccounts()} title='Combat Patrol' text='Ready-made boxed armies' navigateTo='combatPatrol' />
+                {canLinkAccounts() ? <Tile compact title='Link Accounts' text='Telegram and VK in one account' navigateTo='linkAccounts' /> : null}
                 {/* <Tile compact title='Damage Calculator' text='Averages for any attack' navigateTo='calculator' /> */}
             </div>
             <LanguageSelect />

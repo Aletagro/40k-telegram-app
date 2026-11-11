@@ -43,6 +43,9 @@ import Registration from './screens/Registration'
 import LinkAccounts from './screens/LinkAccounts'
 import PasteList from './builder/PasteList'
 import CommunityLists from './builder/CommunityLists'
+import CombatPatrol from './combatPatrol/CombatPatrol'
+import CombatPatrolArmies from './combatPatrol/CombatPatrolArmies'
+import CombatPatrolArmy from './combatPatrol/CombatPatrolArmy'
 
 import './App.css'
 
@@ -121,6 +124,9 @@ function App() {
       <Route path={'linkAccounts'} element={<LinkAccounts />} />
       <Route path={'pasteList'} element={<PasteList />} />
       <Route path={'lists'} element={<CommunityLists />} />
+      <Route path={'combatPatrol'} element={<CombatPatrol />} />
+      <Route path={'combatPatrolArmies'} element={<CombatPatrolArmies />} />
+      <Route path={'combatPatrolArmy'} element={<CombatPatrolArmy />} />
       <Route path={'developer'} element={<Developer />} />
     </Routes>
   </div>
