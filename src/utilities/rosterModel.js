@@ -179,6 +179,16 @@ export const serializeRoster = ({userId, name = roster.name, isPublic = roster.i
 })
 
 // Старые списки хранили один detachment_id, новые - JSON-массив detachment_ids
+const parseRawDetachmentIds = (row) => {
+    let ids = []
+    try {
+        ids = row.detachment_ids ? JSON.parse(row.detachment_ids) : []
+    } catch (error) {
+        return []
+    }
+    return Array.isArray(ids) && ids.length ? ids : (row.detachment_id ? [row.detachment_id] : [])
+}
+
 const parseDetachmentIds = (row) => {
     let ids = []
     try {
@@ -190,9 +200,14 @@ const parseDetachmentIds = (row) => {
     return uniq(filter(ids, id => find(dataBase.data.detachment, ['id', id])))
 }
 
-// Загрузка сохранённого списка. Юниты, которых больше нет в базе, пропускаются
+// Что пришлось убрать при последней загрузке списка: сохранённые данные могли устареть вместе с базой
+const hydrateReport = {units: 0, detachments: 0, enhancements: 0}
+export const getHydrateReport = () => ({...hydrateReport, total: hydrateReport.units + hydrateReport.detachments + hydrateReport.enhancements})
+
+// Загрузка сохранённого списка. Юниты, которых больше нет в базе, пропускаются (см. getHydrateReport)
 export const hydrateRoster = (row) => {
     resetRoster()
+    Object.assign(hydrateReport, {units: 0, detachments: 0, enhancements: 0})
     let units = []
     try {
         units = JSON.parse(row.units) || []
@@ -214,6 +229,15 @@ export const hydrateRoster = (row) => {
         units: compact(map(units, unit => find(dataBase.data.datasheet, ['id', unit.datasheetId])
             ? {...createUnit(unit.datasheetId), ...unit}
             : null))
+    })
+    hydrateReport.units = size(units) - size(roster.units)
+    hydrateReport.detachments = Math.max(0, size(parseRawDetachmentIds(row)) - size(roster.detachmentIds))
+    forEach(roster.units, unit => {
+        if (unit.enhancementId && !find(dataBase.data.enhancement, ['id', unit.enhancementId])) {
+            hydrateReport.enhancements++
+            unit.enhancementId = ''
+        }
+        if (!find(dataBase.data.unit_composition, ['id', unit.compositionId])) unit.compositionId = getDefaultComposition(unit.datasheetId)?.id
     })
     return roster
 }
@@ -282,7 +306,10 @@ export const getAvailableEnhancements = (unit) => {
     const enhancements = sortBy(filter(dataBase.data.enhancement, item => includes(roster.detachmentIds, item.detachmentId)), 'displayOrder')
     const miniature = sortBy(filter(dataBase.data.miniature, ['datasheetId', unit.datasheetId]), 'displayOrder')[0]
     const keywords = [...map(filter(dataBase.data.miniature_keyword, ['miniatureId', miniature?.id]), 'keywordId'), ...getConditionalKeywordIds(unit.datasheetId, unit)]
+    const isCharacter = isCharacterDatasheet(unit.datasheetId, unit)
     return filter(enhancements, enhancement => {
+        // Улучшения для отрядов (Upgrade) берут и не-персонажи, обычные энхансменты - только персонажи
+        if (!isCharacter && !enhancement.isEquipableByNonCharacterUnit) return false
         const groups = filter(dataBase.data.enhancement_required_keyword_group, ['enhancementId', enhancement.id])
         if (!groups.length) return true
         return Boolean(find(groups, group => {

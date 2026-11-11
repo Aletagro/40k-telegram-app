@@ -52,7 +52,7 @@ const UnitRow = ({unit, issues, onChange, onLocate}) => {
     const isCharacter = isCharacterDatasheet(unit.datasheetId, unit)
     const compositions = getCompositions(unit.datasheetId)
     const enhancement = unit.enhancementId ? find(dataBase.data.enhancement, ['id', unit.enhancementId]) : null
-    const hasEnhancements = type !== 'Epic Hero' && isCharacter && size(roster.detachmentIds) > 0 && (enhancement || size(getAvailableEnhancements(unit)) > 0)
+    const hasEnhancements = type !== 'Epic Hero' && size(roster.detachmentIds) > 0 && (enhancement || size(getAvailableEnhancements(unit)) > 0)
     const total = getUnitTotalPoints(unit)
     // Цена выше базовой, если сработала ступень (3-я копия и далее)
     const isRaised = total - (enhancement?.basePointsCost || 0) - getUnitWargearPoints(unit) > (find(compositions, ['id', unit.compositionId])?.points || 0)
@@ -208,7 +208,7 @@ const UnitRow = ({unit, issues, onChange, onLocate}) => {
                 }
                 {hasEnhancements
                     ? <button type='button' className={`${Styles.chip} ${enhancement ? Styles.active : ''}`} onClick={handleEnhancement}>
-                        {enhancement ? `${enhancement.name} (${enhancement.basePointsCost} pts)` : 'Enhancement'}
+                        {enhancement ? `${enhancement.name} (${enhancement.basePointsCost} pts)` : isCharacter ? 'Enhancement' : 'Upgrade'}
                     </button>
                     : null
                 }

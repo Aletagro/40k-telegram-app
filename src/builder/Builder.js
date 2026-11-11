@@ -137,11 +137,13 @@ const Builder = () => {
     const getIssueAction = (issue) => {
         if (issue.fix === 'detachments') return handleChooseDetachment
         if (issue.fix === 'forceDisposition') return handleForceDisposition
+        if (issue.fix === 'size') return () => summaryRef.current?.scrollIntoView({behavior: 'smooth', block: 'start'})
         if (issue.fix === 'warlord') {
             const candidate = find(roster.units, unit => canBeWarlord(unit)) || roster.units[0]
             return candidate ? () => handleLocate(candidate.uid) : null
         }
         if (issue.uid) return () => handleLocate(issue.uid)
+        if (size(issue.uids)) return () => handleLocate(issue.uids[0])
         return null
     }
 

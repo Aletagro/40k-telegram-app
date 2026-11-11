@@ -5,6 +5,7 @@ import Constants from '../Constants'
 import {main, navigationState} from '../utilities/appState'
 import {fetchRostersByUser, deleteRoster} from '../utilities/api'
 import {hydrateRoster} from '../utilities/rosterModel'
+import {notifyHydrateReport} from './hydrateNotice'
 import {isSupporter, getSupportUntil, formatSupportDate, openSupportPage} from '../utilities/support'
 import Modal from '../components/Modal'
 import Button from '../components/Button'
@@ -41,6 +42,7 @@ const UserLists = () => {
 
     const handleOpen = (list) => () => {
         hydrateRoster(list)
+        notifyHydrateReport()
         navigationState.isBuilder = true
         navigate('/builder', {state: {faction: {id: list.faction_id, name: list.faction}}})
     }

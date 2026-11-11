@@ -5,6 +5,7 @@ import get from 'lodash/get'
 import compact from 'lodash/compact'
 import castArray from 'lodash/castArray'
 import uniq from 'lodash/uniq'
+import uniqBy from 'lodash/uniqBy'
 import map from 'lodash/map'
 import size from 'lodash/size'
 import find from 'lodash/find'
@@ -254,11 +255,19 @@ export const getUnitsSortesByType = (faction, codexInfo, detachmentIds, parentCo
     )
     // добавить юниты для доступные для определенного детачмента
     const detachmentAlliedIds = uniq(map(filter(dataBase.data.allied_faction_required_detachment, item => includes(detachmentIdList, item.detachmentId)), 'alliedFactionId'))
+    // Часть юнитов лежит в книге армии, но берётся только с определённым детачментом (например, демоны Нургла у Death Guard
+    // с Tallyband Summoners). Без этого детачмента такие юниты убираем, а с ним они добавятся ниже без дублей
+    const gatedAlliedIds = uniq(map(filter(dataBase.data.allied_faction_required_detachment, item =>
+        !includes(detachmentAlliedIds, item.alliedFactionId)
+        && find(dataBase.data.faction_keyword_allied_faction, {factionKeywordId: faction.id, alliedFactionId: item.alliedFactionId})), 'alliedFactionId'))
+    const gatedDatasheetIds = map(filter(dataBase.data.allied_faction_datasheet, item => includes(gatedAlliedIds, item.alliedFactionId)), 'datasheetId')
+    if (size(gatedDatasheetIds)) units = filter(units, unit => !includes(gatedDatasheetIds, unit.id))
     forEach(detachmentAlliedIds, detachmentAlliedId => {
         const detachmentAlliedUnitsIds = filter(dataBase.data.allied_faction_datasheet, ['alliedFactionId', detachmentAlliedId])
         const detachmentAlliedUnits = map(detachmentAlliedUnitsIds, unit => find(dataBase.data.datasheet, datasheet => datasheet.id === unit.datasheetId))
-        units = [...units, ...detachmentAlliedUnits]
+        units = [...units, ...compact(detachmentAlliedUnits)]
     })
+    units = uniqBy(units, 'id')
     const miniaturesData = map(units, unit => filter(dataBase.data.miniature, ['datasheetId', unit.id]))
     const unitsInfo = map(miniaturesData, miniatures => {
         const unitType = getUnitType(miniatures[0].id)

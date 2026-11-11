@@ -3,6 +3,7 @@ import {useNavigate} from 'react-router-dom'
 import {lists, main, roster, navigationState} from '../utilities/appState'
 import {fetchRosters} from '../utilities/api'
 import {hydrateRoster} from '../utilities/rosterModel'
+import {notifyHydrateReport} from './hydrateNotice'
 import Constants from '../Constants'
 import Button from '../components/Button'
 import Modal from '../components/Modal'
@@ -89,6 +90,7 @@ const CommunityLists = () => {
 
     const handleOpen = (list) => {
         hydrateRoster(list)
+        notifyHydrateReport()
         // Чужой список открывается как копия: без id сохранение создаст новый список
         if (!main.user?.id || list.user_id !== main.user.id) roster.id = undefined
         navigationState.isBuilder = true

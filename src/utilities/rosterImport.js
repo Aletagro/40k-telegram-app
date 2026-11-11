@@ -2,7 +2,7 @@ import Constants from '../Constants'
 import {roster} from './appState'
 import {
     resetRoster, setBattleSize, createUnit, addUnit, getCompositions, getCompositionModels, getUnitTotalPoints,
-    getAvailableDatasheetIds, syncForceDisposition, getForceDispositionOptions
+    getAvailableDatasheetIds, syncForceDisposition, getForceDispositionOptions, getUnitAllegianceSelect, setUnitAllegiance
 } from './rosterModel'
 import {getWargear, getUnitWargearItems, getSlotTotal, getSlotCounts, setChoiceCount} from './wargearModel'
 
@@ -49,14 +49,32 @@ const parseCountPrefix = (text) => {
 
 // --- Разбор текста на шапку и юниты ---
 
+// Официальное приложение добавляет в экспорт блок ERRORS с пунктами списка: он не относится к юнитам
+const skipErrorBlocks = (lines) => {
+    const result = []
+    let isSkipping = false
+    forEach(lines, line => {
+        if (/^(errors?|warnings?)$/i.test(line)) {
+            isSkipping = true
+            return
+        }
+        if (isSkipping && (isSectionTitle(line) || /^attached unit/i.test(line) || (!BULLET_REGEX.test(line) && parseUnitHeader(line)))) isSkipping = false
+        if (!isSkipping) result.push(line)
+    })
+    return result
+}
+
 export const splitRosterText = (text) => {
     // Ссылки Listhammer вида [Название](url)150 Points превращаем в обычный текст; подпись о версии экспорта пропускаем
-    const lines = compact(map(String(text || '').split(/\r?\n/), line => line.replace(/\[([^\]]*)\]\([^)]*\)/g, '$1 ').replace(/\s+/g, ' ').trim()))
+    let lines = compact(map(String(text || '').split(/\r?\n/), line => line.replace(/\[([^\]]*)\]\([^)]*\)/g, '$1 ').replace(/\s+/g, ' ').trim()))
+        .map(line => line.replace(/(\d)[ \u00a0\u202f](?=\d{3}(?!\d))/g, '$1'))
         .filter(line => !/^exported with/i.test(line))
+    lines = skipErrorBlocks(lines)
     if (!lines.length) return null
-    const title = parseUnitHeader(lines[0]) || {name: lines[0], points: 0}
+    // Без названия списка экспорт сразу начинается с армии
+    const title = parseUnitHeader(lines[0]) || {name: '', points: 0}
     const header = []
-    let index = 1
+    let index = title.points ? 1 : 0
     while (index < lines.length) {
         const line = lines[index]
         const unitHeader = parseUnitHeader(line)
@@ -156,7 +174,15 @@ const getAlliedFactionId = (datasheetId) => {
 
 const NO_TEXT = ['warlord']
 
-const isInfoLine = (text) => /^attached as:/i.test(text) || /^enhancements?:/i.test(text) || includes(NO_TEXT, text.toLowerCase())
+// Строки вида "Mark of Chaos: Khorne": название группы способностей лояльности и выбранная способность
+const getAllegianceLine = (text) => {
+    const match = text.match(/^([^:]+):\s*(.+)$/)
+    if (!match) return null
+    const group = find(dataBase.data.allegiance_ability_group, item => normalize(item.name) === normalize(match[1]))
+    return group ? {group, value: match[2].trim()} : null
+}
+
+const isInfoLine = (text) => /^attached as:/i.test(text) || /^enhancements?:/i.test(text) || includes(NO_TEXT, text.toLowerCase()) || Boolean(getAllegianceLine(text))
 
 // Группирует строки юнита на модели (строки с названием миниатюры) и снаряжение. Количества у снаряжения - итоговые
 const parseUnitLines = (datasheetId, lines) => {
@@ -248,9 +274,14 @@ const fitWargear = (unit, target) => {
 }
 
 const findEnhancement = (name) => {
-    const key = normalize(name.replace(/\(.*?\)\s*$/, ''))
-    const all = filter(dataBase.data.enhancement, item => normalize(item.name) === key)
-    return find(all, item => includes(roster.detachmentIds, item.detachmentId)) || null
+    // В названиях улучшений для отрядов есть суффикс "(Upgrade)", поэтому сначала ищем точное совпадение
+    const candidates = [normalize(name), normalize(name.replace(/\(.*?\)\s*$/, ''))]
+    for (const key of candidates) {
+        const all = filter(dataBase.data.enhancement, item => normalize(item.name) === key)
+        const found = find(all, item => includes(roster.detachmentIds, item.detachmentId))
+        if (found) return found
+    }
+    return null
 }
 
 const getRole = (lines) => {
@@ -272,7 +303,7 @@ export const importRoster = (text) => {
     if (!header.faction) return {ok: false, error: 'Could not recognize the army. The first lines of the list should contain the army name (for example, Space Marines).', warnings}
 
     resetRoster()
-    roster.name = parsed.title.name
+    roster.name = parsed.title.name || header.faction.name
     roster.grandFaction = header.faction.grandFaction
     roster.faction = header.faction.name
     roster.factionId = header.faction.id
@@ -319,6 +350,18 @@ export const importRoster = (text) => {
     })
 
     forEach(created, ({unit}) => addUnit(unit))
+    // Способности лояльности выбираются, когда все юниты уже в списке (доступные группы зависят от состава)
+    forEach(created, ({unit, entry}) => {
+        forEach(entry.lines, ({text}) => {
+            const line = getAllegianceLine(text)
+            if (!line) return
+            const current = find(roster.units, ['uid', unit.uid])
+            const select = getUnitAllegianceSelect(current)
+            const ability = find(select?.abilities, item => normalize(item.name) === normalize(line.value))
+            if (ability) setUnitAllegiance(unit.uid, ability.id)
+            else warnings.push(`${entry.name}: "${line.group.name}: ${line.value}" was not recognized`)
+        })
+    })
     // Очки из текста и расчёт приложения могут расходиться (например, из-за версии базы)
     forEach(created, ({unit, entry}) => {
         const points = getUnitTotalPoints(unit)
