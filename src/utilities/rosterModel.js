@@ -158,7 +158,7 @@ export const getRosterPoints = () => sumBy(roster.units, getUnitTotalPoints)
 
 const UNIT_KEYS = ['uid', 'datasheetId', 'compositionId', 'modelCounts', 'loadouts', 'enhancementId', 'attachedToUid', 'isWarlord', 'alliedFactionId', 'allegianceAbilityId']
 
-export const serializeRoster = ({userId, tgId, name = roster.name, isPublic = roster.isPublic} = {}) => ({
+export const serializeRoster = ({userId, name = roster.name, isPublic = roster.isPublic} = {}) => ({
     name,
     faction: roster.faction,
     faction_id: roster.factionId,
@@ -166,9 +166,7 @@ export const serializeRoster = ({userId, tgId, name = roster.name, isPublic = ro
     battle_size_id: roster.battleSizeId,
     points_limit: roster.pointsLimit,
     detachment_ids: JSON.stringify(roster.detachmentIds || []),
-    detachment_id: roster.detachmentIds?.[0] || '',
     force_disposition_id: roster.forceDispositionId || '',
-    allegiances: JSON.stringify(roster.allegiances || {}),
     units: JSON.stringify(map(roster.units, unit => {
         const short = {}
         forEach(UNIT_KEYS, key => { short[key] = unit[key] })
@@ -177,8 +175,7 @@ export const serializeRoster = ({userId, tgId, name = roster.name, isPublic = ro
     points: JSON.stringify({all: getRosterPoints()}),
     is_public: isPublic,
     note: roster.note || '',
-    user_id: userId,
-    tg_id: tgId
+    user_id: userId
 })
 
 // Старые списки хранили один detachment_id, новые - JSON-массив detachment_ids
@@ -191,15 +188,6 @@ const parseDetachmentIds = (row) => {
     }
     if (!Array.isArray(ids) || !ids.length) ids = row.detachment_id ? [row.detachment_id] : []
     return uniq(filter(ids, id => find(dataBase.data.detachment, ['id', id])))
-}
-
-const parseAllegiances = (row) => {
-    try {
-        const value = row.allegiances ? JSON.parse(row.allegiances) : {}
-        return value && typeof value === 'object' ? value : {}
-    } catch (error) {
-        return {}
-    }
 }
 
 // Загрузка сохранённого списка. Юниты, которых больше нет в базе, пропускаются
@@ -223,7 +211,6 @@ export const hydrateRoster = (row) => {
         pointsLimit: row.points_limit || roster.pointsLimit,
         detachmentIds: parseDetachmentIds(row),
         forceDispositionId: find(dataBase.data.force_disposition, ['id', row.force_disposition_id])?.id || '',
-        allegiances: parseAllegiances(row),
         units: compact(map(units, unit => find(dataBase.data.datasheet, ['id', unit.datasheetId])
             ? {...createUnit(unit.datasheetId), ...unit}
             : null))

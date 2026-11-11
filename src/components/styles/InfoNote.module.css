@@ -1,0 +1,23 @@
+.note {
+  margin: 0 0 12px;
+  padding: 12px 14px 12px 16px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--gold);
+  border-radius: 14px;
+  background: var(--card);
+}
+.title {
+  margin: 0 0 4px;
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.text,
+.text p {
+  margin: 0;
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.45;
+}

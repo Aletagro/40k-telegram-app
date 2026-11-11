@@ -1,7 +1,9 @@
 import React from 'react'
 import Tile from '../components/Tile'
 import HeaderImage from '../components/HeaderImage'
+import SupportCard from '../components/SupportCard'
 import LanguageSelect from '../components/LanguageSelect'
+import {canLinkAccounts} from '../utilities/linkAccounts'
 import spaceMarine from '../images/spaceMarine.jpeg'
 
 import Styles from './styles/Main.module.css'
@@ -15,13 +17,15 @@ const Main = () => {
             <div className={Styles.heroShade} />
         </div>
         <div className={Styles.menu}>
-            <Tile featured title='Builder' text='Build your army list' navigateTo='chooseGrandFaction' />
+            <Tile featured title='Builder' text='Build and save your army lists' navigateTo='userLists' />
             <div className={Styles.grid}>
-                <Tile compact wide title='Rules' text='Core rules, key documents and armies' navigateTo='mainRules' />
+                <Tile compact title='Rules' text='Armies and core rules' navigateTo='mainRules' />
+                <Tile compact title='Community Lists' text='Lists from other players' navigateTo='lists' />
+                {canLinkAccounts() ? <Tile compact wide title='Link Accounts' text='Telegram and VK in one account' navigateTo='linkAccounts' /> : null}
                 {/* <Tile compact title='Damage Calculator' text='Averages for any attack' navigateTo='calculator' /> */}
             </div>
             <LanguageSelect />
-            <p className={Styles.footer}>Card number for support - 5536 9141 9279 5999 (Rukosuev Nikita)</p>
+            <SupportCard />
             <p className={Styles.footer}>For feedback - <b>@RukosuevKrasavchik</b></p>
             <p className={Styles.footer}>Database version {metadata?.data_version}</p>
         </div>

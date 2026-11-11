@@ -15,7 +15,7 @@ const Thumbnail = ({src}) => {
 }
 
 // Один пункт списка внутри карточки
-export const ListItem = ({title, subtitle, rightText, image, navigateTo, state, onClick, onInfo}) => {
+export const ListItem = ({title, subtitle, rightText, image, navigateTo, state, onClick, onInfo, infoLabel = 'i', infoAriaLabel = 'Info'}) => {
     const navigate = useNavigate()
 
     const handleClick = () => {
@@ -41,7 +41,7 @@ export const ListItem = ({title, subtitle, rightText, image, navigateTo, state, 
     return onInfo
         ? <div className={Styles.rowWrap}>
             {item}
-            <button type='button' className={Styles.info} onClick={onInfo} aria-label='Info'>i</button>
+            <button type='button' className={Styles.info} onClick={onInfo} aria-label={infoAriaLabel}>{infoLabel}</button>
         </div>
         : item
 }

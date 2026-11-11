@@ -1,0 +1,60 @@
+.textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 220px;
+  margin: 4px 0 14px;
+  padding: 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  background: var(--card);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.4;
+  resize: vertical;
+}
+
+.textarea::placeholder {
+  color: var(--muted);
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.error {
+  margin: 0 2px 12px;
+  color: #e07a6a;
+  font-size: 15px;
+}
+
+.warnings {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-left: 4px solid var(--gold);
+  border-radius: 14px;
+  background: var(--card);
+  color: var(--text);
+  font-size: 15px;
+}
+
+.warnings b {
+  color: var(--gold-light);
+}
+
+.warnings ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+.warnings li {
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.button {
+  width: 100%;
+  margin: 6px 0;
+}

@@ -1,6 +1,6 @@
 import React from 'react';
 import {useNavigate, useLocation} from 'react-router-dom';
-import {search, navigationState, isCollapseUnitsTypes} from '../utilities/appState'
+import {search, lists, navigationState, isCollapseUnitsTypes} from '../utilities/appState'
 import Constants from '../Constants'
 import {isVkMobile} from '../utilities/platform'
 import {resetRoster} from '../utilities/rosterModel'
@@ -31,6 +31,11 @@ const Header = () => {
             search.Rules = []
         } else if (pathname === '/units') {
             forEach(Constants.defaultIsCollapseUnitsTypes, clearCollapseUnitsType)
+        } else if (pathname === '/lists') {
+            lists.data = []
+            lists.meta = {}
+            lists.isFirstReq = true
+            lists.filters = {all: true, points_limit: 2000}
         }
     }
 

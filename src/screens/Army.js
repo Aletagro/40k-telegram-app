@@ -5,7 +5,7 @@ import {ListCard, ListItem, SectionTitle} from '../components/ListCard'
 import ImageCard from '../components/ImageCard'
 import HeaderImage from '../components/HeaderImage'
 import {sortByName, getCodexInfo} from '../utilities/utils'
-import {roster, navigationState} from '../utilities/appState'
+import {roster, navigationState, lists} from '../utilities/appState'
 import {resetRoster} from '../utilities/rosterModel'
 
 import map from 'lodash/map'
@@ -48,6 +48,13 @@ const Army = () => {
         navigationState.isBuilder = true
     }
 
+    const handleOpenLists = () => {
+        lists.data = []
+        lists.meta = {}
+        lists.isFirstReq = true
+        lists.filters = {faction_id: faction.id, points_limit: 2000}
+    }
+
     const [datasheets, ...rules] = items
 
     // если плиток нечётное число, последняя растягивается на всю ширину
@@ -85,6 +92,7 @@ const Army = () => {
             }
             <ListCard>
                 <ListItem title='Builder' navigateTo='builder' state={{faction}} onClick={handleClickBuilder} />
+                <ListItem title='Community Lists' navigateTo='lists' onClick={handleOpenLists} />
             </ListCard>
             {size(detachments)
                 ? <>

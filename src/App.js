@@ -24,7 +24,7 @@ import Header from './components/Header'
 import ScrollToTop from './components/ScrollToTop'
 import useSwipeBack from './utilities/useSwipeBack'
 import {fetchUser} from './utilities/api'
-import Lists from './builder/Lists'
+import UserLists from './builder/UserLists'
 import ChooseGrandFaction from './builder/ChooseGrandFaction'
 import ChooseFaction from './builder/ChooseFaction'
 import Builder from './builder/Builder'
@@ -39,16 +39,23 @@ import ChooseAttach from './builder/ChooseAttach'
 import Export from './builder/Export'
 import Calculator from './calculator/Calculator'
 import Developer from './screens/Developer'
+import Registration from './screens/Registration'
+import LinkAccounts from './screens/LinkAccounts'
+import PasteList from './builder/PasteList'
+import CommunityLists from './builder/CommunityLists'
 
 import './App.css'
 
 // Вне Telegram (например, в браузере) window.Telegram может отсутствовать
 const tg = window.Telegram?.WebApp
 main.tgId = tg?.initDataUnsafe?.user?.id
+// В VK приложение открывается со своими параметрами в адресе
+main.vkId = new URLSearchParams(window.location.href.split('?')[1]).get('vk_user_id') || undefined
 // Для локальных тестов: id из .env.development.local (в git не попадает) подставляется только при npm start.
 // В боевую сборку (npm run build / deploy) этот блок не попадает, поэтому запушить его по ошибке нельзя
-if (process.env.NODE_ENV === 'development' && process.env.REACT_APP_DEV_TG_ID) {
-  main.tgId = Number(process.env.REACT_APP_DEV_TG_ID)
+if (process.env.NODE_ENV === 'development') {
+  if (process.env.REACT_APP_DEV_TG_ID) main.tgId = Number(process.env.REACT_APP_DEV_TG_ID)
+  if (process.env.REACT_APP_DEV_VK_ID) main.vkId = process.env.REACT_APP_DEV_VK_ID
 }
 
 function App() {
@@ -56,8 +63,8 @@ function App() {
 
   useEffect(() => {
     // Пользователь с бэкенда (если уже есть) нужен для сохранения списков
-    if (main.tgId && !main.user) {
-      fetchUser(main.tgId).then(data => {
+    if ((main.tgId || main.vkId) && !main.user) {
+      fetchUser().then(data => {
         if (data?.exists) main.user = data.user
       })
     }
@@ -106,10 +113,14 @@ function App() {
       <Route path={'keyDocuments'} element={<KeyDocuments />} />
       <Route path={'ruleSections'} element={<RuleSections />} />
       <Route path={'rules'} element={<Rules />} />
-      <Route path={'lists'} element={<Lists />} />
+      <Route path={'userLists'} element={<UserLists />} />
       <Route path={'chooseGrandFaction'} element={<ChooseGrandFaction />} />
       <Route path={'chooseFaction'} element={<ChooseFaction />} />
       <Route path={'export'} element={<Export />} />
+      <Route path={'registration'} element={<Registration />} />
+      <Route path={'linkAccounts'} element={<LinkAccounts />} />
+      <Route path={'pasteList'} element={<PasteList />} />
+      <Route path={'lists'} element={<CommunityLists />} />
       <Route path={'developer'} element={<Developer />} />
     </Routes>
   </div>

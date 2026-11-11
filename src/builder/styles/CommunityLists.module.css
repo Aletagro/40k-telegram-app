@@ -1,0 +1,133 @@
+.filters {
+  display: flex;
+  overflow-x: auto;
+  gap: 8px;
+  padding: 14px 12px 8px;
+  scrollbar-width: none;
+}
+.filters::-webkit-scrollbar {
+  display: none;
+}
+.filter,
+.selectedFilter {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 7px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 15px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.selectedFilter {
+  border-color: var(--gold);
+  background: linear-gradient(135deg, var(--feature-from), var(--feature-to));
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 14px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--text);
+  font-family: inherit;
+  text-align: start;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.card:active {
+  background: var(--card-active);
+}
+.cardHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.cardName {
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  font-size: 18px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.cardPoints {
+  flex: 0 0 auto;
+  color: var(--gold);
+  font-size: 14px;
+}
+.cardArmy {
+  color: var(--muted);
+  font-size: 15px;
+}
+.cardRow {
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.4;
+}
+.cardRow b {
+  margin-right: 4px;
+  color: var(--muted);
+  font-family: inherit;
+  font-weight: normal;
+}
+.cardUnits {
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.nextPage {
+  width: 100%;
+  margin-top: 4px;
+}
+.empty {
+  padding: 60px 24px;
+  color: var(--muted);
+  font-size: 20px;
+  line-height: 1.35;
+  text-align: center;
+}
+.options {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+.option,
+.selectedOption {
+  display: block;
+  width: 100%;
+  margin: 0 0 6px;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  background: var(--card-active);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 16px;
+  text-align: start;
+  cursor: pointer;
+}
+.selectedOption {
+  border-color: var(--gold);
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+}
+.groupTitle {
+  margin: 12px 0 6px;
+  color: var(--gold);
+  font-family: 'Minion Pro Bold';
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}

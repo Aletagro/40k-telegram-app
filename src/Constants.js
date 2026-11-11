@@ -264,6 +264,18 @@ const Constants = {
         'Swarm': false,
         'Fortification': false
     },
+    // Лимит сохранённых списков для игроков без поддержки (как в AoS)
+    listsMax: 4,
+    supportLinks: {
+        telegram: 'https://t.me/tribute/app?startapp=dRhg',
+        web: 'https://web.tribute.tg/d/Rhg'
+    },
+    myTgId: 530569849,
+    myVkId: 45749262,
+    developersIds: [
+        530569849, // Я
+        200821933, // Вован
+    ],
     vanilSpaceMarinesId: '01623188-9470-4441-96b0-e06eb2572bb5',
     EmperorsChildrenCodexId: 'bc2940c7-b4e3-4d2b-ac39-5bc2df3ad21c',
     AeldariCodexId: '995328e1-ae96-4ef6-b548-c31fad1a06fc'

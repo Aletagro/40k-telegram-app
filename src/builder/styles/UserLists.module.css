@@ -1,0 +1,89 @@
+.buttonContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+  width: 100%;
+  margin: 14px 0 16px;
+}
+.listContainer {
+  min-width: 100px;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid var(--gold);
+  border-radius: 18px;
+  background-color: #0e0f11;
+}
+.button {
+  display: block;
+  position: relative;
+  width: 100%;
+  min-height: 110px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-align: start;
+}
+.image {
+  display: block;
+  width: 100%;
+  min-height: 110px;
+  height: auto;
+}
+.textContainer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 12px 10px;
+  background: linear-gradient(to top, rgba(10, 8, 4, 0.92), rgba(10, 8, 4, 0));
+}
+.text {
+  max-height: 2.9em;
+  overflow: hidden;
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  font-size: 17px;
+  line-height: 1.4;
+}
+.armyText {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.newRosterButton {
+  width: 100%;
+  margin-bottom: 12px;
+}
+.closeIcon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1.5px solid var(--gold);
+  border-radius: 50%;
+  background: rgba(20, 16, 10, 0.78);
+  color: var(--gold-light);
+  cursor: pointer;
+}
+.limitText {
+  margin: 0 0 10px;
+}
+.limitButton {
+  width: 100%;
+  margin-top: 6px;
+}
+.modalText {
+  margin: 0 0 12px;
+  color: var(--text);
+}

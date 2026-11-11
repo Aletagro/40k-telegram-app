@@ -3,8 +3,12 @@ import Constants from '../Constants'
 // Данные текущего пользователя Telegram
 export const main = {
     tgId: undefined,
+    vkId: undefined,
     // Пользователь с бэкенда (после fetchUser)
-    user: undefined
+    user: undefined,
+    // Сохранённые списки пользователя
+    rosters: [],
+    showSaveListModal: false
 }
 
 // Текущий ростер. Структура описана в utilities/rosterModel.js, сбрасывается через resetRoster()
@@ -19,6 +23,14 @@ export const roster = {
     forceDispositionId: '',
     allegiances: {},
     units: []
+}
+
+// Списки других игроков (экран Community Lists): загруженные страницы, мета и фильтры
+export const lists = {
+    data: [],
+    meta: {},
+    isFirstReq: true,
+    filters: {all: true, points_limit: 2000}
 }
 
 export const search = {

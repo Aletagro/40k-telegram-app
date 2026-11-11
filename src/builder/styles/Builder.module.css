@@ -526,3 +526,36 @@
 .exportTag {
   color: var(--gold-light);
 }
+
+.regTitle {
+  margin: 4px 0 14px;
+  color: var(--gold-light);
+  font-size: 22px;
+}
+.regLabel {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.regError {
+  margin: 8px 0;
+  color: #f08a79;
+}
+
+.listRow {
+  position: relative;
+}
+.listDelete {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  width: 34px;
+  height: 34px;
+  margin-top: -17px;
+  border: 0;
+  background: transparent;
+  color: #e0705f;
+  font-size: 26px;
+  line-height: 1;
+}
