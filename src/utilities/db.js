@@ -15,7 +15,8 @@ const LANGUAGES = [
   {id: 'it', name: 'Italiano'},
   {id: 'ja', name: '日本語'},
   {id: 'ko', name: '한국어'},
-  {id: 'zh', name: '中文'}
+  {id: 'zh', name: '中文'},
+  {id: 'ru', name: 'Русский'}
 ]
 
 const getLanguage = () => {
