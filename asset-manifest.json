@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/40k-telegram-app/static/css/main.e9bc4e29.css",
-    "main.js": "/40k-telegram-app/static/js/main.c2ee5c7a.js",
+    "main.css": "/40k-telegram-app/static/css/main.6785001e.css",
+    "main.js": "/40k-telegram-app/static/js/main.d6b1aa97.js",
     "static/media/placeholder.png": "/40k-telegram-app/static/media/placeholder.816f67bc014b91894c3e.png",
     "static/media/MinionPro-Bold.woff": "/40k-telegram-app/static/media/MinionPro-Bold.e73f42dae2e6ae675375.woff",
     "static/media/MinionPro-Regular.woff": "/40k-telegram-app/static/media/MinionPro-Regular.7cfa635450eff096f301.woff",
@@ -15,11 +15,11 @@
     "static/media/whiteCopy.svg": "/40k-telegram-app/static/media/whiteCopy.0d202b6fafa9edf369abcc84e983be2b.svg",
     "index.html": "/40k-telegram-app/index.html",
     "static/media/weaponChoice.svg": "/40k-telegram-app/static/media/weaponChoice.e063d90eebe6fe8445bdd3d065d1d1cb.svg",
-    "main.e9bc4e29.css.map": "/40k-telegram-app/static/css/main.e9bc4e29.css.map",
-    "main.c2ee5c7a.js.map": "/40k-telegram-app/static/js/main.c2ee5c7a.js.map"
+    "main.6785001e.css.map": "/40k-telegram-app/static/css/main.6785001e.css.map",
+    "main.d6b1aa97.js.map": "/40k-telegram-app/static/js/main.d6b1aa97.js.map"
   },
   "entrypoints": [
-    "static/css/main.e9bc4e29.css",
-    "static/js/main.c2ee5c7a.js"
+    "static/css/main.6785001e.css",
+    "static/js/main.d6b1aa97.js"
   ]
 }
