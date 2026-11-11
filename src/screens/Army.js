@@ -2,9 +2,11 @@ import React from 'react'
 import {useLocation} from 'react-router-dom'
 import Tile from '../components/Tile'
 import {ListCard, ListItem, SectionTitle} from '../components/ListCard'
+import ImageCard from '../components/ImageCard'
 import HeaderImage from '../components/HeaderImage'
 import {sortByName, getCodexInfo} from '../utilities/utils'
 import {roster, navigationState} from '../utilities/appState'
+import {resetRoster} from '../utilities/rosterModel'
 
 import map from 'lodash/map'
 import size from 'lodash/size'
@@ -39,6 +41,7 @@ const Army = () => {
     }
 
     const handleClickBuilder = () => {
+        resetRoster()
         roster.grandFaction = grandFaction
         roster.faction = faction.name
         roster.factionId = faction.id
@@ -57,9 +60,11 @@ const Army = () => {
         state={{faction, codexInfo, data: item.data}}
     />
 
-    const renderDetachment = (detachment) => <ListItem
+    const renderDetachment = (detachment) => <ImageCard
         key={detachment.id}
         title={detachment.name}
+        image={detachment.bannerImage || detachment.rowImage}
+        badge={detachment.detachmentPointsCost ? `${detachment.detachmentPointsCost} DP` : undefined}
         navigateTo='detachment'
         state={{detachment, faction}}
     />
@@ -84,7 +89,7 @@ const Army = () => {
             {size(detachments)
                 ? <>
                     <SectionTitle>Detachments</SectionTitle>
-                    <ListCard>{map(detachments, renderDetachment)}</ListCard>
+                    {map(detachments, renderDetachment)}
                 </>
                 : null
             }

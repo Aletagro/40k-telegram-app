@@ -5,7 +5,7 @@ import Styles from './styles/ImageCard.module.css'
 
 // Карточка с картинкой на фоне: название поверх тёмного градиента.
 // size: 'md' (армии) | 'lg' (группы армий). badge - небольшая метка рядом с названием.
-const ImageCard = ({title, image, badge, size = 'md', navigateTo, state, onClick}) => {
+const ImageCard = ({title, image, badge, size = 'md', navigateTo, state, onClick, onAction, actionLabel = 'i', selected, disabled}) => {
     const navigate = useNavigate()
     const [failed, setFailed] = useState(false)
 
@@ -18,7 +18,7 @@ const ImageCard = ({title, image, badge, size = 'md', navigateTo, state, onClick
         }
     }
 
-    return <button type='button' className={`${Styles.card} ${Styles[size]}`} onClick={handleClick}>
+    const card = <button type='button' className={`${Styles.card} ${Styles[size]} ${selected ? Styles.selected : ''} ${disabled ? Styles.disabled : ''} ${onAction ? Styles.withAction : ''}`} onClick={handleClick}>
         {image && !failed
             ? <img className={Styles.image} src={image} alt='' loading='lazy' onError={() => setFailed(true)} />
             : null
@@ -27,9 +27,18 @@ const ImageCard = ({title, image, badge, size = 'md', navigateTo, state, onClick
         <span className={Styles.content}>
             <span className={Styles.title}>{title}</span>
             {badge ? <span className={Styles.badge}>{badge}</span> : null}
-            <span className={Styles.chevron} aria-hidden='true' />
+            {onAction ? null : <span className={Styles.chevron} aria-hidden='true' />}
         </span>
     </button>
+
+    if (!onAction) {
+        return card
+    }
+    // Дополнительная кнопка (например, инфо) лежит поверх карточки, а не внутри кнопки
+    return <div className={Styles.wrap}>
+        {card}
+        <button type='button' className={`${Styles.action} ${Styles[`action_${size}`]}`} onClick={onAction} aria-label='Info'>{actionLabel}</button>
+    </div>
 }
 
 export default ImageCard

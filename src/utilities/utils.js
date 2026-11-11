@@ -1,16 +1,15 @@
 import parse from 'html-react-parser'
 import Constants from '../Constants'
-import {roster} from '../utilities/appState'
 
 import get from 'lodash/get'
+import compact from 'lodash/compact'
+import castArray from 'lodash/castArray'
+import uniq from 'lodash/uniq'
 import map from 'lodash/map'
-import min from 'lodash/min'
-import max from 'lodash/max'
 import size from 'lodash/size'
 import find from 'lodash/find'
 import union from 'lodash/union'
 import filter from 'lodash/filter'
-import indexOf from 'lodash/indexOf'
 import forEach from 'lodash/forEach'
 import replace from 'lodash/replace'
 import includes from 'lodash/includes'
@@ -34,139 +33,6 @@ export const unitsSortesByType = (units) => {
         }
     }
     return filter(map(Constants.unitsTypes, getUnitsByType), Boolean)
-}
-
-export const getErrors = (roster) => {
-    const errors = []
-    if (!roster) {
-        return errors
-    }
-    if (roster.points > roster.pointsLimit) {
-        errors.push(`You use more than ${roster.pointsLimit} points`)
-    }
-    if (!roster.detachment) {
-        errors.push('Choose Detachment')
-    }
-    // if (roster.units === null) {
-    //     errors.push('Choose Warlord')
-    // }
-    const uniqueUnits = []
-    let heroicTraitsCount = 0
-    let atrefactsCount = 0
-    let ensorcelledBannersCount = 0
-    let hasWarmasterInRegiments = []
-    let hasRequiredGeneral = false
-    let isRequiredGeneralIsGeneral = false
-    let jawsCount = 0
-            let krulsCount = 0
-    forEach(roster.regiments, (regiment, index) => {
-        regiment.units.forEach(unit => {
-            if (includes(unit.referenceKeywords, 'Unique')) {
-                uniqueUnits.push(unit.name)
-            }
-            if (unit.heroicTrait) {
-                heroicTraitsCount += 1
-            }
-            if (unit.artefact) {
-                atrefactsCount += 1
-            }
-            if (unit['Ensorcelled Banners']) {
-                ensorcelledBannersCount += 1
-            }
-            if (unit.points * 2 > roster.pointsLimit) {
-                errors.push(`${unit.name} cost more than half the army`)
-            }
-            if (includes(unit.referenceKeywords, 'Warmaster')) {
-                hasWarmasterInRegiments.push(index)
-            }
-        })
-    })
-    // RoR с дп может брать артефакты и трейты
-    if (roster.regimentOfRenown?.id === '11cc4585-4cf5-43eb-af29-e2cbcdb6f5dd') {
-        roster.regimentsOfRenownUnits.forEach((unit) => {
-            if (unit.heroicTrait) {
-                heroicTraitsCount += 1
-            }
-            if (unit.artefact) {
-                atrefactsCount += 1
-            }
-        })
-    }
-    if (heroicTraitsCount > 1) {
-        errors.push(`You have ${heroicTraitsCount} Heroic Traits`)
-    }
-    if (atrefactsCount > 1) {
-        errors.push(`You have ${atrefactsCount} Atrefacts`)
-    }
-    if (ensorcelledBannersCount > 1) {
-        errors.push(`You have ${ensorcelledBannersCount} Ensorcelled Banners`)
-    }
-    if (hasWarmasterInRegiments.length) {
-        errors.push("You have a Warlord hero, but he isn't your general")
-    }
-    if (roster.requiredGeneral) {
-        if (!hasRequiredGeneral) {
-            errors.push(`You must be included ${roster.requiredGeneral.name} in your roster`)
-        }
-        if (!isRequiredGeneralIsGeneral) {
-            errors.push(`${roster.requiredGeneral.name} must be your general`)
-        }
-    }
-    forEach(roster.auxiliaryUnits, unit => {
-        if (includes(unit.referenceKeywords, 'Unique')) {
-            uniqueUnits.push(unit.name)
-        }
-    })
-    const duplicateUniqueUnits = filter(uniqueUnits, (unit, index, units) => {
-        return indexOf(units, unit) !== index;
-    })
-    forEach(duplicateUniqueUnits, unit => {
-        errors.push(`You have more then one ${unit}`)
-    })
-    if (jawsCount !== krulsCount) {
-        errors.push('For every regiment led by a Kruleboyz Hero you must also include regiment led by a Ironjawz Hero')
-    }
-    return errors
-}
-
-export const getWarnings = (roster) => {
-    const warnings = []
-    if (!roster) {
-        return warnings
-    }
-    if (!roster.manifestationLore) {
-        let hasWizard = false
-        forEach(roster.regiments, (regiment, index) => {
-            forEach(regiment.units, unit => {
-                if (includes(unit.referenceKeywords, 'Wizard')) {
-                    hasWizard = true
-                }
-            })
-        })
-        forEach(roster.auxiliaryUnits, unit => {
-            if (includes(unit.referenceKeywords, 'Wizard')) {
-                hasWizard = true
-            }
-        })
-        if(find(Constants.regimentOfRenownsWithWizard, regimentOfRenown => regimentOfRenown?.id === roster.regimentOfRenown?.id)) {
-            hasWizard = true
-        }
-        if (hasWizard) {
-            warnings.push('Choose Manifestations Lore')
-        }
-    }
-    let hasLegends = false
-    forEach(roster.regiments, (regiment) => {
-        forEach(regiment.units, unit => {
-            if (unit.isLegends) {
-                hasLegends = true
-            }
-        })
-    })
-    if (hasLegends) {
-        warnings.push('You have Legends Unit in your Army')
-    }
-    return warnings
 }
 
 export const getAvToDice = (count) => {
@@ -200,16 +66,6 @@ export const getValue = (value) => {
             return average
         }
     }
-}
-
-export const getWoundsCount = (roster) => {
-    let woundsCount = 0
-    forEach(roster.regiments, regiment => {
-        forEach(regiment.units, unit => {
-            woundsCount = woundsCount + (unit.modelCount * (unit.isReinforced ? 2 : 1) * unit.health)
-        })
-    })
-    return woundsCount
 }
 
 export const replaceAsterisks = (string) => {
@@ -285,7 +141,9 @@ export const getUnitType = (miniatureId) => {
     if (transportIndex >= 0) {
         return 'Dedicated Transport'
     }
-    return keywords[0]?.name
+    // Первое ключевое слово может быть не типом юнита (например, Explosives): берём первый известный тип
+    const typeNames = map(Constants.unitsTypes, 'name')
+    return find(keywords, keyword => includes(typeNames, keyword?.name))?.name || keywords[0]?.name
 }
 
 export const getCompositions = (miniatures) => {
@@ -329,9 +187,26 @@ export const getStratagemPhases = (stratagemId) => filter(dataBase.data.stratage
     .map(({phase}) => replace(phase, /Phase$/, '').replace(/([A-Z])/g, ' $1').replace(/^./, char => char.toUpperCase()).trim())
 
 // Основная книга армии: не боевой патруль, не Imperial Armour и не Legends
-export const getCodexInfo = (factionId) => find(dataBase.data.publication, publication =>
-    publication.factionKeywordId === factionId && !publication.isCombatPatrol && !publication.isLegends && !includes(publication.name, 'Imperial Armour: Tyranids')
-)
+// Тип юнита, который задаёт сам детачмент (например, Warbikers становятся Battleline в Kult of Speed)
+// detachmentIds - выбранные детачменты ростера (массив) или один id
+export const getDetachmentUnitType = (datasheetId, detachmentIds) => {
+    const ids = compact(castArray(detachmentIds))
+    if (!ids.length) return undefined
+    const typeNames = map(Constants.unitsTypes, 'name')
+    const condition = find(dataBase.data.conditional_keyword, item => item.datasheetId === datasheetId
+        && includes(ids, item.requiredDetachmentId)
+        && !item.requiredWarlordMiniatureId
+        && includes(typeNames, find(dataBase.data.keyword, ['id', item.keywordId])?.name))
+    return condition ? find(dataBase.data.keyword, ['id', condition.keywordId]).name : undefined
+}
+
+export const getCodexInfo = (factionId) => {
+    const publications = filter(dataBase.data.publication, publication =>
+        publication.factionKeywordId === factionId && !publication.isCombatPatrol && !publication.isLegends && !includes(publication.name, 'Imperial Armour: Tyranids')
+    )
+    // У армии может быть несколько книг (например, Imperial Armour): основной считается кодекс или книга, не относящаяся к Imperial Armour
+    return find(publications, publication => !includes(publication.name, 'Imperial Armour')) || publications[0]
+}
 
 // Книга родительской армии (например, Space Marines для орденов)
 export const getParentCodexId = (faction) => {
@@ -339,7 +214,9 @@ export const getParentCodexId = (faction) => {
     return parentFactionId ? getCodexInfo(parentFactionId)?.id : undefined
 }
 
-export const getUnitsSortesByType = (faction, codexInfo, condition, parentCodexId) => {
+// detachmentIds: детачменты ростера (в них часть юнитов меняет тип, например становится Battleline); без них - каталог
+export const getUnitsSortesByType = (faction, codexInfo, detachmentIds, parentCodexId) => {
+    const detachmentIdList = compact(castArray(detachmentIds))
     let units = []
     if (codexInfo && codexInfo.id !== Constants.EmperorsChildrenCodexId && codexInfo.id !== Constants.AeldariCodexId) {
         units = filter(dataBase.data.datasheet, datasheet => datasheet.publicationId === codexInfo?.id)
@@ -376,12 +253,12 @@ export const getUnitsSortesByType = (faction, codexInfo, condition, parentCodexI
         })
     )
     // добавить юниты для доступные для определенного детачмента
-    const detachmentAlliedId = find(dataBase.data.allied_faction_required_detachment, ['detachmentId', roster.detachmentId])?.alliedFactionId
-    if (detachmentAlliedId) {
+    const detachmentAlliedIds = uniq(map(filter(dataBase.data.allied_faction_required_detachment, item => includes(detachmentIdList, item.detachmentId)), 'alliedFactionId'))
+    forEach(detachmentAlliedIds, detachmentAlliedId => {
         const detachmentAlliedUnitsIds = filter(dataBase.data.allied_faction_datasheet, ['alliedFactionId', detachmentAlliedId])
         const detachmentAlliedUnits = map(detachmentAlliedUnitsIds, unit => find(dataBase.data.datasheet, datasheet => datasheet.id === unit.datasheetId))
         units = [...units, ...detachmentAlliedUnits]
-    }
+    })
     const miniaturesData = map(units, unit => filter(dataBase.data.miniature, ['datasheetId', unit.id]))
     const unitsInfo = map(miniaturesData, miniatures => {
         const unitType = getUnitType(miniatures[0].id)
@@ -389,46 +266,16 @@ export const getUnitsSortesByType = (faction, codexInfo, condition, parentCodexI
         return {unitType, compositions, points: get(compositions, '[0].points', 0)}
     })
     units = map(units, (unit, index) => ({...unit, ...unitsInfo[index]}))
-    if (condition) {
-        const keyword = find(dataBase.data.keyword, ['id', condition.keywordId])
-        const unitIndex = findIndex(units, ['id', condition.datasheetId])
-        if (unitIndex) {
-            units[unitIndex].unitType = keyword.name
-        }
+    if (detachmentIdList.length) {
+        // Юниты, недоступные хотя бы в одном из выбранных детачментов
+        const excluded = map(filter(dataBase.data.detachment_excluded_datasheet, item => includes(detachmentIdList, item.detachmentId)), 'datasheetId')
+        units = filter(units, unit => !includes(excluded, unit.id))
+        units = map(units, unit => {
+            const detachmentType = getDetachmentUnitType(unit.id, detachmentIdList)
+            return detachmentType ? {...unit, unitType: detachmentType} : unit
+        })
     }
     return unitsSortesByType(units)
-}
-
-export const setDefaultWargears = (unit, unitType) => {
-    const unitIndex = size(roster.units[unitType]) - 1
-    const miniatures = sortByName(filter(dataBase.data.miniature, ['datasheetId', unit.id]), 'displayOrder')
-    const wargearOptionGroups = map(miniatures, miniature => find(dataBase.data.wargear_option_group, wargearOptionGroup => wargearOptionGroup.miniatureId === miniature.id && wargearOptionGroup.instructionText === 'Default Wargear'))
-    const wargearOptions = map(wargearOptionGroups, wargearOptionGroup => filter(dataBase.data.wargear_option, ['wargearOptionGroupId', wargearOptionGroup.id]))
-    // const wargears = map(wargearOptions, wargears => map(wargears, wargear => find(dataBase.data.wargear_item_profile, ['wargearItemId', wargear.wargearItemId])))
-    const wargears = map(wargearOptions, wargears => map(wargears, wargear => find(dataBase.data.wargear_item, ['id', wargear.wargearItemId])))
-    const newWargears = {}
-    roster.units[unitType][unitIndex].models = {}
-    forEach(miniatures, (miniature, index) => {
-        const compositions = filter(dataBase.data.unit_composition_miniature, ['miniatureId', miniature.id])
-        const models = {
-            min: min(map(compositions, composition => composition.min)),
-            select: min(map(compositions, composition => composition.min)),
-            max: max(map(compositions, composition => composition.max))
-        }
-        newWargears[miniature.name] = {}
-        newWargears[miniature.name].default = {}
-        forEach(wargearOptions[index], (item, i) => {
-            const value = item.inputType === 'checkbox'
-                ? true
-                : models.min
-            newWargears[miniature.name].default = {
-                ...newWargears[miniature.name].default,
-                [wargears[index][i].name]: value
-            }
-        })
-        roster.units[unitType][unitIndex].models[miniature.name] = models
-    })
-    roster.units[unitType][unitIndex].wargears = newWargears
 }
 
 export const getUnitPounts = (unit) => {
@@ -441,22 +288,3 @@ export const getUnitPounts = (unit) => {
     return get(compositions, '[0].points', 0)
 }
 
-export const checkUnitPoints = (unitData) => {
-    const unit = roster.units[unitData.unitType][unitData.unitIndex]
-    const selectedModelsCount = map(unit.models, model => model.select)
-    const points = find(unit.compositions, composition => {
-        let isThisComposition = true
-        forEach(composition.models, (model, index) => {
-            if (model.min > selectedModelsCount[index] || selectedModelsCount[index] > model.max) {
-                isThisComposition = false
-            }
-        })
-        return isThisComposition
-    })?.points
-    if (points !== unit.points) {
-        const pointsDifference = points - unit.points
-        roster.units[unitData.unitType][unitData.unitIndex].points = points
-        roster.points[unitData.unitType] += pointsDifference
-        roster.points.all += pointsDifference
-    }
-}

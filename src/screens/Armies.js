@@ -6,7 +6,6 @@ import map from 'lodash/map'
 
 const Armies = () => {
     const {grandFaction} = useLocation().state
-    console.log('grandFaction', grandFaction)
 
     const renderCard = (faction) => <ImageCard
         key={faction.id}

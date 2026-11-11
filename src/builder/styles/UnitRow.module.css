@@ -1,101 +1,271 @@
-#container {
-  background-color: rgb(236, 236, 236);
-  margin-bottom: 16px;
-  margin-left: 12px;
-  margin-right: 12px;
-  border-radius: 8px;
-}
-#rorContainer {
-  background-color: rgb(236, 236, 236);
-  margin-bottom: 16px;
-  border-radius: 8px;
-}
 .row {
-    padding: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    flex-direction: row;
-    display: flex;
-    justify-content: space-between;
-    overflow: hidden;
-    align-items: center;
-  }
-#name {
-  color: black;
-  margin: 0px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+}
+.row.warlord {
+  border-color: var(--gold);
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.nameButton {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: start;
+  cursor: pointer;
+}
+.image {
+  flex: 0 0 auto;
+  width: 52px;
+  height: 66px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  object-fit: cover;
+  box-sizing: border-box;
+}
+.noImage {
   display: block;
-  text-overflow: ellipsis;
-  word-wrap: break-word;
-  overflow: hidden;
+}
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.name {
+  color: var(--text);
   font-family: 'Minion Pro Bold';
   font-size: 18px;
-  line-height: 20px;
-  max-height: 40px;
+  line-height: 1.25;
 }
-#price {
-    color: #676767;
-    font-size: 18px;
-    line-height: 20px;
-    margin: 0;
-    white-space: nowrap;
-}
-#addUnitButton {
-  background-color: transparent;
-  border-width: 0px;
+.models {
+  line-height: 1.2;
   display: flex;
-  flex: 1;
-  justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
-  text-align: start;
+  gap: 4px 10px;
+  color: var(--muted);
+  font-size: 14px;
 }
-#addUnitButtonSubContainer {
+.points {
+  line-height: 1.2;
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  font-size: 15px;
+  white-space: nowrap;
+}
+.raised {
+  color: #e0a95c;
+}
+.iconButton {
+  flex: 0 0 auto;
   display: flex;
-  text-align: start;
-  flex: 1;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--gold);
+  cursor: pointer;
 }
-#wargearsContainer {
+.iconButton:active:not(:disabled) {
+  background: var(--card-active);
+}
+.iconButton:disabled {
+  color: var(--muted);
+  opacity: 0.4;
+}
+.delete {
+  color: #c4685a;
+}
+.stepButton {
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: none;
+  color: var(--gold-light);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+.stepButton:disabled {
+  opacity: 0.35;
+}
+.chips {
   display: flex;
-  margin-left: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
 }
-#chooseWargearButton {
-  color: #525252;
-  border: 1px solid #8B8B8B;
-  margin-bottom: 12px;
-  border-radius: 24px;
-  padding: 6px 8px;
-  margin-right: 16px;
+.chip {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: none;
+  color: var(--text);
+  font-size: 14px;
+  cursor: pointer;
 }
-#warlordButton {
-  color: white;
-  background: rgb(36, 35, 35);
-  border: 1px solid rgb(36, 35, 35);
-  margin-bottom: 12px;
-  border-radius: 24px;
-  padding: 6px 8px;
-  margin-right: 16px;
+.chip.active {
+  border-color: var(--gold);
+  background: rgba(200, 162, 75, 0.16);
+  color: var(--gold-light);
 }
-#button {
-  border-radius: 4px;
-  border-width: 0px;
-  padding: 6px;
-  margin-right: 4px;
-  position: relative;
-  top: 2px;
+.compositions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
 }
-#infoButton {
-  border-width: 0px;
-  padding-right: 0px;
-  padding-left: 8px;
-  height: 22px;
+.composition {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: none;
+  color: var(--muted);
+  font-size: 16px;
+  text-align: start;
+  cursor: pointer;
 }
-#wargearsContainer {
-  display: block;
-  padding-bottom: 4px;
+.composition span:last-child {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
-#miniature {
-  padding-bottom: 4px;
+.composition.active {
+  border-color: var(--gold);
+  color: var(--gold-light);
 }
-#wargearText {
-  padding-bottom: 2px;
-  padding-left: 8px;
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 8px;
+  color: var(--text);
+  font-size: 14px;
+}
+.stepperControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.count {
+  min-width: 18px;
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  text-align: center;
+}
+
+.changes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 10px;
+  padding-left: 10px;
+  border-left: 2px solid var(--gold);
+}
+.changes .change {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.3;
+}
+.changeCount {
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+}
+.changeModel {
+  color: var(--muted);
+}
+.changeModel::after {
+  content: ':';
+}
+
+.issues {
+  margin-top: 10px;
+  padding: 8px 10px;
+  border: 1px solid rgba(196, 104, 90, 0.5);
+  border-radius: 10px;
+  background: rgba(196, 104, 90, 0.1);
+}
+.issues p {
+  margin: 0;
+  color: #e08a7c;
+  font-size: 13px;
+  line-height: 1.35;
+}
+.issues p + p {
+  margin-top: 4px;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 10px;
+  padding: 7px 10px;
+  border: 1px solid var(--gold);
+  border-radius: 10px;
+  background: rgba(200, 162, 75, 0.1);
+}
+.link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--gold);
+  font-size: 14px;
+  text-align: start;
+  cursor: pointer;
+}
+.link:active .linkName {
+  text-decoration: underline;
+}
+.linkTitle {
+  color: var(--muted);
+}
+.linkName {
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+}
+
+.invul {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  line-height: 1;
+  color: var(--gold);
+  font-family: 'Minion Pro Bold';
+  font-size: 13px;
+}
+.row[data-flash='true'] {
+  animation: flash 1.2s ease;
+}
+@keyframes flash {
+  0%, 60% { border-color: var(--gold-light); box-shadow: 0 0 0 3px rgba(200, 162, 75, 0.35); }
+  100% { box-shadow: 0 0 0 0 rgba(200, 162, 75, 0); }
 }

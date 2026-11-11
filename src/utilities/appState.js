@@ -2,19 +2,23 @@ import Constants from '../Constants'
 
 // Данные текущего пользователя Telegram
 export const main = {
-    tgId: undefined
+    tgId: undefined,
+    // Пользователь с бэкенда (после fetchUser)
+    user: undefined
 }
 
+// Текущий ростер. Структура описана в utilities/rosterModel.js, сбрасывается через resetRoster()
 export const roster = {
+    name: '',
     grandFaction: '',
     faction: '',
     factionId: '',
-    units: {},
-    detachment: '',
+    battleSizeId: '',
     pointsLimit: 2000,
-    points: {
-        all: 0
-    }
+    detachmentIds: [],
+    forceDispositionId: '',
+    allegiances: {},
+    units: []
 }
 
 export const search = {

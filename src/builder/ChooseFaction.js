@@ -1,6 +1,7 @@
 import React from 'react'
 import {useLocation} from 'react-router-dom'
 import {roster, navigationState} from '../utilities/appState'
+import {resetRoster} from '../utilities/rosterModel'
 import ImageCard from '../components/ImageCard'
 import {SectionTitle} from '../components/ListCard'
 
@@ -13,6 +14,8 @@ const ChooseFaction = () => {
     const {grandFaction} = useLocation().state
 
     const handleClick = ({faction}) => {
+        resetRoster()
+        roster.grandFaction = grandFaction.name
         roster.faction = faction.name
         roster.factionId = faction.id
         navigationState.isBuilder = true

@@ -61,13 +61,14 @@
 }
 .badge {
   flex: 0 0 auto;
-  padding: 2px 9px;
-  border: 1px solid rgba(236, 212, 138, 0.6);
+  padding: 4px 8px;
+  border: 1px solid rgba(236, 212, 138);
   border-radius: 999px;
   color: var(--gold-light);
-  font-size: 11px;
-  letter-spacing: 0.1em;
+  font-family: 'Minion Pro Bold';
+  font-size: 16px;
   text-transform: uppercase;
+  background: rgba(8, 8, 10, 0.55);
 }
 .chevron {
   flex: 0 0 auto;
@@ -76,4 +77,37 @@
   border-top: 2px solid var(--gold-light);
   border-right: 2px solid var(--gold-light);
   transform: rotate(45deg);
+}
+.selected {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px var(--gold);
+}
+.wrap {
+  position: relative;
+}
+.withAction .content {
+  padding-right: 64px;
+}
+.action {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  margin-top: -20px;
+  border: 1px solid var(--gold-light);
+  border-radius: 50%;
+  background: rgba(8, 8, 10, 0.55);
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  font-size: 16px;
+  cursor: pointer;
+}
+.action_lg {
+  margin-top: -17px;
+}
+
+.disabled {
+  opacity: 0.4;
+  filter: grayscale(0.6);
 }

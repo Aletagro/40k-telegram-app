@@ -20,6 +20,12 @@
   font-size: 20px;
   line-height: 1.2;
 }
+.meta {
+  flex: 0 0 auto;
+  color: var(--gold-light);
+  font-size: 15px;
+  white-space: nowrap;
+}
 .header::after {
   content: '';
   flex: 1;

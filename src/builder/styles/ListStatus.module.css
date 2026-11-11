@@ -1,0 +1,118 @@
+.card {
+  margin-bottom: 14px;
+  overflow: hidden;
+  border: 1.5px solid var(--gold);
+  border-radius: 16px;
+  background: var(--card);
+}
+.error {
+  border-color: #e0705f;
+  background: rgba(224, 112, 95, 0.1);
+}
+.head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 14px;
+  border: 0;
+  background: transparent;
+  text-align: start;
+  cursor: pointer;
+}
+.head:disabled {
+  cursor: default;
+}
+.mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: #17191c;
+}
+.error .mark {
+  background: #e0705f;
+}
+.text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+.title {
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  font-size: 16px;
+  line-height: 1.25;
+}
+.error .title {
+  color: #f08a79;
+}
+.subtitle {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.3;
+}
+.chevron {
+  display: flex;
+  color: #f08a79;
+  transition: transform 0.15s ease;
+}
+.chevronOpen {
+  transform: rotate(180deg);
+}
+.list {
+  margin: 0;
+  padding: 0 14px 12px 52px;
+  list-style: none;
+}
+.issue {
+  position: relative;
+  padding: 5px 0;
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.4;
+}
+.issue::before {
+  content: '';
+  position: absolute;
+  left: -14px;
+  top: 13px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e0705f;
+}
+.issueButton {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.issueText {
+  flex: 1;
+  min-width: 0;
+  color: var(--text);
+}
+.issueFix {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 2px;
+  color: #f08a79;
+  font-family: 'Minion Pro Bold';
+  font-size: 14px;
+}

@@ -1,0 +1,31 @@
+.button {
+  padding: 13px 18px;
+  border: 1.5px solid var(--gold);
+  border-radius: 12px;
+  font-family: 'Minion Pro Bold';
+  font-size: 16px;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.primary {
+  background: var(--gold);
+  color: #1a1608;
+}
+.secondary {
+  background: none;
+  color: var(--gold-light);
+}
+.danger {
+  border-color: #6b2e27;
+  background: none;
+  color: #e06c5c;
+}

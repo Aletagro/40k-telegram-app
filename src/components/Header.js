@@ -1,7 +1,9 @@
 import React from 'react';
 import {useNavigate, useLocation} from 'react-router-dom';
-import {roster, search, navigationState, isCollapseUnitsTypes} from '../utilities/appState'
+import {search, navigationState, isCollapseUnitsTypes} from '../utilities/appState'
 import Constants from '../Constants'
+import {isVkMobile} from '../utilities/platform'
+import {resetRoster} from '../utilities/rosterModel'
 import Search from '../icons/search.svg'
 import ArrowBack from '../icons/arrowBack.svg'
 import Export from '../icons/export.svg'
@@ -21,11 +23,7 @@ const Header = () => {
 
     const clearAppState = () => {
         if (pathname === '/builder') {
-            roster.detachment = ''
-            roster.detachmentId = ''
-            roster.points = {all: 0}
-            roster.pointsLimit = 2000
-            roster.units = {}
+            resetRoster()
             navigationState.isBuilder = false
         } else if (pathname === '/search') {
             search.value = ''
@@ -67,7 +65,7 @@ const Header = () => {
         }
     }
 
-    return <div id={Styles.header}>
+    return <div id={Styles.header} className={isVkMobile ? Styles.vkMobile : undefined}>
         {pathname === '/'
             ? null
             : <button id={Styles.leftButton} onClick={handleGoBack}><img src={ArrowBack} alt='' /></button>

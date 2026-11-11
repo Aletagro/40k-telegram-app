@@ -1,72 +1,81 @@
-import React from 'react';
+import React, {useReducer} from 'react'
 import {useLocation, useNavigate} from 'react-router-dom'
 import {roster} from '../utilities/appState'
-import Info from '../icons/whiteInfo.svg'
+import {syncRosterWithDetachment, getDetachmentKeywordConflict, getDetachmentPoints, getDetachmentPointsLimit, getUsedDetachmentPoints} from '../utilities/rosterModel'
+import {toast} from 'react-toastify'
+import Constants from '../Constants'
+import ImageCard from '../components/ImageCard'
+import Button from '../components/Button'
 
 import map from 'lodash/map'
-import find from 'lodash/find'
-import filter from 'lodash/filter'
-import forEach from 'lodash/forEach'
+import without from 'lodash/without'
+import includes from 'lodash/includes'
 
-import Styles from './styles/ChooseEnhancement.module.css'
+import Styles from './styles/Builder.module.css'
 
-const dataBase = require('../utilities/db')
-
+// Выбор детачментов. Размер игры задаёт лимит Detachment Points (DP), больше лимита выбрать нельзя
 const ChooseDetachment = () => {
     const {detachments} = useLocation().state
     const navigate = useNavigate()
+    const [, forceUpdate] = useReducer((x) => x + 1, 0)
+    const limit = getDetachmentPointsLimit()
+    const used = getUsedDetachmentPoints()
 
-    const cleanEnhancements = (detachmentId) => {
-        const enhancements = filter(dataBase.data.enhancement, ['detachmentId', detachmentId])
-        forEach(roster.units['Character'], (unit, index) => {
-            if (unit.enhancement) {
-                const enhancementPoins = find(enhancements, ['name', roster.units[unit.unitType][index].enhancement])?.basePointsCost
-                roster.units[unit.unitType][index].enhancement = ''
-                roster.units[unit.unitType][index].points = roster.units[unit.unitType][index].points - enhancementPoins
-                roster.points[unit.unitType] = roster.points[unit.unitType] - enhancementPoins
-                roster.points.all = roster.points.all - enhancementPoins
-            }
-        })
+    const notifyRemoved = (removed) => {
+        if (removed.length) toast.info(`Removed (not available in the chosen detachments): ${removed.join(', ')}`, {...Constants.toastParams, autoClose: 5000})
     }
 
-    const handleClickBlock = (detachment) => () => {
-        if (roster.detachmentId && detachment.id !== roster.detachmentId) {
-            cleanEnhancements(roster.detachmentId)
+    const apply = (ids) => {
+        roster.detachmentIds = ids
+        notifyRemoved(syncRosterWithDetachment())
+        forceUpdate()
+    }
+
+    const handleToggle = (detachment) => () => {
+        if (includes(roster.detachmentIds, detachment.id)) {
+            apply(without(roster.detachmentIds, detachment.id))
+        } else if (getDetachmentKeywordConflict(detachment.id)) {
+            const {keyword, detachment: other} = getDetachmentKeywordConflict(detachment.id)
+            toast.warn(`A detachment with the "${keyword}" keyword is already chosen: ${other.name}`, Constants.toastParams)
+        } else if (used + getDetachmentPoints(detachment.id) > limit) {
+            toast.warn(`Not enough detachment points: ${limit - used} DP left`, Constants.toastParams)
+        } else {
+            apply([...roster.detachmentIds, detachment.id])
         }
-        roster.detachmentId = detachment.id
-        roster.detachment = detachment.name
-        navigate(-1)
     }
 
-    const handleDeleteDetachment = () => {
-        if (roster.detachmentId) {
-            cleanEnhancements(roster.detachmentId)
+    const handleClear = () => apply([])
+
+    const handleInfo = (detachment) => () => navigate('/detachment', {state: {title: detachment.name, detachment}})
+
+    return <div id='column' className='Chapter'>
+        <div className={Styles.dpInfo}>
+            <span>Detachment points</span>
+            <b className={used > limit ? Styles.over : ''}>{used} / {limit} DP · {Math.max(limit - used, 0)} left</b>
+        </div>
+        {map(detachments, detachment => {
+            const isSelected = includes(roster.detachmentIds, detachment.id)
+            const cost = getDetachmentPoints(detachment.id)
+            return <ImageCard
+                key={detachment.id}
+                title={detachment.name}
+                image={detachment.bannerImage || detachment.rowImage}
+                badge={cost ? `${cost} DP` : undefined}
+                selected={isSelected}
+                disabled={!isSelected && (used + cost > limit || Boolean(getDetachmentKeywordConflict(detachment.id)))}
+                onClick={handleToggle(detachment)}
+                onAction={handleInfo(detachment)}
+            />
+        })}
+        {roster.detachmentIds.length
+            ? <Button type='secondary' className={Styles.fullButton} onClick={handleClear}>Remove all detachments</Button>
+            : null
         }
-        roster.detachmentId = ''
-        roster.detachment = ''
-        navigate(-1)
-    }
-
-    const handleClickEnhancementInfo = (detachment) => () => {
-        navigate('/detachment', {state: {title: detachment.name, detachment}})
-    }
-
-    const handleGoBack = () => {
-        navigate(-1)
-    }
-
-    const renderDetachment = (detachment) => <div key={detachment.id} id={Styles.block}>
-        <button id={Styles.blockTitle} onClick={handleClickBlock(detachment)}>
-            <p id={Styles.title}>{detachment.name}</p>
-        </button>
-        <img onClick={handleClickEnhancementInfo(detachment)} id={Styles.infoIcon} src={Info} alt="" />
-    </div>
-
-    return  <div id='column' className='Chapter'>
-        {map(detachments, renderDetachment)}
-        {roster.detachmentId
-            ? <button id={Styles.delete} onClick={handleDeleteDetachment}>Delete Detachment</button>
-            : <button id={Styles.delete} onClick={handleGoBack}>Back</button>
+        {roster.detachmentIds.length
+            ? <div className={Styles.doneBar}>
+                <Button className={Styles.fullButton} onClick={() => navigate(-1)}>Done</Button>
+            </div>
+            : null
         }
     </div>
 }

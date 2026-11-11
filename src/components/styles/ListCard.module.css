@@ -70,7 +70,7 @@
 .thumbnail {
   flex: 0 0 auto;
   width: 52px;
-  height: 52px;
+  height: 66px;
   margin: -6px 0;
   border-radius: 10px;
   background: var(--bg);
@@ -81,4 +81,30 @@
   color: var(--gold-light);
   font-size: 15px;
   white-space: nowrap;
+}
+.rowWrap {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+}
+.rowWrap:last-child {
+  border-bottom: 0;
+}
+.rowWrap .item {
+  flex: 1;
+  min-width: 0;
+  border-bottom: 0;
+}
+.info {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  margin: 0 14px 0 0;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  background: none;
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  font-size: 15px;
+  cursor: pointer;
 }

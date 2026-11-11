@@ -59,6 +59,13 @@ b {
 button {
     color: black;
     font-family: 'Minion Pro Regular';
+    -webkit-user-select: none;
+    user-select: none;
+}
+/* Никаких рамок фокуса и синего выделения при нажатии */
+*:focus,
+*:focus-visible {
+    outline: none;
 }
 .Chapter {
     display: flex;

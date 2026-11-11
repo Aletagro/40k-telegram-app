@@ -1,0 +1,176 @@
+.group {
+  margin-bottom: 18px;
+}
+.groupTitle {
+  margin: 0 0 8px;
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  font-size: 18px;
+}
+.slot {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+}
+.slotTitle {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.option,
+.stepperRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-height: 40px;
+  margin-top: 6px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: none;
+  color: var(--text);
+  font-size: 15px;
+  text-align: start;
+  box-sizing: border-box;
+}
+.option {
+  justify-content: flex-start;
+  cursor: pointer;
+}
+.option:disabled {
+  opacity: 0.4;
+}
+.selected {
+  border-color: var(--gold);
+  background: rgba(200, 162, 75, 0.14);
+  color: var(--gold-light);
+}
+.radio {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--muted);
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+.selected .radio {
+  border: 5px solid var(--gold);
+}
+.label {
+  flex: 1;
+  min-width: 0;
+}
+.tag {
+  margin-left: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.stepButton {
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: none;
+  color: var(--gold-light);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+.stepButton:disabled {
+  opacity: 0.35;
+}
+.count {
+  min-width: 18px;
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  text-align: center;
+}
+.empty {
+  color: var(--muted);
+  text-align: center;
+}
+.reset {
+  width: 100%;
+  margin-top: 8px;
+}
+.topBar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 6px;
+}
+.resetButton {
+  padding: 4px 2px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.resetButton:disabled {
+  opacity: 0.4;
+  text-decoration: none;
+  cursor: default;
+}
+.done {
+  width: 100%;
+  margin-top: 8px;
+}
+.slotHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+.slotHead .slotTitle {
+  margin: 0;
+}
+.infoButton {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1.5px solid var(--gold);
+  border-radius: 50%;
+  background: none;
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  font-size: 14px;
+  cursor: pointer;
+}
+.infoContent {
+  color: var(--text);
+  font-size: 15px;
+}
+.rule {
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.rule p {
+  margin: 0 0 4px;
+  color: var(--text);
+}
+.rule p.ruleNames {
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+}
+.rule p.ruleNow {
+  color: var(--muted);
+  font-size: 14px;
+}
+.infoContent p.hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}

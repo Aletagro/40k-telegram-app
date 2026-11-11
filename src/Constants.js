@@ -1,6 +1,7 @@
 import {accordionSummaryClasses} from '@mui/joy/AccordionSummary'
 
 const Constants = {
+    domain: 'https://40k.aoscom.online',
     grandFactions: [
         {
             name: 'Imperium',

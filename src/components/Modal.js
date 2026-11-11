@@ -16,7 +16,7 @@ const dialogSx = {
     width: 'calc(100vw - 32px)'
 }
 
-const CustomModal = ({title, text, visible, onClose}) => {
+const CustomModal = ({title, text, visible, onClose, children}) => {
     const [_visible, setVisible] = useState(visible)
 
     useEffect(() => {
@@ -37,7 +37,7 @@ const CustomModal = ({title, text, visible, onClose}) => {
         <ModalDialog layout='center' sx={dialogSx}>
             <ModalClose sx={{color: 'var(--gold-light)'}} />
             <DialogTitle sx={{color: 'var(--gold-light)', fontFamily: 'Minion Pro Bold'}}>{title}</DialogTitle>
-            <DialogContent><p className={Styles.text}>{text}</p></DialogContent>
+            <DialogContent>{children || <p className={Styles.text}>{text}</p>}</DialogContent>
         </ModalDialog>
         </Modal>
     </>

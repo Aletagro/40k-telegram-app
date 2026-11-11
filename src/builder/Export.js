@@ -1,154 +1,193 @@
-import React, {useState} from 'react';
+import React, {useState} from 'react'
 import {toast} from 'react-toastify'
 import Constants from '../Constants'
+import {getRosterIssues, findAttachGroup} from '../utilities/rosterValidation'
+import {getUnitWargearByModel} from '../utilities/wargearModel'
 import {roster} from '../utilities/appState'
-import {getErrors, getWarnings, getWoundsCount} from '../utilities/utils'
+import {getUsedDetachmentPoints, getRosterPoints, getUnitTotalPoints, getDatasheetType} from '../utilities/rosterModel'
 
 import map from 'lodash/map'
+import compact from 'lodash/compact'
+import find from 'lodash/find'
 import size from 'lodash/size'
-import isNumber from 'lodash/isNumber'
+import filter from 'lodash/filter'
+import includes from 'lodash/includes'
 
-import Styles from './styles/Export.module.css'
+import {getCodexInfo} from '../utilities/utils'
+import Button from '../components/Button'
+import useSaveList from './useSaveList'
 
-// const unitsKeys =  ['id', 'name', 'points', 'isReinforced', 'heroicTrait', 'artefact', 'marksOfChaos', 'otherWarscrollOption', 'Ensorcelled Banners'] 
+import Styles from './styles/Builder.module.css'
 
-// const rorKeys =  ['id', 'name', 'regimentOfRenownPointsCost']
+const dataBase = require('../utilities/db')
 
-// const manifistationsKeys =  ['id', 'name']
+// Формат повторяет экспорт официального приложения Warhammer 40,000, чтобы список читали и другие сервисы
+
+const formatPoints = (points) => Number(points).toLocaleString('en-US')
+
+const SECTION_BY_TYPE = {
+    'Epic Hero': 'CHARACTERS',
+    'Character': 'CHARACTERS',
+    'Battleline': 'BATTLELINE',
+    'Dedicated Transport': 'DEDICATED TRANSPORTS'
+}
+const SECTION_ORDER = ['CHARACTERS', 'BATTLELINE', 'DEDICATED TRANSPORTS', 'OTHER DATASHEETS', 'ALLIED UNITS']
+const ROLE_NAMES = {leader: 'Leader', support: 'Support'}
+
+const getTypeLabel = (unit) => {
+    const type = getDatasheetType(unit.datasheetId)
+    if (type === 'Epic Hero' || type === 'Character') return 'Character'
+    return type === 'Battleline' ? 'Battleline' : ''
+}
+
+// Блок юнита: {name, points, lines: [{text, sub}]}
+const getUnitBlock = (unit, role) => {
+    const datasheet = find(dataBase.data.datasheet, ['id', unit.datasheetId])
+    const enhancement = find(dataBase.data.enhancement, ['id', unit.enhancementId])
+    const lines = []
+    if (role) {
+        const label = getTypeLabel(unit)
+        lines.push({text: `Attached as: ${role}${label ? ` (${label})` : ''}`})
+    }
+    if (unit.isWarlord) lines.push({text: 'Warlord'})
+    const models = getUnitWargearByModel(unit)
+    const isFlat = size(filter(models, 'count')) === 1 && find(models, 'count')?.count === 1
+    models.forEach(model => {
+        if (!model.count) {
+            model.items.forEach(item => lines.push({text: `${item.count}x ${item.name}`}))
+        } else if (isFlat) {
+            model.items.forEach(item => lines.push({text: `${item.count}x ${item.name}`}))
+        } else {
+            lines.push({text: `${model.count}x ${model.name}`})
+            model.items.forEach(item => lines.push({text: `${item.count}x ${item.name}`, sub: true}))
+        }
+    })
+    if (enhancement) lines.push({text: `Enhancements: ${enhancement.name}`})
+    return {name: datasheet?.name || '', points: getUnitTotalPoints(unit), lines}
+}
+
+// Название родительской армии как в официальном экспорте (Space Marines, а не Adeptus Astartes)
+const getParentArmyName = (parent) => {
+    const codex = getCodexInfo(parent.id)
+    const name = codex?.name?.split(':')[1]?.trim()
+    return name || parent.name
+}
+
+// Структура списка для показа и копирования: шапка и разделы с блоками юнитов
+export const getExportModel = () => {
+    const faction = find(dataBase.data.faction_keyword, ['id', roster.factionId])
+    const parent = find(dataBase.data.faction_keyword, ['id', faction?.parentFactionKeywordId])
+    const detachments = compact(map(roster.detachmentIds, id => find(dataBase.data.detachment, ['id', id])))
+    const forceDisposition = find(dataBase.data.force_disposition, ['id', roster.forceDispositionId])
+    const battleSize = find(dataBase.data.battle_size, ['id', roster.battleSizeId])
+    const names = map(detachments, 'name')
+    const detachmentNames = names.length > 1 ? `${names.slice(0, -1).join(', ')}${names.length > 2 ? ',' : ''} and ${names[names.length - 1]}` : names[0]
+    const header = compact([
+        parent ? getParentArmyName(parent) : '',
+        roster.faction,
+        detachmentNames ? `${detachmentNames} (${getUsedDetachmentPoints()} Detachment Points)` : '',
+        forceDisposition?.name,
+        `${battleSize?.name || ''} (${formatPoints(roster.pointsLimit)} Points)`
+    ])
+
+    const sections = []
+    const used = new Set()
+    // Присоединённые отряды: лидеры, поддержка и сам отряд
+    const attachedUnits = []
+    const targets = filter(roster.units, target => find(roster.units, ['attachedToUid', target.uid]))
+    targets.forEach((target, index) => {
+        const leaders = filter(roster.units, ['attachedToUid', target.uid])
+        const blocks = map(leaders, leader => {
+            used.add(leader.uid)
+            return getUnitBlock(leader, ROLE_NAMES[findAttachGroup(leader, target)?.bodyguardType || 'leader'] || 'Leader')
+        })
+        used.add(target.uid)
+        blocks.push(getUnitBlock(target, 'Bodyguard'))
+        attachedUnits.push({title: `Attached unit ${index + 1}`, units: blocks})
+    })
+    if (attachedUnits.length) sections.push({title: 'ATTACHED UNITS', groups: attachedUnits})
+
+    const rest = {}
+    roster.units.forEach(unit => {
+        if (used.has(unit.uid)) return
+        const title = unit.alliedFactionId ? 'ALLIED UNITS' : SECTION_BY_TYPE[getDatasheetType(unit.datasheetId)] || 'OTHER DATASHEETS'
+        rest[title] = [...(rest[title] || []), {title: '', units: [getUnitBlock(unit)]}]
+    })
+    SECTION_ORDER.forEach(title => {
+        if (rest[title]) sections.push({title, groups: rest[title]})
+    })
+    // Те же данные для карточки на экране: подпись и значение
+    const info = compact([
+        {label: 'Army', value: compact([parent ? getParentArmyName(parent) : '', roster.faction]).join(' · ')},
+        detachmentNames ? {label: `Detachments · ${getUsedDetachmentPoints()} DP`, value: names.join('\n')} : null,
+        forceDisposition ? {label: 'Force Disposition', value: forceDisposition.name} : null,
+        {label: 'Battle size', value: `${battleSize?.name || ''} · ${formatPoints(roster.pointsLimit)} pts`}
+    ])
+    return {info, limit: roster.pointsLimit, name: roster.name || roster.faction, points: getRosterPoints(), header, sections}
+}
+
+// Блоки разделены пустой строкой: шапка, раздел, группа присоединённых отрядов, юнит
+export const getRosterText = (model = getExportModel()) => {
+    const blocks = [[`${model.name} (${formatPoints(model.points)} Points)`, ...model.header]]
+    model.sections.forEach(section => {
+        blocks.push([section.title])
+        section.groups.forEach(group => {
+            if (group.title) blocks.push([group.title])
+            group.units.forEach(unit => blocks.push([
+                `${unit.name} ${unit.points} Points`,
+                ...map(unit.lines, line => `${line.sub ? '◦' : '•'} ${line.text}`)
+            ]))
+        })
+    })
+    return map(blocks, block => block.join('\n')).join('\n\n')
+}
 
 const Export = () => {
     const [isCopy, setIsCopy] = useState(false)
-    const errors = getErrors(roster)
-    const warnings = getWarnings(roster)
+    const {handleClickSaveButton, saveModal} = useSaveList()
+    const issues = getRosterIssues()
+    const model = getExportModel()
 
-    const getErrorText = (error) => `- ${error}`
-
-    const getErrorsText = (_errors) => _errors.map(getErrorText).join('\n')
-
-    const getWargearForExport = (wargearCount, index) => ` ${isNumber(wargearCount) ? wargearCount : 1} x ${index}`
-
-    const getWargearsGroupForExport = (wargearsGroup) => `   ${map(wargearsGroup, getWargearForExport)}`
-
-    const getWargearsForExport = (unit) => (wargears, index) => `  ${unit.models[index].select} x ${index}\n${map(wargears, getWargearsGroupForExport)}`
-
-    const getUnitForExport = (unit) => `${unit.name} (${unit.points} points)\n${map(unit.wargears, getWargearsForExport(unit))}`
-
-    const getUnitsTypeForExport = (units, index) => `${index}\n${map(units, getUnitForExport).join('\n')}\n----`
-
-    const getUnitsTypesForExport = () => map(roster.units, getUnitsTypeForExport).join('\n')
-
-    const handleExportList = () => {
-        const rosterText = `${size(errors) ? `Roster errors:\n${getErrorsText(errors)}\n\n` : ''}${size(warnings) ? `Roster warnings:\n${getErrorsText(warnings)}\n\n` : ''}Grand Faction: ${roster.grandFaction}
-Faction: ${roster.faction}
-Detachment: ${roster.detachment}
-
------
-${getUnitsTypesForExport()}
-
-Wounds: ${getWoundsCount(roster)}
-${roster.points.all}/${roster.pointsLimit} Pts
-`
-        navigator.clipboard.writeText(rosterText)
+    const handleCopy = () => {
+        navigator.clipboard.writeText(`${size(issues) ? `Roster errors:\n${map(issues, issue => `- ${issue.message}`).join('\n')}\n\n` : ''}${getRosterText(model)}`)
         toast.success('List Copied', Constants.toastParams)
         setIsCopy(true)
     }
 
-    // const pickKeys = (unit, keys) => {
-    //     return keys.reduce((acc, key) => {
-    //         if (unit.hasOwnProperty(key)) {
-    //             acc[key] = unit[key];
-    //         }
-    //         return acc;
-    //     }, {});
-    // }
-
-    // const getShortUnits = (units, keys) => map(units, (unit) => {
-    //     return pickKeys(unit, keys)
-    // })
-
-    // const handleSaveList = () => {
-    //     let newRosier = {...roster}
-    //     const shortRegiments = map(newRosier.regiments, (regiment) => {
-    //         const units = getShortUnits(regiment.units, unitsKeys)
-    //         return {...regiment, units}
-    //     })
-    //     const shortAuxiliaries = getShortUnits(newRosier.auxiliaryUnits, unitsKeys)
-    //     const shortRoRUnits = getShortUnits(newRosier.regimentsOfRenownUnits, unitsKeys)
-    //     const shortRoR = newRosier.regimentOfRenown ? pickKeys(newRosier.regimentOfRenown, rorKeys) : null
-    //     const shortManifestationsList = newRosier.manifestationsList ? getShortUnits(newRosier.manifestationsList, manifistationsKeys) : []
-    //     const shortRoster = {
-    //         ...roster,
-    //         regiments: shortRegiments,
-    //         auxiliaryUnits: shortAuxiliaries,
-    //         regimentsOfRenownUnits: shortRoRUnits,
-    //         regimentOfRenown: shortRoR,
-    //         manifestationsList: shortManifestationsList,
-    //         name: 'test name',
-    //         isPublic: true
-    //     }
-    //     console.log(shortRoster)
-    // }
-
-    const renderWargear = (wargearCount, index) => wargearCount
-        ? <div id={Styles.textContainer}>
-            <p id={Styles.text}>{isNumber(wargearCount) ? wargearCount : 1} x {index}</p>
-        </div>
-        : null
-
-    const renderWargearsGroup = (wargearsGroup) => <>
-        {map(wargearsGroup, renderWargear)}
-    </>
-
-    const renderWargears = (unit) => (wargears, index) => <div id={Styles.textContainer}>
-        <b id={Styles.text}>{unit.models[index].select} x {index}</b>
-        {map(wargears, renderWargearsGroup)}
+    const renderUnit = (unit, index) => <div key={`${unit.name}${index}`} className={Styles.exportUnit}>
+        <p className={Styles.exportUnitHead}><span>{unit.name}</span><b>{unit.points} pts</b></p>
+        {map(unit.lines, (line, lineIndex) => <p key={lineIndex} className={`${Styles.exportLine} ${line.sub ? Styles.exportSub : ''} ${includes(['Warlord'], line.text) || line.text.startsWith('Attached as') || line.text.startsWith('Enhancements') ? Styles.exportTag : ''}`}>{line.text}</p>)}
     </div>
 
-    const renderUnit = (unit, index) => <div key={`${unit.id}-${index}`}>
-        <p id={Styles.text}><b id={Styles.text}>{unit.modelCount ? `${unit.modelCount * (unit.isReinforced ? 2 : 1)} x` : ''} {unit.name}</b> ({unit.points || unit.regimentOfRenownPointsCost || 0} points)</p>
-        {map(unit.wargears, renderWargears(unit))}
+    const renderGroup = (group, index) => <div key={index} className={Styles.exportGroup}>
+        {group.title ? <p className={Styles.exportGroupTitle}>{group.title}</p> : null}
+        {map(group.units, renderUnit)}
     </div>
 
-    const renderUnitsType = (unitsType, index) => size(unitsType)
-        ? <div key={index}>
-            <p id={Styles.unitsType}>{index}</p>
-            {map(unitsType, renderUnit)}
-            <hr/>
-        </div>
-        : null
-
-    // const renderError = (error, index) => <p id={Styles.error}>&#8226; {error}</p>
-
-    // const renderWarning = (error, index) => <p  id={Styles.warning}>&#8226; {error}</p>
-
-    return <div id={Styles.container}>
-        {/* <div id={Styles.buttonContainer}>
-            <button id={Styles.button} onClick={handleSaveList}>Save List</button>
-        </div> */}
-        <div id={Styles.buttonContainer}>
-            <button id={Styles.button} onClick={handleExportList}>{isCopy ? 'List Copied' : 'Export List'}</button>
-        </div>
-        {/* {size(errors)
-            ? <div id={Styles.errorsContainer}>
-                <p id={Styles.error}>Roster errors:</p>
-                {errors?.map(renderError)}
+    return <div id='column' className='Chapter'>
+        <Button className={Styles.fullButton} onClick={handleCopy}>{isCopy ? 'Copied' : 'Copy List'}</Button>
+        <Button type='secondary' className={Styles.fullButton} onClick={handleClickSaveButton}>Save List</Button>
+        {size(issues)
+            ? <div className={Styles.exportWarn}>
+                <b>{size(issues)} {size(issues) === 1 ? 'issue' : 'issues'} in the list</b>
+                <ul className={Styles.errors}>{map(issues, (issue, index) => <li key={index}>{issue.message}</li>)}</ul>
             </div>
             : null
         }
-        {size(warnings)
-            ? <div id={Styles.warningsContainer}>
-                <p id={Styles.warning}>Roster warnings:</p>
-                {warnings?.map(renderWarning)}
-            </div>
-            : null
-        } */}
-        <p id={Styles.text}>Grand Faction: {roster.grandFaction}</p>
-        <p id={Styles.text}>Faction: {roster.faction}</p>
-        <p id={Styles.text}>Detachment: {roster.detachment}</p>
-        <hr/>
-        {map(roster.units, renderUnitsType)}
-        <p id={Styles.text}>Wounds: {getWoundsCount(roster)}</p>
-        <p id={Styles.text}>{roster.points.all}/{roster.pointsLimit} Pts</p>
+        <div className={Styles.exportHead}>
+            <p className={Styles.exportTitle}>{model.name}</p>
+            <p className={`${Styles.exportTotal} ${model.points > model.limit ? Styles.exportOver : ''}`}>{formatPoints(model.points)} <span>/ {formatPoints(model.limit)} pts</span></p>
+            <div className={Styles.exportBar}><div style={{width: `${Math.min(100, model.points / model.limit * 100)}%`}} className={model.points > model.limit ? Styles.exportOver : ''} /></div>
+            {map(model.info, item => <div key={item.label} className={Styles.exportInfo}>
+                <span className={Styles.exportInfoLabel}>{item.label}</span>
+                <span className={Styles.exportInfoValue}>{item.value}</span>
+            </div>)}
+        </div>
+        {map(model.sections, section => <div key={section.title}>
+            <h4 className={Styles.exportSection}>{section.title}</h4>
+            {map(section.groups, renderGroup)}
+        </div>)}
+        {saveModal}
     </div>
 }
 

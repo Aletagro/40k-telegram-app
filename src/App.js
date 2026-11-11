@@ -22,6 +22,8 @@ import RuleSections from './screens/RuleSections'
 import Rules from './screens/Rules'
 import Header from './components/Header'
 import ScrollToTop from './components/ScrollToTop'
+import useSwipeBack from './utilities/useSwipeBack'
+import {fetchUser} from './utilities/api'
 import Lists from './builder/Lists'
 import ChooseGrandFaction from './builder/ChooseGrandFaction'
 import ChooseFaction from './builder/ChooseFaction'
@@ -29,7 +31,11 @@ import Builder from './builder/Builder'
 import AddUnit from './builder/AddUnit'
 import ChooseDetachment from './builder/ChooseDetachment'
 import ChooseEnhancement from './builder/ChooseEnhancement'
+import ChooseForceDisposition from './builder/ChooseForceDisposition'
+import ForceDispositionInfo from './builder/ForceDispositionInfo'
+import ChooseUnitAllegiance from './builder/ChooseUnitAllegiance'
 import ChooseWargear from './builder/ChooseWargear'
+import ChooseAttach from './builder/ChooseAttach'
 import Export from './builder/Export'
 import Calculator from './calculator/Calculator'
 import Developer from './screens/Developer'
@@ -46,7 +52,15 @@ if (process.env.NODE_ENV === 'development' && process.env.REACT_APP_DEV_TG_ID) {
 }
 
 function App() {
+  useSwipeBack()
+
   useEffect(() => {
+    // Пользователь с бэкенда (если уже есть) нужен для сохранения списков
+    if (main.tgId && !main.user) {
+      fetchUser(main.tgId).then(data => {
+        if (data?.exists) main.user = data.user
+      })
+    }
     if (!tg) {
       return
     }
@@ -82,7 +96,11 @@ function App() {
       <Route path={'addUnit'} element={<AddUnit />} />
       <Route path={'chooseDetachment'} element={<ChooseDetachment />} />
       <Route path={'chooseEnhancement'} element={<ChooseEnhancement />} />
+      <Route path={'chooseForceDisposition'} element={<ChooseForceDisposition />} />
+      <Route path={'chooseUnitAllegiance'} element={<ChooseUnitAllegiance />} />
+      <Route path={'forceDispositionInfo'} element={<ForceDispositionInfo />} />
       <Route path={'chooseWargear'} element={<ChooseWargear />} />
+      <Route path={'chooseAttach'} element={<ChooseAttach />} />
       <Route path={'search'} element={<Search />} />
       <Route path={'coreRules'} element={<CoreRules />} />
       <Route path={'keyDocuments'} element={<KeyDocuments />} />

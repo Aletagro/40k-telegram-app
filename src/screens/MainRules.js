@@ -16,7 +16,6 @@ const MainRules = () => {
         !faction.excludedFromArmyBuilder && getCodexInfo(faction.id)
     )
     const sortedFactions = sortByName(map(factions, faction => ({...faction, name: faction.commonName || faction.name})))
-    console.log('sortedFactions', sortedFactions)
     const grandFactions = map(Constants.grandFactions, grandFaction => {
         const _factions = filter(sortedFactions, faction => find(grandFaction.factions, ['name', faction.name]))
         return {...grandFaction, factions: _factions}

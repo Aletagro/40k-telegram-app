@@ -1,117 +1,528 @@
-#mainInfoContainer {
-  background: rgb(46, 46, 49);
-  border-radius: 8px;
-  border-width: 0px;
-  padding: 12px;
-  padding-bottom: 4px;
-  margin-bottom: 12px;
-  font-size: 20px;
-  text-align: start;
+.summary {
+  margin-bottom: 14px;
+  padding: 14px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
 }
-
-#text {
-  color: white;
-  margin: 0px;
-  padding-bottom: 8px;
+.faction {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.factionName {
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  font-size: 21px;
+}
+.muted {
+  color: var(--muted);
+  font-size: 14px;
+}
+.pointsRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 12px 0 6px;
+}
+.points {
+  color: var(--text);
+  font-family: 'Minion Pro Bold';
+  font-size: 22px;
+}
+.points.over {
+  color: #e06c5c;
+}
+.bar {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--line);
+}
+.barFill {
+  height: 100%;
+  background: linear-gradient(to right, var(--gold), var(--gold-light));
+}
+.barFill.over {
+  background: #e06c5c;
+}
+.sizes {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.size {
+  flex: 1;
+  padding: 8px 4px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: none;
+  color: var(--muted);
+  font-family: 'Minion Pro Bold';
+  font-size: 14px;
+  cursor: pointer;
+}
+.size.active {
+  border-color: var(--gold);
+  background: rgba(200, 162, 75, 0.14);
+  color: var(--gold-light);
+}
+.errors {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.errors li {
+  margin: 2px 0;
+  color: #e06c5c;
+  font-size: 14px;
+}
+.detachment {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 14px;
+  padding: 14px 16px;
+  border: 1.5px solid var(--gold);
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--feature-from), var(--feature-to));
+  text-align: start;
+  cursor: pointer;
+}
+.detachmentBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+}
+.detachmentLabel {
+  color: var(--muted);
+  font-size: 13px;
+}
+.detachmentName {
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
   font-size: 18px;
 }
-
-#allegianceContainer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-#infoIcon {
-  background: transparent;
-  border-width: 0px;
-  padding: 0px;
-  padding-bottom: 8px;
-  padding-right: 4px;
-}
-
-#detachmentButton {
-  background: rgb(245, 201, 80);
-  color: black;
-  border-radius: 4px;
-  padding: 16px;
-  font-size: 16px;
-  margin-bottom: 12px;
-  border-width: 0px;
-  text-align: start;
-  font-family: 'Minion Pro Bold';
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-#detachmentSecondButton {
-  background: rgb(46, 46, 49);
-  color: white;
-  border-radius: 4px;
-  font-size: 16px;
-  margin-bottom: 12px;
-  border-width: 0px;
-  text-align: start;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-#detachmentButtonText {
+.infoButton {
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
   background: none;
-  border: none;
-  color: white;
-  font-size: 16px;
-  padding: 16px;
+  color: var(--gold-light);
   font-family: 'Minion Pro Bold';
+  font-size: 15px;
+  cursor: pointer;
 }
-
-#pointsLimitTitle {
+.units {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.groupFooter {
+  padding: 10px 12px;
+}
+.addButtonAlone {
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 14px;
+  padding: 13px;
+  border: 1px dashed var(--gold);
+  border-radius: 14px;
+  background: none;
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  font-size: 16px;
+  cursor: pointer;
+}
+.addButton {
+  width: 100%;
+  padding: 11px;
+  border: 1px dashed var(--gold);
+  border-radius: 10px;
+  background: none;
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  font-size: 16px;
+  cursor: pointer;
+}
+.groupPoints {
+  color: var(--muted);
+  font-size: 14px;
+}
+.title {
+  margin: 14px 2px 10px;
+  color: var(--muted);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.actionButton {
+  flex: 1;
+  padding: 13px;
+  border: 1.5px solid var(--gold);
+  border-radius: 12px;
+  background: none;
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  font-size: 16px;
+  cursor: pointer;
+}
+.actionButton.primary {
+  background: var(--gold);
+  color: #1a1608;
+}
+.danger {
+  color: #e06c5c;
+  border-color: #6b2e27;
+}
+.empty {
+  padding: 18px 16px;
+  color: var(--muted);
+  font-size: 15px;
   text-align: center;
 }
-
-#pointsLimitButton {
-  background: rgb(46, 46, 49);
-  color: white;
-  border-width: 0px;
-  border-radius: 4px;
-  padding: 8px 16px;
+.text {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: 15px;
+  white-space: pre-line;
+}
+.listRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.listRow > :first-child {
+  flex: 1;
 }
 
-#pointsContainer {
-  background: rgb(46, 46, 49);
-  border-radius: 4px;
-  border-width: 0px;
-  padding: 16px 16px;
-  margin-bottom: 12px;
+.fullButton {
+  width: 100%;
+  margin-bottom: 14px;
+}
+.saveBar {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px -8px -8px;
+  padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border);
+  background: rgba(23, 25, 28, 0.96);
+  backdrop-filter: blur(6px);
+}
+.saveInfo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+.savePoints {
+  color: var(--text);
+  font-family: 'Minion Pro Bold';
+  font-size: 16px;
+}
+.savePoints.over {
+  color: #e06c5c;
+}
+.saveHint {
+  color: var(--muted);
+  font-size: 13px;
+}
+.saveButton {
+  flex: 0 0 auto;
+  min-width: 130px;
+}
+.field {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 8px 0;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Minion Pro Regular';
+  font-size: 17px;
+}
+
+.allyUsage {
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+}
+.allyUsage p {
   display: flex;
   justify-content: space-between;
+  gap: 10px;
+  margin: 0;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.allyUsage p span:last-child {
+  color: var(--gold-light);
+  white-space: nowrap;
+}
+.allyUsage p.over span:last-child {
+  color: #e08a7c;
 }
 
-#pointsTitle {
-  font-size: 18px;
-  line-height: 24px;
-  color: white;
-  text-align: start;
-}
-
-#pointsTitleInfoIcon {
-  background: transparent;
-  border-width: 0px;
-  padding: 0px;
-}
-
-#unitsLabel {
-  background: rgb(46, 46, 49);
-  color: white;
-  border-radius: 4px;
-  padding: 16px;
+.dpInfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 12px;
-  font-size: 18px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--muted);
+  font-size: 14px;
+}
+.dpInfo b {
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+}
+.dpInfo b.over {
+  color: #e0705f;
+}
+.chosen {
+  box-shadow: 0 0 0 1px var(--gold);
+  background: var(--card-active);
 }
 
-#detachmentInfoIcon {
-  padding: 12px;
-  padding-right: 16px;
+.dispositionRow {
+  position: relative;
+}
+.dispositionInfo {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  margin-top: -22px;
+}
+.missionCard {
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+}
+.missionCard h5 {
+  margin: 0 0 2px;
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  font-size: 17px;
+}
+.missionCard p {
+  margin: 4px 0;
+  color: var(--text);
+  font-size: 14px;
+}
+.missionCard p.muted {
+  color: var(--muted);
+}
+
+.missionCard b,
+.missionCard i,
+.missionCard strong {
+  color: inherit;
+}
+.missionCard p b {
+  font-family: 'Minion Pro Bold';
+}
+
+.hint {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.allegiance {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  text-align: left;
+}
+.allegiance b {
+  color: var(--gold-light);
+  font-size: 17px;
+}
+.allegiance span {
+  color: var(--text);
+  font-size: 14px;
+}
+.allegiance.chosen {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px var(--gold);
+  background: var(--card-active);
+}
+
+.doneBar {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  margin: 4px -8px -8px;
+  padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border);
+  background: rgba(23, 25, 28, 0.96);
+  backdrop-filter: blur(6px);
+}
+.doneBar .fullButton {
+  margin: 0;
+}
+
+.exportWarn {
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  border: 1.5px solid #e0705f;
+  border-radius: 14px;
+  background: rgba(224, 112, 95, 0.1);
+}
+.exportWarn b {
+  color: #f08a79;
+}
+.exportHead {
+  margin-bottom: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+}
+.exportHead p {
+  margin: 0;
+}
+.exportTitle {
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  font-size: 24px;
+  line-height: 1.2;
+}
+.exportTotal {
+  margin-top: 6px !important;
+  color: var(--gold-light);
+  font-family: 'Minion Pro Bold';
+  font-size: 28px;
+}
+.exportTotal span {
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 17px;
+}
+.exportOver {
+  color: #e0705f !important;
+  background: #e0705f;
+}
+.exportTotal.exportOver {
+  background: none;
+}
+.exportBar {
+  height: 6px;
+  margin: 6px 0 12px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--line);
+}
+.exportBar div {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--gold);
+}
+.exportBar div.exportOver {
+  background: #e0705f;
+}
+.exportInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 0;
+  border-top: 1px solid var(--line);
+}
+.exportInfoLabel {
+  color: var(--muted);
+  font-size: 14px;
+}
+.exportInfoValue {
+  color: var(--text);
+  font-size: 18px;
+  white-space: pre-line;
+}
+.exportSection {
+  margin: 18px 0 8px;
+  color: var(--gold);
+  font-family: 'Minion Pro Bold';
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+.exportGroup {
+  margin-bottom: 10px;
+  border-left: 2px solid var(--line);
+  padding-left: 10px;
+}
+.exportGroupTitle {
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 15px;
+}
+.exportUnit {
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+}
+.exportUnit p {
+  margin: 0;
+}
+.exportUnitHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--text);
+  font-family: 'Minion Pro Bold';
+  font-size: 20px;
+}
+.exportUnitHead b {
+  color: var(--gold-light);
+  white-space: nowrap;
+}
+.exportLine {
+  margin-top: 2px;
+  color: var(--text);
+  font-size: 17px;
+}
+.exportLine::before {
+  content: '• ';
+  color: var(--gold);
+}
+.exportSub {
+  margin-left: 16px;
+  color: var(--muted);
+}
+.exportSub::before {
+  content: '◦ ';
+}
+.exportTag {
+  color: var(--gold-light);
 }
