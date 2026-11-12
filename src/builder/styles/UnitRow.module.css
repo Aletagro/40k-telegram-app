@@ -144,9 +144,25 @@
   text-align: start;
   cursor: pointer;
 }
-.composition span:last-child {
+.composition .compositionPoints {
+  display: flex;
   flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
   white-space: nowrap;
+}
+.compositionChevron {
+  width: 8px;
+  height: 8px;
+  margin-bottom: 3px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.15s;
+}
+.compositionChevronOpen {
+  margin-bottom: -3px;
+  transform: rotate(-135deg);
 }
 .composition.active {
   border-color: var(--gold);

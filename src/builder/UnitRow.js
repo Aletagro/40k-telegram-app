@@ -20,6 +20,8 @@ import Styles from './styles/UnitRow.module.css'
 
 const dataBase = require('../utilities/db')
 
+const COMPOSITIONS_COLLAPSE_FROM = 3
+
 const CopyIcon = () => <svg width='26' height='26' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'>
     <rect x='9' y='9' width='11' height='11' rx='2.5' /><path d='M5 15V6.5A2.5 2.5 0 0 1 7.5 4H15' />
 </svg>
@@ -52,6 +54,9 @@ const UnitRow = ({unit, issues, onChange, onLocate}) => {
     const type = getDatasheetType(unit.datasheetId)
     const isCharacter = isCharacterDatasheet(unit.datasheetId, unit)
     const compositions = getCompositions(unit.datasheetId)
+    // Если вариантов состава много (больше трёх), по умолчанию показан только выбранный, остальные раскрываются по нажатию
+    const [isCompositionsOpen, setIsCompositionsOpen] = useState(false)
+    const isCollapsible = size(compositions) > COMPOSITIONS_COLLAPSE_FROM
     const enhancement = unit.enhancementId ? find(dataBase.data.enhancement, ['id', unit.enhancementId]) : null
     const hasEnhancements = type !== 'Epic Hero' && size(roster.detachmentIds) > 0 && (enhancement || size(getAvailableEnhancements(unit)) > 0)
     const total = getUnitTotalPoints(unit)
@@ -99,7 +104,10 @@ const UnitRow = ({unit, issues, onChange, onLocate}) => {
 
     const handleEnhancement = () => navigate('/chooseEnhancement', {state: {title: 'Enhancement', unit}})
 
-    const handleComposition = (composition) => () => change({compositionId: composition.id, modelCounts: {}, loadouts: {}})
+    const handleComposition = (composition) => () => {
+        setIsCompositionsOpen(false)
+        if (composition.id !== unit.compositionId) change({compositionId: composition.id, modelCounts: {}, loadouts: {}})
+    }
 
     const handleModelCount = (miniature, min, max, delta) => () => {
         const current = unit.modelCounts?.[miniature.id] || min
@@ -109,15 +117,26 @@ const UnitRow = ({unit, issues, onChange, onLocate}) => {
         change({modelCounts, loadouts: sanitizeLoadouts({...unit, modelCounts})})
     }
 
-    const renderComposition = (composition) => <button
-        key={composition.id}
-        type='button'
-        className={`${Styles.composition} ${composition.id === unit.compositionId ? Styles.active : ''}`}
-        onClick={handleComposition(composition)}
-    >
-        <span>{getCompositionLabel(composition.id)}</span>
-        <span>{composition.points ? `${composition.points} pts` : '-'}</span>
-    </button>
+    const renderComposition = (composition) => {
+        const isActive = composition.id === unit.compositionId
+        // Выбранный вариант в сворачиваемом списке работает как заголовок: нажатие раскрывает или сворачивает остальные
+        const onClick = isCollapsible && isActive ? () => setIsCompositionsOpen(!isCompositionsOpen) : handleComposition(composition)
+        return <button
+            key={composition.id}
+            type='button'
+            className={`${Styles.composition} ${isActive ? Styles.active : ''}`}
+            onClick={onClick}
+            aria-expanded={isCollapsible && isActive ? isCompositionsOpen : undefined}
+        >
+            <span>{getCompositionLabel(composition.id)}</span>
+            <span className={Styles.compositionPoints}>
+                {composition.points ? t('{{count}} pts', {count: composition.points}) : '-'}
+                {isCollapsible && isActive ? <span className={`${Styles.compositionChevron} ${isCompositionsOpen ? Styles.compositionChevronOpen : ''}`} aria-hidden='true' /> : null}
+            </span>
+        </button>
+    }
+
+    const visibleCompositions = isCollapsible && !isCompositionsOpen ? filter(compositions, ['id', unit.compositionId]) : compositions
 
     // Диапазон моделей (например 5-9) выбирается шагом +/-
     const renderRange = ({miniature, min, max}) => {
@@ -165,7 +184,7 @@ const UnitRow = ({unit, issues, onChange, onLocate}) => {
             <button type='button' className={`${Styles.iconButton} ${Styles.delete}`} onClick={handleDelete} aria-label={t('Delete')}><CloseIcon /></button>
         </div>
         {size(compositions) > 1
-            ? <div className={Styles.compositions}>{map(compositions, renderComposition)}</div>
+            ? <div className={Styles.compositions}>{map(visibleCompositions, renderComposition)}</div>
             : null
         }
         {map(getCompositionModels(unit.compositionId), renderRange)}
