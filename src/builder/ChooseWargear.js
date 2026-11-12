@@ -149,7 +149,7 @@ const ChooseWargear = () => {
                     <button type='button' className={Styles.resetButton} disabled={!isChanged} onClick={handleReset}>{t('Reset to default')}</button>
                 </div>
                 {groups}
-                <Button className={Styles.done} onClick={handleDone}>{t('Done')}</Button>
+                <div className={Styles.doneBar}><Button className={Styles.done} onClick={handleDone}>{t('Done')}</Button></div>
             </>
             : <p className={Styles.empty}>{t('This unit has no wargear options')}</p>
         }

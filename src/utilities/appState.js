@@ -30,7 +30,7 @@ export const lists = {
     data: [],
     meta: {},
     isFirstReq: true,
-    filters: {all: true, points_limit: 2000}
+    filters: {points_limit: 2000}
 }
 
 export const search = {

@@ -1,10 +1,11 @@
 import {t} from '../utilities/i18n'
-import React, {useCallback, useEffect, useReducer, useState} from 'react'
+import React, {useCallback, useEffect, useMemo, useReducer, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {lists, main, roster, navigationState} from '../utilities/appState'
 import {fetchRosters} from '../utilities/api'
 import {hydrateRoster} from '../utilities/rosterModel'
 import {notifyHydrateReport} from './hydrateNotice'
+import {getExportModel} from './Export'
 import Constants from '../Constants'
 import Button from '../components/Button'
 import Modal from '../components/Modal'
@@ -13,6 +14,9 @@ import map from 'lodash/map'
 import find from 'lodash/find'
 import size from 'lodash/size'
 import compact from 'lodash/compact'
+import filter from 'lodash/filter'
+import some from 'lodash/some'
+import includes from 'lodash/includes'
 import flatMap from 'lodash/flatMap'
 
 import Styles from './styles/CommunityLists.module.css'
@@ -20,7 +24,7 @@ import Styles from './styles/CommunityLists.module.css'
 const dataBase = require('../utilities/db')
 
 const POINTS_LIMITS = [1000, 2000, 3000]
-const DEFAULT_FILTERS = {all: true, points_limit: 2000}
+const DEFAULT_FILTERS = {points_limit: 2000}
 
 const parseJson = (value, fallback) => {
     try {
@@ -30,12 +34,67 @@ const parseJson = (value, fallback) => {
     }
 }
 
+// Состав списка текстом по разделам, как в экспорте, но без снаряжения. Модель экспорта строится по общему roster,
+// поэтому список временно загружается в него, а затем roster возвращается как был
+const getListSections = (list) => {
+    const snapshot = {...roster}
+    try {
+        hydrateRoster(list)
+        return map(getExportModel().sections, section => ({
+            title: section.title,
+            groups: map(section.groups, group => {
+                // В группе присоединённых отрядов: лидеры ведут отряд (Bodyguard), а у него перечисляются лидеры
+                const isRole = (unit, role) => some(unit.lines, line => line.text.startsWith(`Attached as: ${role}`))
+                const bodyguard = find(group.units, unit => isRole(unit, 'Bodyguard'))
+                const leaders = filter(group.units, unit => bodyguard && unit !== bodyguard && some(unit.lines, line => line.text.startsWith('Attached as:')))
+                return {
+                    title: group.title,
+                    units: map(group.units, unit => {
+                        const rest = filter(unit.lines, line => !line.text.startsWith('Attached as:'))
+                        const attach = unit === bodyguard
+                            ? [`${t('Led by')}: ${map(leaders, 'name').join(', ')}`]
+                            : (bodyguard && includes(leaders, unit) ? [`${t('Leads')}: ${bodyguard.name}`] : [])
+                        return {
+                            name: unit.name,
+                            points: unit.points,
+                            lines: [
+                                ...map(attach, text => ({text})),
+                                ...filter(rest, line => line.text === 'Warlord'),
+                                ...filter(rest, line => line.text.startsWith('Enhancements:')),
+                                ...filter(rest, line => line.text !== 'Warlord' && !line.text.startsWith('Enhancements:'))
+                            ]
+                        }
+                    })
+                }
+            })
+        }))
+    } catch (error) {
+        return []
+    } finally {
+        Object.keys(roster).forEach(key => { if (!(key in snapshot)) delete roster[key] })
+        Object.assign(roster, snapshot)
+    }
+}
+
+const renderUnit = (unit, index) => <span key={index} className={Styles.unitRow}>
+    <span className={Styles.unitName}>{unit.name}{map(unit.lines, (line, lineIndex) => <span key={lineIndex} className={`${Styles.unitTags} ${line.sub ? Styles.unitSub : ''}`}>{line.text}</span>)}</span>
+    <span className={Styles.unitPoints}>{unit.points}</span>
+</span>
+
+const renderSection = (section) => <span key={section.title} className={Styles.section}>
+    <span className={Styles.sectionTitle}>{section.title}</span>
+    {map(section.groups, (group, index) => <span key={index} className={Styles.group}>
+        {group.title ? <span className={Styles.groupLabel}>{group.title}</span> : null}
+        {map(group.units, renderUnit)}
+    </span>)}
+</span>
+
 // Плашка чужого списка: игрок, армия, детачменты, очки и состав
 const CommunityListCard = ({list, onClick}) => {
     const army = find(dataBase.data.faction_keyword, ['id', list.faction_id])
     const detachments = compact(map(parseJson(list.detachment_ids, list.detachment_id ? [list.detachment_id] : []), id => find(dataBase.data.detachment, ['id', id])?.name))
     const forceDisposition = find(dataBase.data.force_disposition, ['id', list.force_disposition_id])?.name
-    const units = compact(map(parseJson(list.units, []), unit => find(dataBase.data.datasheet, ['id', unit.datasheetId])?.name))
+    const sections = useMemo(() => getListSections(list), [list])
     const points = parseJson(list.points, {})?.all
     const player = [list.lastname, list.firstname].filter(Boolean).join(' ')
 
@@ -48,7 +107,7 @@ const CommunityListCard = ({list, onClick}) => {
         {player ? <span className={Styles.cardRow}><b>{t('Player')}</b> {player}</span> : null}
         {size(detachments) ? <span className={Styles.cardRow}><b>{t('Detachments')}</b> {detachments.join(', ')}</span> : null}
         {forceDisposition ? <span className={Styles.cardRow}><b>{t('Force Disposition')}</b> {forceDisposition}</span> : null}
-        {size(units) ? <span className={Styles.cardUnits}>{units.join(' · ')}</span> : null}
+        {size(sections) ? <span className={Styles.cardUnits}>{map(sections, renderSection)}</span> : null}
     </button>
 }
 

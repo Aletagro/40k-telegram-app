@@ -13,6 +13,7 @@ import find from 'lodash/find'
 import size from 'lodash/size'
 import filter from 'lodash/filter'
 import includes from 'lodash/includes'
+import some from 'lodash/some'
 
 import {getCodexInfo} from '../utilities/utils'
 import Button from '../components/Button'
@@ -124,7 +125,8 @@ export const getExportModel = () => {
         forceDisposition ? {label: 'Force Disposition', value: forceDisposition.name} : null,
         {label: 'Battle size', value: `${battleSize?.name || ''} · ${formatPoints(roster.pointsLimit)} pts`}
     ])
-    return {info, limit: roster.pointsLimit, name: roster.name || roster.faction, points: getRosterPoints(), header, sections}
+    const footer = `Exported with Warhammer 40K Community App (Data Version: v${dataBase.metadata.data_version})`
+    return {info, footer, limit: roster.pointsLimit, name: roster.name || roster.faction, points: getRosterPoints(), header, sections}
 }
 
 // Блоки разделены пустой строкой: шапка, раздел, группа присоединённых отрядов, юнит
@@ -140,6 +142,7 @@ export const getRosterText = (model = getExportModel()) => {
             ]))
         })
     })
+    if (model.footer) blocks.push([model.footer])
     return map(blocks, block => block.join('\n')).join('\n\n')
 }
 
@@ -155,14 +158,24 @@ const Export = () => {
         setIsCopy(true)
     }
 
-    const renderUnit = (unit, index) => <div key={`${unit.name}${index}`} className={Styles.exportUnit}>
+    // На экране вместо роли («Attached as: Leader») показываем, кто к кому привязан; в скопированном тексте формат остаётся официальным
+    const getLineText = (line, unit, group) => {
+        if (!line.text.startsWith('Attached as:')) return line.text
+        const isBodyguard = (item) => some(item.lines, other => other.text.startsWith('Attached as: Bodyguard'))
+        const bodyguard = find(group.units, isBodyguard)
+        if (!bodyguard) return line.text
+        if (unit === bodyguard) return `${t('Led by')}: ${map(filter(group.units, item => item !== bodyguard), 'name').join(', ')}`
+        return `${t('Leads')}: ${bodyguard.name}`
+    }
+
+    const renderUnit = (group) => (unit, index) => <div key={`${unit.name}${index}`} className={Styles.exportUnit}>
         <p className={Styles.exportUnitHead}><span>{unit.name}</span><b>{unit.points} pts</b></p>
-        {map(unit.lines, (line, lineIndex) => <p key={lineIndex} className={`${Styles.exportLine} ${line.sub ? Styles.exportSub : ''} ${includes(['Warlord'], line.text) || line.text.startsWith('Attached as') || line.text.startsWith('Enhancements') ? Styles.exportTag : ''}`}>{line.text}</p>)}
+        {map(unit.lines, (line, lineIndex) => <p key={lineIndex} className={`${Styles.exportLine} ${line.sub ? Styles.exportSub : ''} ${includes(['Warlord'], line.text) || line.text.startsWith('Attached as') || line.text.startsWith('Enhancements') ? Styles.exportTag : ''}`}>{getLineText(line, unit, group)}</p>)}
     </div>
 
     const renderGroup = (group, index) => <div key={index} className={Styles.exportGroup}>
         {group.title ? <p className={Styles.exportGroupTitle}>{group.title}</p> : null}
-        {map(group.units, renderUnit)}
+        {map(group.units, renderUnit(group))}
     </div>
 
     return <div id='column' className='Chapter'>
@@ -188,6 +201,7 @@ const Export = () => {
             <h4 className={Styles.exportSection}>{section.title}</h4>
             {map(section.groups, renderGroup)}
         </div>)}
+        <p className={Styles.exportFooter}>{model.footer}</p>
         {saveModal}
     </div>
 }

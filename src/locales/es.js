@@ -221,7 +221,10 @@ const dictionary = {
     "Chaos": "Caos",
     "Xenos": "Xenos",
     "Allied Units": "Unidades aliadas",
-    "leader": "líder"
+    "leader": "líder",
+    "Loading game data…": "Cargando datos del juego…",
+    "Could not load the game data. Check your connection and try again.": "No se pudieron cargar los datos del juego. Comprueba tu conexión e inténtalo de nuevo.",
+    "Try again": "Reintentar"
 }
 
 export default dictionary

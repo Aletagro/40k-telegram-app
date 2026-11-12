@@ -1,0 +1,44 @@
+.splash {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 100vh;
+  padding: 24px;
+  background: #0d0e10;
+  text-align: center;
+}
+.title {
+  margin: 0;
+  color: var(--gold-light, #e9d08a);
+  font-family: 'Minion Pro Bold', serif;
+  font-size: 28px;
+}
+.text {
+  margin: 0;
+  color: var(--muted, #a9a393);
+  font-size: 16px;
+  line-height: 1.4;
+}
+.bar {
+  width: min(260px, 70vw);
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+}
+.fill {
+  height: 100%;
+  background: var(--gold, #c9a45c);
+  transition: width 0.2s linear;
+}
+.button {
+  padding: 12px 28px;
+  border: 1.5px solid var(--gold, #c9a45c);
+  border-radius: 14px;
+  background: transparent;
+  color: var(--gold-light, #e9d08a);
+  font-family: inherit;
+  font-size: 16px;
+}

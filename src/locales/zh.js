@@ -221,7 +221,10 @@ const dictionary = {
     "Chaos": "混沌",
     "Xenos": "异形",
     "Allied Units": "盟军单位",
-    "leader": "领袖"
+    "leader": "领袖",
+    "Loading game data…": "正在加载游戏数据…",
+    "Could not load the game data. Check your connection and try again.": "无法加载游戏数据。请检查网络连接后重试。",
+    "Try again": "重试"
 }
 
 export default dictionary

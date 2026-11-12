@@ -221,7 +221,10 @@ const dictionary = {
     "Chaos": "カオス",
     "Xenos": "ゼノス",
     "Allied Units": "同盟ユニット",
-    "leader": "リーダー"
+    "leader": "リーダー",
+    "Loading game data…": "ゲームデータを読み込み中…",
+    "Could not load the game data. Check your connection and try again.": "ゲームデータを読み込めませんでした。接続を確認して、もう一度お試しください。",
+    "Try again": "再試行"
 }
 
 export default dictionary

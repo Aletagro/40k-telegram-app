@@ -36,7 +36,7 @@ const Header = () => {
             lists.data = []
             lists.meta = {}
             lists.isFirstReq = true
-            lists.filters = {all: true, points_limit: 2000}
+            lists.filters = {points_limit: 2000}
         }
     }
 

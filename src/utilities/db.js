@@ -2,7 +2,9 @@
 // В исходном json тексты лежат в row.localisations[lang]. Здесь мы один раз при загрузке
 // "разворачиваем" их в обычные поля строки: сначала английский (есть почти везде),
 // поверх него — выбранный язык. Так отсутствующие переводы автоматически берутся из английского.
-const raw = require('../dataBase.json')
+// Сама база лежит в public/db (готовится scripts/build-db.js) и загружается один раз при старте, до запуска приложения.
+// Объект raw заполняется на месте, поэтому модули могут получать его через require и читать data позже.
+const raw = {metadata: {}, data: {}}
 
 const LANGUAGE_KEY = 'language'
 const DEFAULT_LANGUAGE = 'en'
@@ -80,10 +82,89 @@ const localize = (data, language) => {
   })
 }
 
-const language = getLanguage()
-localize(raw.data, language)
+const BASE_URL = `${process.env.PUBLIC_URL || ''}/db/`
+const CACHE_NAME = 'db-cache'
+
+const openCache = async () => {
+  try {
+    return typeof caches !== 'undefined' ? await caches.open(CACHE_NAME) : null
+  } catch (e) {
+    return null
+  }
+}
+
+// Файлы имеют хэш в имени, поэтому после первой загрузки лежат в кэше браузера и больше не скачиваются
+const fetchJson = async (file, bytes, onChunk) => {
+  const url = `${BASE_URL}${file}`
+  const cache = await openCache()
+  let response = cache ? await cache.match(url) : null
+  if (!response) {
+    response = await fetch(url)
+    if (!response.ok) throw new Error(`Failed to load ${file}`)
+    if (cache) cache.put(url, response.clone()).catch(() => {})
+  }
+  if (!response.body || !response.body.getReader) {
+    const json = await response.json()
+    onChunk(bytes)
+    return json
+  }
+  const reader = response.body.getReader()
+  const chunks = []
+  for (;;) {
+    const {done, value} = await reader.read()
+    if (done) break
+    chunks.push(value)
+    onChunk(value.length)
+  }
+  return new Response(new Blob(chunks)).json()
+}
+
+const fetchManifest = async () => {
+  const url = `${BASE_URL}manifest.json`
+  const cache = await openCache()
+  try {
+    const response = await fetch(url, {cache: 'no-cache'})
+    if (!response.ok) throw new Error('manifest')
+    if (cache) cache.put(url, response.clone()).catch(() => {})
+    return await response.json()
+  } catch (e) {
+    // нет сети: берём последнюю сохранённую версию
+    const saved = cache ? await cache.match(url) : null
+    if (!saved) throw e
+    return saved.json()
+  }
+}
+
+// Загружает базу и разворачивает переводы выбранного языка. onProgress получает долю от 0 до 1
+const loadDatabase = async (onProgress = () => {}) => {
+  const language = getLanguage()
+  const manifest = await fetchManifest()
+  const overlayInfo = language !== DEFAULT_LANGUAGE ? manifest.files[language] : null
+  const total = manifest.files.core.bytes + (overlayInfo ? overlayInfo.bytes : 0)
+  let loaded = 0
+  const onChunk = (size) => {
+    loaded += size
+    onProgress(Math.min(1, loaded / total))
+  }
+  const [core, overlay] = await Promise.all([
+    fetchJson(manifest.files.core.file, manifest.files.core.bytes, onChunk),
+    overlayInfo ? fetchJson(overlayInfo.file, overlayInfo.bytes, onChunk) : null
+  ])
+  if (overlay) {
+    Object.keys(overlay).forEach((table) => {
+      const rows = core.data[table]
+      overlay[table].forEach(([index, localisation]) => {
+        if (rows && rows[index] && rows[index].localisations) rows[index].localisations[language] = localisation
+      })
+    })
+  }
+  localize(core.data, language)
+  raw.metadata = core.metadata
+  Object.assign(raw.data, core.data)
+}
 
 module.exports = raw
 module.exports.LANGUAGES = LANGUAGES
 module.exports.getLanguage = getLanguage
 module.exports.setLanguage = setLanguage
+module.exports.loadDatabase = loadDatabase

@@ -8,6 +8,7 @@
 .listContainer {
   min-width: 100px;
   position: relative;
+  isolation: isolate;
   overflow: hidden;
   border: 2px solid var(--gold);
   border-radius: 18px;

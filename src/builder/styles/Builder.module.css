@@ -559,3 +559,11 @@
   font-size: 26px;
   line-height: 1;
 }
+
+.exportFooter {
+  margin: 18px 0 4px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
