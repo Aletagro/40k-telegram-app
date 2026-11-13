@@ -394,6 +394,10 @@ const dictionary = {
     "Unknown army": "알 수 없는 군대",
     "Statistics count the first player of each battle as you.": "통계에서는 각 전투의 첫 번째 플레이어를 본인으로 계산합니다.",
     "{{count}} battle|{{count}} battles": "{{count}}전",
+    "max {{count}} VP": "최대 {{count}} VP",
+    "{{name}}: an attached unit can have only one enhancement or upgrade, now {{count}}": "{{name}}: 합류한 부대는 인핸스먼트 또는 업그레이드를 하나만 가질 수 있습니다 (현재 {{count}}개)",
+    "{{name}}: this unit option is not available in this army": "{{name}}: 이 부대 구성은 이 군대에서 사용할 수 없습니다",
+    "{{name}}: a support unit must be attached to a unit": "{{name}}: 지원 부대는 반드시 다른 부대에 합류해야 합니다",
 }
 
 export default dictionary

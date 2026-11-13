@@ -5,7 +5,7 @@ import Constants from '../Constants'
 import Button from '../components/Button'
 import {replaceAsterisks} from '../utilities/utils'
 import {
-    getTurnInfo, getScoreCount, setScore, achieveSecondary, discardSecondary, redrawSecondary, canRedrawSecondary, drawSecondary, canDrawSecondary,
+    getTurnInfo, getScoreCount, getEntryPoints, setScore, achieveSecondary, discardSecondary, redrawSecondary, canRedrawSecondary, drawSecondary, canDrawSecondary,
     getCp, isPhysicalDeck, REDRAW_CP_COST
 } from './gameModel'
 import {getSecondaryMissionDetail} from './missionData'
@@ -34,11 +34,11 @@ const GameSecondary = ({game, limits, apply, onOpenPicker}) => {
     const isTactical = secondary.mode === 'tactical'
     const round = turn.round
 
-    const cardVp = (cardId) => sumBy(filter(player.scores, item => item.kind === 'secondary' && item.card === cardId), item => item.count * item.vp)
+    const cardVp = (cardId) => sumBy(filter(player.scores, item => item.kind === 'secondary' && item.card === cardId), getEntryPoints)
 
     const setCount = (cardId, objective, scoring, count) => {
         const exclusiveWith = scoring.isExclusive ? map(filter(objective.scorings, other => other.isExclusive && other.id !== scoring.id), 'id') : []
-        apply(current => setScore(current, playerIndex, {round, kind: 'secondary', card: cardId, source: scoring.id, count: Math.max(0, count), vp: scoring.vp, exclusiveWith}))
+        apply(current => setScore(current, playerIndex, {round, kind: 'secondary', card: cardId, source: scoring.id, count: Math.max(0, count), vp: scoring.vp, cap: scoring.cap, exclusiveWith}))
     }
 
     const handleDiscard = (cardId) => {
@@ -50,13 +50,13 @@ const GameSecondary = ({game, limits, apply, onOpenPicker}) => {
     const renderScoring = (cardId, objective, scoring) => {
         const count = getScoreCount(game, playerIndex, {round, kind: 'secondary', card: cardId, source: scoring.id})
         return <div className={Styles.scoreRow} key={scoring.id}>
-            <p className={Styles.scoreText}><b>{t('{{count}} VP', {count: scoring.vp})}</b>{scoring.criteria ? <> - {replaceAsterisks(scoring.criteria)}</> : null}</p>
+            <p className={Styles.scoreText}><b>{t('{{count}} VP', {count: scoring.vp})}</b>{scoring.cap ? <> ({t('max {{count}} VP', {count: scoring.cap})})</> : null}{scoring.criteria ? <> - {replaceAsterisks(scoring.criteria)}</> : null}</p>
             {scoring.input === 'checkbox'
                 ? <button type='button' className={`${Styles.check} ${count ? Styles.checkOn : ''}`} onClick={() => setCount(cardId, objective, scoring, count ? 0 : 1)} aria-label={t('Scored')}>{count ? '✓' : ''}</button>
                 : <div className={Styles.stepper}>
                     <button type='button' className={Styles.stepButton} onClick={() => setCount(cardId, objective, scoring, count - 1)}>−</button>
                     <span className={Styles.stepValue}>{count}</span>
-                    <button type='button' className={Styles.stepButton} onClick={() => setCount(cardId, objective, scoring, count + 1)}>+</button>
+                    <button type='button' className={Styles.stepButton} disabled={Boolean(scoring.cap) && count * scoring.vp >= scoring.cap} onClick={() => setCount(cardId, objective, scoring, count + 1)}>+</button>
                 </div>}
         </div>
     }

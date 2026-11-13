@@ -53,7 +53,7 @@ const UnitRow = ({unit, issues, onChange, onLocate, readOnly = false}) => {
     const datasheet = find(dataBase.data.datasheet, ['id', unit.datasheetId])
     const type = getDatasheetType(unit.datasheetId)
     const isCharacter = isCharacterDatasheet(unit.datasheetId, unit)
-    const compositions = getCompositions(unit.datasheetId)
+    const compositions = getCompositions(unit.datasheetId, Boolean(unit.alliedFactionId))
     // Если вариантов состава много (больше трёх), по умолчанию показан только выбранный, остальные раскрываются по нажатию
     const [isCompositionsOpen, setIsCompositionsOpen] = useState(false)
     const isCollapsible = !readOnly && size(compositions) > COMPOSITIONS_COLLAPSE_FROM

@@ -1,6 +1,6 @@
 import {roster} from './appState'
 import {getUnitWargearPoints} from './wargearModel'
-import {getUnitType, getDetachmentUnitType, getUnitsSortesByType, getCodexInfo, getParentCodexId} from './utils'
+import {getMiniaturesUnitType, getDetachmentUnitType, getUnitsSortesByType, getCodexInfo, getParentCodexId} from './utils'
 
 import find from 'lodash/find'
 import filter from 'lodash/filter'
@@ -80,27 +80,36 @@ export const setBattleSize = (battleSizeId) => {
 export const getBattleSize = () => find(dataBase.data.battle_size, ['id', roster.battleSizeId])
 
 // Составы, доступные только с определённым детачментом (например, C'tan в Pantheon of Woe)
-export const isCompositionAvailable = (compositionId) => {
+// Почему состав недоступен: 'detachment' - нужен конкретный детачмент, 'faction' - состав (цена) не для этой армии; null - доступен.
+// Состав с обязательным ключевым словом армии (Agents of the Imperium) - цена в своей армии, а состав с referenceGroupingKeywordId
+// (Imperium) - цена этого юнита как союзника в чужой армии
+export const getCompositionBlock = (compositionId, isAllied = false) => {
     const required = filter(dataBase.data.unit_composition_required_detachment, ['unitCompositionId', compositionId])
-    return !required.length || some(required, item => includes(roster.detachmentIds, item.detachmentId))
+    if (required.length && !some(required, item => includes(roster.detachmentIds, item.detachmentId))) return 'detachment'
+    const factionIds = map(filter(dataBase.data.unit_composition_required_faction_keyword, ['unitCompositionId', compositionId]), 'factionKeywordId')
+    if (factionIds.length && (isAllied || !includes(factionIds, roster.factionId))) return 'faction'
+    if (!isAllied && find(dataBase.data.unit_composition, ['id', compositionId])?.referenceGroupingKeywordId) return 'faction'
+    return null
 }
 
+export const isCompositionAvailable = (compositionId, isAllied = false) => !getCompositionBlock(compositionId, isAllied)
+
 // Составы даташита, доступные в этом ростере. Если недоступны все - возвращаем все, проблему покажет валидация
-const getAllowedCompositions = (compositions) => {
-    const allowed = filter(compositions, item => isCompositionAvailable(item.id))
+const getAllowedCompositions = (compositions, isAllied = false) => {
+    const allowed = filter(compositions, item => isCompositionAvailable(item.id, isAllied))
     return allowed.length ? allowed : compositions
 }
 
 // Состав отряда по умолчанию: isDefault, иначе первый
-export const getDefaultComposition = (datasheetId) => {
-    const compositions = getAllowedCompositions(filter(dataBase.data.unit_composition, ['datasheetId', datasheetId]))
+export const getDefaultComposition = (datasheetId, isAllied = false) => {
+    const compositions = getAllowedCompositions(filter(dataBase.data.unit_composition, ['datasheetId', datasheetId]), isAllied)
     return find(compositions, 'isDefault') || compositions[0]
 }
 
 export const createUnit = (datasheetId, extra = {}) => ({
     uid: createUid(),
     datasheetId,
-    compositionId: getDefaultComposition(datasheetId)?.id,
+    compositionId: getDefaultComposition(datasheetId, Boolean(extra.alliedFactionId))?.id,
     modelCounts: {},
     loadouts: {},
     enhancementId: '',
@@ -237,7 +246,7 @@ export const hydrateRoster = (row) => {
             hydrateReport.enhancements++
             unit.enhancementId = ''
         }
-        if (!find(dataBase.data.unit_composition, ['id', unit.compositionId])) unit.compositionId = getDefaultComposition(unit.datasheetId)?.id
+        if (!find(dataBase.data.unit_composition, ['id', unit.compositionId])) unit.compositionId = getDefaultComposition(unit.datasheetId, Boolean(unit.alliedFactionId))?.id
     })
     return roster
 }
@@ -250,10 +259,8 @@ const dataBaseUnitType = {}
 // Учитывает детачмент ростера: в некоторых детачментах юнит меняет тип
 export const getDatasheetType = (datasheetId, detachmentIds = roster.detachmentIds) => {
     if (!dataBaseUnitType[datasheetId]) {
-        const miniatures = sortBy(filter(dataBase.data.miniature, ['datasheetId', datasheetId]), 'displayOrder')
-        const types = map(miniatures, miniature => getUnitType(miniature.id))
         // Если среди моделей есть Epic Hero или Character (например, Grimaldus со слугами), юнит относится к ним
-        dataBaseUnitType[datasheetId] = find(types, type => type === 'Epic Hero') || find(types, type => type === 'Character') || types[0] || ''
+        dataBaseUnitType[datasheetId] = getMiniaturesUnitType(filter(dataBase.data.miniature, ['datasheetId', datasheetId])) || ''
     }
     return getDetachmentUnitType(datasheetId, detachmentIds) || dataBaseUnitType[datasheetId]
 }
@@ -294,7 +301,7 @@ export const getCompositionModels = (compositionId) => {
 export const getCompositionLabel = (compositionId) => map(getCompositionModels(compositionId),
     ({miniature, min, max}) => `${min === max ? min : `${min}-${max}`} ${miniature.name}`).join(' + ')
 
-export const getCompositions = (datasheetId) => sortBy(getAllowedCompositions(filter(dataBase.data.unit_composition, ['datasheetId', datasheetId])), 'displayOrder')
+export const getCompositions = (datasheetId, isAllied = false) => sortBy(getAllowedCompositions(filter(dataBase.data.unit_composition, ['datasheetId', datasheetId]), isAllied), 'displayOrder')
 
 // Количество моделей отряда: у диапазонов берём выбранное значение (или минимум)
 export const getModelCount = (unit) => sumBy(getCompositionModels(unit.compositionId), ({miniature, min}) => unit.modelCounts?.[miniature.id] || min)
@@ -308,9 +315,11 @@ export const getAvailableEnhancements = (unit) => {
     const keywords = [...map(filter(dataBase.data.miniature_keyword, ['miniatureId', miniature?.id]), 'keywordId'), ...getConditionalKeywordIds(unit.datasheetId, unit)]
     const isCharacter = isCharacterDatasheet(unit.datasheetId, unit)
     return filter(enhancements, enhancement => {
-        // Улучшения для отрядов (Upgrade) берут и не-персонажи, обычные энхансменты - только персонажи
+        // Два вида: реликвии (miniature) берут только персонажи, улучшения для отрядов (Upgrade) - отряды
         if (!isCharacter && !enhancement.isEquipableByNonCharacterUnit) return false
         const groups = filter(dataBase.data.enhancement_required_keyword_group, ['enhancementId', enhancement.id])
+        // Персонажу Upgrade доступен, только если он назван для его даташита (например, Norn Emissary), а не подходит по ключевому слову
+        if (isCharacter && enhancement.enhancementType === 'upgrade' && !find(groups, ['datasheetId', unit.datasheetId])) return false
         if (!groups.length) return true
         return Boolean(find(groups, group => {
             if (group.datasheetId) return group.datasheetId === unit.datasheetId
@@ -457,7 +466,7 @@ export const syncRosterWithDetachment = () => {
     const removed = []
     clearForeignEnhancements()
     forEach([...roster.units], unit => {
-        if (!isCompositionAvailable(unit.compositionId)) updateUnit(unit.uid, {compositionId: getDefaultComposition(unit.datasheetId)?.id})
+        if (!isCompositionAvailable(unit.compositionId, Boolean(unit.alliedFactionId))) updateUnit(unit.uid, {compositionId: getDefaultComposition(unit.datasheetId, Boolean(unit.alliedFactionId))?.id})
     })
     syncForceDisposition()
     const available = getAvailableDatasheetIds()

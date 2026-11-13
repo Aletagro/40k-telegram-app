@@ -3,6 +3,7 @@ import Constants from '../Constants'
 
 import get from 'lodash/get'
 import compact from 'lodash/compact'
+import sortBy from 'lodash/sortBy'
 import castArray from 'lodash/castArray'
 import uniq from 'lodash/uniq'
 import uniqBy from 'lodash/uniqBy'
@@ -166,6 +167,12 @@ export const getUnitType = (miniatureId) => {
     return find(keywords, keyword => includes(typeNames, keyword?.nameEn))?.nameEn || keywords[0]?.nameEn
 }
 
+// Тип юнита по всем его миниатюрам: если среди них есть Epic Hero или Character (например, Celestine с Geminae Superia), юнит относится к ним
+export const getMiniaturesUnitType = (miniatures) => {
+    const types = map(sortBy(miniatures, 'displayOrder'), miniature => getUnitType(miniature.id))
+    return find(types, type => type === 'Epic Hero') || find(types, type => type === 'Character') || types[0]
+}
+
 export const getCompositions = (miniatures) => {
     const compositionsSize = map(miniatures, _miniature => filter(dataBase.data.unit_composition_miniature, composition => composition.miniatureId === _miniature.id))
     const compositionsPoints = sortByName(filter(dataBase.data.unit_composition, composition => composition.datasheetId === miniatures[0].datasheetId), 'displayOrder')
@@ -219,6 +226,9 @@ export const getDetachmentUnitType = (datasheetId, detachmentIds) => {
         && includes(typeNames, find(dataBase.data.keyword, ['id', item.keywordId])?.nameEn))
     return condition ? find(dataBase.data.keyword, ['id', condition.keywordId]).nameEn : undefined
 }
+
+// Детачменты армии для билдера и импорта: у боевых патрулей (коробки Combat Patrol) свои наборы, в обычную армию они не входят
+export const getFactionDetachments = (factionId) => sortByName(compact(map(filter(dataBase.data.detachment_faction_keyword, ['factionKeywordId', factionId]), link => find(dataBase.data.detachment, ['id', link.detachmentId]))).filter(detachment => !detachment.isCombatPatrol))
 
 export const getCodexInfo = (factionId) => {
     const publications = filter(dataBase.data.publication, publication =>
@@ -292,7 +302,7 @@ export const getUnitsSortesByType = (faction, codexInfo, detachmentIds, parentCo
     units = uniqBy(units, 'id')
     const miniaturesData = map(units, unit => filter(dataBase.data.miniature, ['datasheetId', unit.id]))
     const unitsInfo = map(miniaturesData, miniatures => {
-        const unitType = getUnitType(miniatures[0].id)
+        const unitType = getMiniaturesUnitType(miniatures)
         const compositions = getCompositions(miniatures)
         return {unitType, compositions, points: get(compositions, '[0].points', 0)}
     })

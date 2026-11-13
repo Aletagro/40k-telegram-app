@@ -47,6 +47,8 @@ const mapScoring = (scoring) => ({
     input: scoring.inputType,
     isCumulative: Boolean(scoring.isCumulative),
     isExclusive: Boolean(scoring.isMutuallyExclusive),
+    // Потолок очков за одно срабатывание цели (например, No Prisoners: по 2 VP за юнит, но не больше 5 за ход)
+    cap: scoring.victoryPointsCap ?? null,
     criteria: scoring.scoringCriteria || ''
 })
 
@@ -87,7 +89,7 @@ export const getSecondaryMissionDetail = (missionId, secondaryMode) => {
         when: objective.whenText || '',
         scorings: map(
             filter(byOrder(filter(dataBase.data.secondary_mission_objective_scoring, ['secondaryMissionObjectiveId', objective.id])), scoring => scoring.scoringType === 'standard' || scoring.scoringType === secondaryMode),
-            scoring => ({...mapScoring(scoring), cap: scoring.victoryPointsCap ?? null})
+            mapScoring
         )
     }))
     return {id: mission.id, name: mission.name, lore: mission.lore, description: mission.description, canBeFixed: Boolean(mission.isFixedSecondary), objectives}

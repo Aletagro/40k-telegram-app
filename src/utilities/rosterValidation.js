@@ -1,7 +1,7 @@
 import {t} from './i18n'
 import {roster} from './appState'
 import {
-    getRosterPoints, getUnitTotalPoints, getAvailableDatasheetIds, getDatasheetType, isCharacterDatasheet, getUnitLimit, getUnitCount, getBattleSize, getAvailableEnhancements, getUsedDetachmentPoints, getDetachmentPointsLimit, getForceDispositionOptions, getConditionalKeywordIds, isCompositionAvailable, getAllegianceGroups, getAllegianceAbilities, getAllegianceUnits, getDetachmentKeywordConflict
+    getRosterPoints, getUnitTotalPoints, getAvailableDatasheetIds, getDatasheetType, isCharacterDatasheet, getUnitLimit, getUnitCount, getBattleSize, getAvailableEnhancements, getUsedDetachmentPoints, getDetachmentPointsLimit, getForceDispositionOptions, getConditionalKeywordIds, getCompositionBlock, getAllegianceGroups, getAllegianceAbilities, getAllegianceUnits, getDetachmentKeywordConflict
 } from './rosterModel'
 import {getUnitWargearItems} from './wargearModel'
 
@@ -88,10 +88,19 @@ const getWarlordIssues = () => {
 
 // --- Присоединение лидеров ---
 
-const getGroupDatasheetIds = (groupId) => map(filter(dataBase.data.datasheet_bodyguard_group_datasheet, ['datasheetBodyguardGroupId', groupId]), 'datasheetId')
+const getGroupDatasheetIds = (groupId, group) => group?.datasheetIds || map(filter(dataBase.data.datasheet_bodyguard_group_datasheet, ['datasheetBodyguardGroupId', groupId]), 'datasheetId')
+
+// Группы присоединения, которые герою даёт энхансмент (реликвия "может возглавить отряд Repentia"): набор отрядов лежит в enhancement_bodyguard_group_datasheet
+const getEnhancementGroups = (unit) => map(filter(dataBase.data.enhancement_bodyguard_group, ['enhancementId', unit?.enhancementId]), group => ({
+    id: group.id,
+    bodyguardType: group.bodyguardType,
+    datasheetId: unit.datasheetId,
+    isFromEnhancement: true,
+    datasheetIds: map(filter(dataBase.data.enhancement_bodyguard_group_datasheet, ['enhancementBodyguardGroupId', group.id]), 'datasheetId')
+}))
 
 // Группы лидера, действующие в текущем ростере (детачмент, обязательные и запрещённые юниты)
-export const getLeaderGroups = (datasheetId) => filter(dataBase.data.datasheet_bodyguard_group, group => {
+export const getLeaderGroups = (datasheetId, unit) => [...filter(dataBase.data.datasheet_bodyguard_group, group => {
     if (group.datasheetId !== datasheetId) return false
     if (group.requiredDetachmentId && !detachmentIds().includes(group.requiredDetachmentId)) return false
     if (group.excludedDetachmentId && detachmentIds().includes(group.excludedDetachmentId)) return false
@@ -100,11 +109,11 @@ export const getLeaderGroups = (datasheetId) => filter(dataBase.data.datasheet_b
     const excluded = map(filter(dataBase.data.datasheet_bodyguard_group_excluded_roster_datasheet, ['datasheetBodyguardGroupId', group.id]), 'datasheetId')
     if (excluded.length && some(excluded, id => getUnitCount(id) > 0)) return false
     return true
-})
+}), ...getEnhancementGroups(unit)]
 
 // К каким даташитам и в каком качестве может присоединиться лидер: [{datasheetId, type}]
 const matchGroup = (group, target) => {
-    if (!getGroupDatasheetIds(group.id).includes(target.datasheetId)) return false
+    if (!getGroupDatasheetIds(group.id, group).includes(target.datasheetId)) return false
     // Все модели отряда должны иметь ключевое слово
     if (group.requiresAllUnitsHaveKeywordId
         && some(getMiniatures(target.datasheetId), miniature => !getMiniatureKeywords(miniature.id, target.datasheetId).has(group.requiresAllUnitsHaveKeywordId))) return false
@@ -112,7 +121,7 @@ const matchGroup = (group, target) => {
 }
 
 // Группа, по которой лидер может присоединиться к отряду (или undefined)
-export const findAttachGroup = (leader, target) => find(getLeaderGroups(leader.datasheetId), group => matchGroup(group, target))
+export const findAttachGroup = (leader, target) => find(getLeaderGroups(leader.datasheetId, leader), group => matchGroup(group, target))
 
 // К отряду нельзя присоединить второго лидера (или поддержку) того же вида
 const hasSameTypeLeader = (leader, target, type) => some(roster.units, unit => unit.uid !== leader.uid && unit.attachedToUid === target.uid
@@ -129,8 +138,8 @@ export const getAttachTargets = (leader) => filter(roster.units, target => {
 export const getPossibleAttachDatasheets = (leader) => {
     const available = getAvailableDatasheetIds()
     const result = []
-    forEach(getLeaderGroups(leader.datasheetId), group => {
-        forEach(getGroupDatasheetIds(group.id), datasheetId => {
+    forEach(getLeaderGroups(leader.datasheetId, leader), group => {
+        forEach(getGroupDatasheetIds(group.id, group), datasheetId => {
             if (!available.has(datasheetId) || result.includes(datasheetId)) return
             if (getUnitCount(datasheetId) >= getUnitLimit(datasheetId)) return
             if (!matchGroup(group, {datasheetId})) return
@@ -140,10 +149,10 @@ export const getPossibleAttachDatasheets = (leader) => {
     return result
 }
 
-export const canLead = (datasheetId) => getLeaderGroups(datasheetId).length > 0
+export const canLead = (datasheetId, unit) => getLeaderGroups(datasheetId, unit).length > 0
 
 // Показывать ли кнопку присоединения: лидер уже присоединён, есть подходящие отряды в списке или их можно добавить
-export const canShowAttach = (unit) => canLead(unit.datasheetId)
+export const canShowAttach = (unit) => canLead(unit.datasheetId, unit)
     && Boolean(unit.attachedToUid || getAttachTargets(unit).length || getPossibleAttachDatasheets(unit).length)
 
 const getAttachIssues = (unit) => {
@@ -172,6 +181,29 @@ const getBodyguardIssues = () => {
         })
     })
     return issues
+}
+
+// Отряд с присоединёнными лидерами - один юнит: у него не может быть двух энхансментов, а Upgrade тоже энхансмент (FAQ)
+const getAttachedEnhancementIssues = () => {
+    const issues = []
+    const byTarget = groupBy(filter(roster.units, 'attachedToUid'), 'attachedToUid')
+    forEach(byTarget, (leaders, targetUid) => {
+        const target = find(roster.units, ['uid', targetUid])
+        if (!target) return
+        const enhanced = filter([target, ...leaders], unit => unit.enhancementId && find(dataBase.data.enhancement, ['id', unit.enhancementId]))
+        if (enhanced.length > 1) {
+            issues.push({uid: target.uid, message: t('{{name}}: an attached unit can have only one enhancement or upgrade, now {{count}}', {name: getName(target.datasheetId), count: enhanced.length})})
+        }
+    })
+    return issues
+}
+
+// Поддержка (support) обязательно присоединяется к отряду (Muster Armies). Поддержкой считается юнит, у которого действующие группы присоединения только вида support
+const getSupportIssues = (unit) => {
+    if (unit.attachedToUid) return []
+    const groups = getLeaderGroups(unit.datasheetId, unit)
+    if (!groups.length || some(groups, group => (group.bodyguardType || 'leader') !== 'support')) return []
+    return [{uid: unit.uid, message: t('{{name}}: a support unit must be attached to a unit', {name: getName(unit.datasheetId)})}]
 }
 
 // --- Энхансменты ---
@@ -387,9 +419,13 @@ const getAllegianceIssues = () => {
 }
 
 // Составы, требующие детачмента (например, C'tan только в Pantheon of Woe)
-const getCompositionIssues = () => compact(map(roster.units, unit => isCompositionAvailable(unit.compositionId)
-    ? null
-    : {uid: unit.uid, message: t('{{name}}: requires a specific detachment', {name: getName(unit.datasheetId)})}))
+const getCompositionIssues = () => compact(map(roster.units, unit => {
+    const block = getCompositionBlock(unit.compositionId, Boolean(unit.alliedFactionId))
+    if (!block) return null
+    return {uid: unit.uid, message: block === 'detachment'
+        ? t('{{name}}: requires a specific detachment', {name: getName(unit.datasheetId)})
+        : t('{{name}}: this unit option is not available in this army', {name: getName(unit.datasheetId)})}
+}))
 
 // Все проблемы ростера
 export const getRosterIssues = () => {
@@ -403,8 +439,8 @@ export const getRosterIssues = () => {
         if (conflict && detachment.id < conflict.detachment.id) issues.push({message: t('{{first}} and {{second}} cannot be taken together ({{keyword}})', {first: detachment.name, second: conflict.detachment.name, keyword: conflict.keyword}), fix: 'detachments'})
     })
     if (detachmentIds().length && !roster.forceDispositionId && size(getForceDispositionOptions())) issues.push({message: t('Force Disposition is not chosen'), fix: 'forceDisposition'})
-    issues.push(...getWarlordIssues(), ...getDuplicateIssues(), ...getEnhancementRosterIssues(), ...getBodyguardIssues(), ...getAlliedIssues(), ...getRestrictionIssues(), ...getAllegianceIssues(), ...getCompositionIssues())
-    forEach(roster.units, unit => issues.push(...getAttachIssues(unit), ...getEnhancementIssues(unit)))
+    issues.push(...getWarlordIssues(), ...getDuplicateIssues(), ...getEnhancementRosterIssues(), ...getBodyguardIssues(), ...getAttachedEnhancementIssues(), ...getAlliedIssues(), ...getRestrictionIssues(), ...getAllegianceIssues(), ...getCompositionIssues())
+    forEach(roster.units, unit => issues.push(...getAttachIssues(unit), ...getSupportIssues(unit), ...getEnhancementIssues(unit)))
     return issues
 }
 

@@ -196,6 +196,9 @@ const buildDatasheet = (datasheetId) => {
         limits.push({
             id: limitSet.id,
             matched,
+            patterns,
+            // Есть варианты из нескольких предметов (например "хевик + спец-оружие" на двух моделях): тогда это набор разрешённых сочетаний на весь отряд
+            isCombo: patterns.some(pattern => Object.keys(pattern).length > 1 || Object.values(pattern).some(count => count > 1)),
             // Названия вариантов, к которым относится ограничение (для подсказки игроку)
             names: map(ix.limitChoices[limitSet.id], choice => getChoiceLabel(sortBy(map(ix.limitChoiceItems[choice.id], item => ({
                 name: ix.items[item.wargearItemId]?.name || '',
@@ -259,7 +262,45 @@ const getLimitValue = (limit, totalModels) => {
     return value
 }
 
+// Минимальное число разрешённых сочетаний (patterns), которыми покрывается набор оружия usage; Infinity, если больше max
+const coverCount = (usage, patterns, max) => {
+    let best = Infinity
+    const walk = (left, used) => {
+        if (used > max || used >= best) return
+        const next = Object.keys(left).find(id => left[id] > 0)
+        if (!next) {
+            best = used
+            return
+        }
+        forEach(patterns, pattern => {
+            if (!pattern[next]) return
+            const rest = {...left}
+            forEach(Object.keys(pattern), id => { if (rest[id]) rest[id] = Math.max(0, rest[id] - pattern[id]) })
+            walk(rest, used + 1)
+        })
+    }
+    walk(usage, 0)
+    return best
+}
+
+// Для набора сочетаний: сколько сочетаний нужно, чтобы покрыть выбранное оружие отряда (больше допустимого - значит нарушение)
+const getComboUsage = (unit, limit, totalModels) => {
+    const {slots} = getWargear(unit.datasheetId)
+    const relevant = new Set(limit.patterns.flatMap(pattern => Object.keys(pattern)))
+    const usage = {}
+    forEach(limit.matched, ({slotId, choiceId}) => {
+        const slot = find(slots, ['id', slotId])
+        const models = slot ? getSlotCounts(unit, slot)[choiceId] || 0 : 0
+        if (!models) return
+        forEach(find(slot.choices, ['id', choiceId])?.items, ({id, count}) => { if (relevant.has(id)) addTo(usage, id, count * models) })
+    })
+    const allowed = getLimitValue(limit, totalModels)
+    const used = coverCount(usage, limit.patterns, allowed)
+    return used === Infinity ? allowed + 1 : used
+}
+
 const getLimitUsage = (unit, limit) => {
+    if (limit.isCombo) return getComboUsage(unit, limit, getTotalModels(unit))
     const {slots} = getWargear(unit.datasheetId)
     return sumBy(limit.matched, ({slotId, choiceId}) => {
         const slot = find(slots, ['id', slotId])
@@ -276,8 +317,16 @@ export const getChoiceMax = (unit, slot, choiceId) => {
     const totalModels = getTotalModels(unit)
     forEach(getWargear(unit.datasheetId).limits, limit => {
         if (!limit.matched.some(item => item.slotId === slot.id && item.choiceId === choiceId)) return
-        const free = getLimitValue(limit, totalModels) - getLimitUsage(unit, limit)
-        max = Math.min(max, current + Math.max(0, free))
+        if (limit.isCombo) {
+            // Сочетания нелинейны: проверяем по одной модели, пока набор остаётся допустимым
+            const allowed = getLimitValue(limit, totalModels)
+            let count = current
+            while (count < max && getComboUsage({...unit, loadouts: setStoredRaw(unit.loadouts, slot, choiceId, count + 1)}, limit, totalModels) <= allowed) count++
+            max = Math.min(max, count)
+        } else {
+            const free = getLimitValue(limit, totalModels) - getLimitUsage(unit, limit)
+            max = Math.min(max, current + Math.max(0, free))
+        }
         if (limit.duplicateLimit) max = Math.min(max, limit.duplicateLimit)
     })
     return Math.max(0, max)

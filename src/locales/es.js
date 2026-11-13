@@ -394,6 +394,10 @@ const dictionary = {
     "Unknown army": "Ejército desconocido",
     "Statistics count the first player of each battle as you.": "En las estadísticas, tú eres el primer jugador de cada partida.",
     "{{count}} battle|{{count}} battles": "{{count}} partida|{{count}} partidas",
+    "max {{count}} VP": "máx. {{count}} PV",
+    "{{name}}: an attached unit can have only one enhancement or upgrade, now {{count}}": "{{name}}: una unidad adjunta solo puede tener una mejora o talento, ahora {{count}}",
+    "{{name}}: this unit option is not available in this army": "{{name}}: esta opción de unidad no está disponible en este ejército",
+    "{{name}}: a support unit must be attached to a unit": "{{name}}: una unidad de apoyo debe estar adjunta a una unidad",
 }
 
 export default dictionary

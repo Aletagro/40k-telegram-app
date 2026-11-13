@@ -53,7 +53,7 @@ const AddUnit = () => {
 
     const renderRow = (datasheet, alliedFactionId) => {
         const isLimit = getUnitCount(datasheet.id) >= getUnitLimit(datasheet.id)
-        const points = getUnitPoints({datasheetId: datasheet.id, compositionId: getDefaultComposition(datasheet.id)?.id}, getUnitCount(datasheet.id) + 1)
+        const points = getUnitPoints({datasheetId: datasheet.id, compositionId: getDefaultComposition(datasheet.id, Boolean(isAllied))?.id}, getUnitCount(datasheet.id) + 1)
         return <ListItem
             key={datasheet.id}
             title={datasheet.name}

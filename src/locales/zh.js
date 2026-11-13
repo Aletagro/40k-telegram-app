@@ -394,6 +394,10 @@ const dictionary = {
     "Unknown army": "未知军队",
     "Statistics count the first player of each battle as you.": "统计中以每场对战的第一位玩家作为你。",
     "{{count}} battle|{{count}} battles": "{{count}}场对战",
+    "max {{count}} VP": "最多{{count}} VP",
+    "{{name}}: an attached unit can have only one enhancement or upgrade, now {{count}}": "{{name}}：合并的单位只能拥有一个强化或升级，目前有{{count}}个",
+    "{{name}}: this unit option is not available in this army": "{{name}}：此单位选项在该军队中不可用",
+    "{{name}}: a support unit must be attached to a unit": "{{name}}：支援单位必须并入某个单位",
 }
 
 export default dictionary

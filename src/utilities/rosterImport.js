@@ -15,7 +15,7 @@ import flatMap from 'lodash/flatMap'
 import forEach from 'lodash/forEach'
 import includes from 'lodash/includes'
 import uniq from 'lodash/uniq'
-import {getFactionLabel} from './utils'
+import {getFactionLabel, getFactionDetachments} from './utils'
 import compact from 'lodash/compact'
 import size from 'lodash/size'
 
@@ -138,8 +138,7 @@ const parseHeader = (header, warnings) => {
     }
     if (!result.faction) return result
 
-    const detachments = compact(map(filter(dataBase.data.detachment_faction_keyword, ['factionKeywordId', result.faction.id]),
-        item => find(dataBase.data.detachment, ['id', item.detachmentId])))
+    const detachments = getFactionDetachments(result.faction.id)
     const text = ` ${normalize(map(header, line => line.replace(/\(.*?\)/g, ' ')).join(' | '))} `
     // Сначала длинные названия, чтобы "Strike Force" не перебило более точное совпадение
     const sorted = [...detachments].sort((a, b) => b.name.length - a.name.length)
@@ -230,7 +229,7 @@ const parseUnitLines = (datasheetId, lines) => {
 }
 
 const pickComposition = (unit, models, listedPoints) => {
-    const compositions = getCompositions(unit.datasheetId)
+    const compositions = getCompositions(unit.datasheetId, Boolean(unit.alliedFactionId))
     if (!compositions.length) return unit
     const counts = {}
     forEach(models, ({miniature, count}) => { counts[miniature.id] = (counts[miniature.id] || 0) + count })

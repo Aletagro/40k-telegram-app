@@ -267,3 +267,13 @@ test('отмена возвращает состояние и не теряет 
     expect(game.players[0].army.snapshot).toEqual({units: 'BIG'})
     expect(game.turnIndex).toBe(0)
 })
+
+test('потолок цели: 7 юнитов по 2 VP при cap 5 дают 5 VP', () => {
+    let game = newGame()
+    game = setScore(game, 0, {round: 1, kind: 'secondary', card: 'c', source: 's', count: 7, vp: 2, cap: 5})
+    expect(getPlayerTotals(game, 0).secondary).toBe(5)
+    game = setScore(game, 0, {round: 1, kind: 'secondary', card: 'c', source: 's', count: 2, vp: 2, cap: 5})
+    expect(getPlayerTotals(game, 0).secondary).toBe(4)
+    game = setScore(game, 0, {round: 1, kind: 'secondary', card: 'c', source: 's', count: 7, vp: 2})
+    expect(getPlayerTotals(game, 0).secondary).toBe(14)
+})

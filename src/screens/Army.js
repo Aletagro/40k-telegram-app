@@ -20,7 +20,7 @@ const dataBase = require('../utilities/db')
 const Army = () => {
     const {faction, grandFaction} = useLocation().state
     const codexInfo = getCodexInfo(faction.id)
-    const detachments = sortByName(filter(dataBase.data.detachment, ['publicationId', codexInfo.id]))
+    const detachments = sortByName(filter(dataBase.data.detachment, detachment => detachment.publicationId === codexInfo.id && !detachment.isCombatPatrol))
     const armyRules = filter(dataBase.data.army_rule, ['publicationId', codexInfo.id])
     // В таблице faq лежат и вопросы с ответами (question), и эрраты (errataHeader)
     const publicationFaq = filter(dataBase.data.faq, ['publicationId', codexInfo.id])

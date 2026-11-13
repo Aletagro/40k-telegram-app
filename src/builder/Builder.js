@@ -9,7 +9,7 @@ import ListStatus from './ListStatus'
 import Button from '../components/Button'
 import useSaveList from './useSaveList'
 import CollapseSection from '../components/CollapseSection'
-import {sortByName, getUnitsSortesByType, getCodexInfo, getParentCodexId, getFactionLabel} from '../utilities/utils'
+import {getFactionDetachments, getUnitsSortesByType, getCodexInfo, getParentCodexId, getFactionLabel} from '../utilities/utils'
 import {getRosterPoints, setBattleSize, getDatasheetType, getUnitTotalPoints, getUsedDetachmentPoints, getDetachmentPointsLimit, getForceDispositionOptions} from '../utilities/rosterModel'
 
 import map from 'lodash/map'
@@ -36,8 +36,7 @@ const Builder = () => {
     const [showIssues, setShowIssues] = React.useState(true)
     const {handleClickSaveButton, saveModal} = useSaveList()
     const codexInfo = getCodexInfo(faction.id)
-    const detachmentsIds = filter(dataBase.data.detachment_faction_keyword, ['factionKeywordId', faction.id])
-    const detachments = sortByName(map(detachmentsIds, item => find(dataBase.data.detachment, ['id', item.detachmentId])))
+    const detachments = getFactionDetachments(faction.id)
     const chosenDetachments = compact(map(roster.detachmentIds, id => find(dataBase.data.detachment, ['id', id])))
     const forceDisposition = find(dataBase.data.force_disposition, ['id', roster.forceDispositionId])
     const parentCodexId = getParentCodexId(faction)

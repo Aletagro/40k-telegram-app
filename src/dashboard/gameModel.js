@@ -141,6 +141,9 @@ export const finishGame = (game, now) => game.status === STATUS_FINISHED ? game 
 
 // --- Очки ---
 
+// Очки записи с учётом потолка цели (cap): No Prisoners даёт 2 VP за юнит, но не больше 5 VP за ход
+export const getEntryPoints = (item) => item.cap === null || item.cap === undefined ? item.count * item.vp : Math.min(item.count * item.vp, item.cap)
+
 const sameSource = (a, b) => a.round === b.round && a.kind === b.kind && (a.card || null) === (b.card || null) && a.source === b.source
 
 // Ставит количество срабатываний цели. count 0 удаляет запись. exclusiveWith: источники цели, которые нельзя брать вместе с этим
@@ -149,7 +152,7 @@ export const setScore = (game, playerIndex, entry, now) => {
     const base = {round: entry.round, kind: entry.kind, card: entry.card || null, source: entry.source}
     const kept = filter(game.players[playerIndex].scores, item => !sameSource(item, base)
         && !(count > 0 && exclusiveWith.includes(item.source) && item.round === base.round && item.kind === base.kind && (item.card || null) === base.card))
-    const scores = count > 0 ? [...kept, {...base, count, vp: entry.vp}] : kept
+    const scores = count > 0 ? [...kept, {...base, count, vp: entry.vp, cap: entry.cap ?? null}] : kept
     return commit(game, setPlayer(game, playerIndex, {scores}), now)
 }
 
@@ -171,12 +174,13 @@ export const getPlayerTotals = (game, playerIndex, limits = DEFAULT_LIMITS) => {
     let ignored = 0
     range(1, MAX_ROUNDS + 1).concat('end').forEach(round => {
         const entries = filter(player.scores, ['round', round])
-        const primaryRaw = sumBy(filter(entries, ['kind', 'primary']), item => item.count * item.vp)
+        const primaryRaw = sumBy(filter(entries, ['kind', 'primary']), getEntryPoints)
         // Потолок на карту фиксированной вторичной миссии считается по всей битве
         const secondaryEntries = filter(entries, ['kind', 'secondary'])
         let secondaryRaw = 0
         secondaryEntries.forEach(item => {
-            const points = item.count * item.vp
+            const points = getEntryPoints(item)
+            ignored += item.count * item.vp - points
             if (!isFixed) {
                 secondaryRaw += points
                 return

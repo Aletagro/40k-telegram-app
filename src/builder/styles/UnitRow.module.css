@@ -50,7 +50,7 @@
   line-height: 1.25;
 }
 .models {
-  line-height: 1.2;
+  line-height: 18px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -59,7 +59,7 @@
   font-size: 14px;
 }
 .points {
-  line-height: 1.2;
+  line-height: 18px;
   color: var(--gold-light);
   font-family: 'Minion Pro Bold';
   font-size: 15px;
@@ -273,10 +273,15 @@
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  line-height: 1;
+  height: 18px;
+  line-height: 18px;
   color: var(--gold);
   font-family: 'Minion Pro Bold';
-  font-size: 13px;
+  font-size: 14px;
+}
+.invul svg {
+  display: block;
+  flex: none;
 }
 .row[data-flash='true'] {
   animation: flash 1.2s ease;
