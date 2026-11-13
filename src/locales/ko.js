@@ -379,6 +379,21 @@ const dictionary = {
     "You can also paste a roster code that another player shared.": "다른 플레이어가 공유한 목록 코드도 붙여넣을 수 있습니다.",
     "Army lists": "군대 목록",
     "List not found": "목록을 찾을 수 없습니다",
+    "History and statistics": "기록 및 통계",
+    "History": "기록",
+    "Statistics": "통계",
+    "Battles": "전투",
+    "Wins": "승리",
+    "Draws": "무승부",
+    "Losses": "패배",
+    "Win rate": "승률",
+    "Average VP": "평균 VP",
+    "By army": "군대별",
+    "Against": "상대",
+    "No finished battles yet": "아직 끝난 전투가 없습니다",
+    "Unknown army": "알 수 없는 군대",
+    "Statistics count the first player of each battle as you.": "통계에서는 각 전투의 첫 번째 플레이어를 본인으로 계산합니다.",
+    "{{count}} battle|{{count}} battles": "{{count}}전",
 }
 
 export default dictionary

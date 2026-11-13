@@ -48,6 +48,7 @@ import CombatPatrol from './combatPatrol/CombatPatrol'
 import CombatPatrolArmies from './combatPatrol/CombatPatrolArmies'
 import CombatPatrolArmy from './combatPatrol/CombatPatrolArmy'
 import Dashboard from './dashboard/Dashboard'
+import GameHistory from './dashboard/GameHistory'
 import GameArmies from './dashboard/GameArmies'
 import GameChooseArmy from './dashboard/GameChooseArmy'
 import GameMission from './dashboard/GameMission'
@@ -128,6 +129,7 @@ function App() {
       <Route path={'ruleSections'} element={<RuleSections />} />
       <Route path={'rules'} element={<Rules />} />
       <Route path={'dashboard'} element={<Dashboard />} />
+      <Route path={'gameHistory'} element={<GameHistory />} />
       <Route path={'gameArmies'} element={<GameArmies />} />
       <Route path={'gameChooseArmy'} element={<GameChooseArmy />} />
       <Route path={'gameMission'} element={<GameMission />} />

@@ -379,6 +379,21 @@ const dictionary = {
     "You can also paste a roster code that another player shared.": "你也可以粘贴其他玩家分享的列表代码。",
     "Army lists": "军队列表",
     "List not found": "未找到列表",
+    "History and statistics": "历史与统计",
+    "History": "历史",
+    "Statistics": "统计",
+    "Battles": "对战",
+    "Wins": "胜利",
+    "Draws": "平局",
+    "Losses": "失败",
+    "Win rate": "胜率",
+    "Average VP": "平均VP",
+    "By army": "按军队",
+    "Against": "对阵",
+    "No finished battles yet": "暂无已结束的对战",
+    "Unknown army": "未知军队",
+    "Statistics count the first player of each battle as you.": "统计中以每场对战的第一位玩家作为你。",
+    "{{count}} battle|{{count}} battles": "{{count}}场对战",
 }
 
 export default dictionary

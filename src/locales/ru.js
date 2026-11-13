@@ -379,6 +379,21 @@ const dictionary = {
     "You can also paste a roster code that another player shared.": "Можно также вставить код ростера, которым поделился другой игрок.",
     "Army lists": "Списки армий",
     "List not found": "Список не найден",
+    "History and statistics": "История и статистика",
+    "History": "История",
+    "Statistics": "Статистика",
+    "Battles": "Партии",
+    "Wins": "Победы",
+    "Draws": "Ничьи",
+    "Losses": "Поражения",
+    "Win rate": "Процент побед",
+    "Average VP": "Средние VP",
+    "By army": "По армиям",
+    "Against": "Против",
+    "No finished battles yet": "Завершённых партий пока нет",
+    "Unknown army": "Неизвестная армия",
+    "Statistics count the first player of each battle as you.": "В статистике «вы» — первый игрок каждой партии.",
+    "{{count}} battle|{{count}} battles": "{{count}} партия|{{count}} партии|{{count}} партий",
 }
 
 export default dictionary

@@ -258,3 +258,12 @@ describe('физическая колода', () => {
         expect(game.players[0].secondary.pendingDraw).toBe(2)
     })
 })
+
+test('отмена возвращает состояние и не теряет список армии, а в историю он не копируется', () => {
+    let game = createGame({id: 'g9', mode: 'standard', players: [{name: 'A', army: {factionId: 'f', snapshot: {units: 'BIG'}}}, {name: 'B'}], now: 1})
+    game = advanceTurn(game)
+    expect(game.history.every(item => !item.includes('BIG'))).toBe(true)
+    game = undo(game)
+    expect(game.players[0].army.snapshot).toEqual({units: 'BIG'})
+    expect(game.turnIndex).toBe(0)
+})

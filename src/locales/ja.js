@@ -379,6 +379,21 @@ const dictionary = {
     "You can also paste a roster code that another player shared.": "他のプレイヤーが共有したリストコードも貼り付けられます。",
     "Army lists": "アーミーリスト",
     "List not found": "リストが見つかりません",
+    "History and statistics": "履歴と統計",
+    "History": "履歴",
+    "Statistics": "統計",
+    "Battles": "対戦数",
+    "Wins": "勝利",
+    "Draws": "引き分け",
+    "Losses": "敗北",
+    "Win rate": "勝率",
+    "Average VP": "平均VP",
+    "By army": "軍別",
+    "Against": "対戦相手",
+    "No finished battles yet": "終了した対戦はまだありません",
+    "Unknown army": "不明な軍",
+    "Statistics count the first player of each battle as you.": "統計では各対戦の先頭のプレイヤーがあなたとして集計されます。",
+    "{{count}} battle|{{count}} battles": "{{count}}戦",
 }
 
 export default dictionary

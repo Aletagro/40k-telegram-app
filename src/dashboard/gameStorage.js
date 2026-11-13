@@ -1,6 +1,8 @@
 // Партии дашборда хранятся в localStorage устройства: незавершённая партия продолжается после закрытия приложения
 import find from 'lodash/find'
 import filter from 'lodash/filter'
+import map from 'lodash/map'
+import omit from 'lodash/omit'
 import {STATUS_PLAYING} from './gameModel'
 
 const KEY = 'dashboardGames'
@@ -33,7 +35,8 @@ export const getActiveGame = () => find(read(), game => game.status === STATUS_P
 
 // Новая или обновлённая партия ставится первой. У завершённых история отмены не нужна
 export const saveGame = (game) => {
-    const stored = game.status === STATUS_PLAYING ? game : {...game, history: []}
+    // У завершённых история отмены и полные списки армий (они велики) уже не нужны
+    const stored = game.status === STATUS_PLAYING ? game : {...game, history: [], players: map(game.players, player => player.army?.snapshot ? {...player, army: omit(player.army, 'snapshot')} : player)}
     return write([stored, ...filter(read(), item => item.id !== game.id)].slice(0, MAX_GAMES))
 }
 

@@ -379,6 +379,21 @@ const dictionary = {
     "You can also paste a roster code that another player shared.": "Vous pouvez aussi coller un code de liste partagé par un autre joueur.",
     "Army lists": "Listes d'armée",
     "List not found": "Liste introuvable",
+    "History and statistics": "Historique et statistiques",
+    "History": "Historique",
+    "Statistics": "Statistiques",
+    "Battles": "Parties",
+    "Wins": "Victoires",
+    "Draws": "Égalités",
+    "Losses": "Défaites",
+    "Win rate": "Taux de victoire",
+    "Average VP": "PV moyens",
+    "By army": "Par armée",
+    "Against": "Contre",
+    "No finished battles yet": "Aucune partie terminée pour l'instant",
+    "Unknown army": "Armée inconnue",
+    "Statistics count the first player of each battle as you.": "Dans les statistiques, vous êtes le premier joueur de chaque partie.",
+    "{{count}} battle|{{count}} battles": "{{count}} partie|{{count}} parties",
 }
 
 export default dictionary

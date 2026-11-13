@@ -58,7 +58,10 @@ const newPlayer = (player = {}) => ({
     secondary: player.secondary || {...EMPTY_SECONDARY}
 })
 
-const snapshot = (game) => JSON.stringify(omit(game, 'history'))
+// Полный список армии (army.snapshot) большой и в ходе партии не меняется, поэтому в историю отмены он не попадает
+const withoutLists = (game) => ({...omit(game, 'history'), players: map(game.players, player => player.army?.snapshot ? {...player, army: omit(player.army, 'snapshot')} : player)})
+
+const snapshot = (game) => JSON.stringify(withoutLists(game))
 
 // Сохраняет предыдущее состояние для отмены и обновляет время
 const commit = (game, next, now = Date.now()) => ({
@@ -72,7 +75,9 @@ export const canUndo = (game) => Boolean(game.history?.length)
 export const undo = (game) => {
     if (!canUndo(game)) return game
     const history = game.history.slice(0, -1)
-    return {...JSON.parse(game.history[game.history.length - 1]), history}
+    const restored = JSON.parse(game.history[game.history.length - 1])
+    const players = map(restored.players, (player, index) => game.players[index]?.army?.snapshot && player.army ? {...player, army: {...player.army, snapshot: game.players[index].army.snapshot}} : player)
+    return {...restored, players, history}
 }
 
 const setPlayer = (game, index, patch) => ({
