@@ -1,0 +1,72 @@
+.page { display: flex; flex-direction: column; padding: 0 0 0; background: var(--bg); min-height: 70vh; }
+.body { display: flex; flex-direction: column; gap: 12px; padding: 10px 8px 0; }
+/* баннер: две армии друг против друга */
+.banner { position: relative; display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--border); overflow: hidden; background: var(--card); }
+.side { position: relative; min-height: 150px; overflow: hidden; border-bottom: 3px solid transparent; }
+.sideActive { border-bottom-color: var(--gold); }
+.sideImage { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.sideShade { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(8,8,10,0.6), rgba(8,8,10,0.82)); }
+.sideContent { position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 6px 10px; text-align: center; }
+.sideName { color: var(--gold-light); font-family: 'Minion Pro Bold'; font-size: 16px; line-height: 1.15; text-shadow: 0 1px 3px #000; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sideArmy { color: var(--text); font-size: 13px; opacity: 0.85; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-shadow: 0 1px 3px #000; }
+.sideVp { color: #fff; font-family: 'Minion Pro Bold'; font-size: 44px; line-height: 1.05; text-shadow: 0 2px 6px #000; }
+.sideVpLabel { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+.cpRow { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+.cpValue { min-width: 54px; color: var(--gold-light); font-family: 'Minion Pro Bold'; font-size: 16px; text-shadow: 0 1px 3px #000; }
+.cpButton { width: 30px; height: 30px; border: 1px solid var(--gold); border-radius: 50%; background: rgba(8,8,10,0.6); color: var(--gold-light); font-size: 18px; line-height: 1; cursor: pointer; padding: 0; }
+.cpButtonDim { opacity: 0.4; }
+.round { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); z-index: 2; padding: 4px 12px; border: 1px solid var(--gold); border-radius: 999px; background: rgba(8,8,10,0.85); color: var(--gold-light); font-family: 'Minion Pro Bold'; font-size: 13px; white-space: nowrap; }
+.vs { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2; width: 30px; height: 30px; border-radius: 50%; background: rgba(8,8,10,0.85); border: 1px solid var(--border); color: var(--muted); font-size: 12px; display: flex; align-items: center; justify-content: center; text-transform: uppercase; }
+.turnLine { margin: 0; text-align: center; color: var(--text); font-size: 15px; }
+.turnLine b { color: var(--gold-light); }
+.tabs { display: flex; gap: 6px; }
+.tab { flex: 1; padding: 10px 4px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--muted); font-size: 15px; cursor: pointer; }
+.tabActive { border-color: var(--gold); color: var(--gold-light); background: var(--card-active); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { padding: 7px 12px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); color: var(--text); font-size: 14px; cursor: pointer; }
+.chipActive { border-color: var(--gold); background: var(--card-active); color: var(--gold-light); }
+.chipCurrent { border-color: var(--border); }
+.card { display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 1px solid var(--border); border-radius: 14px; background: var(--card); }
+.cardTitle { margin: 0; color: var(--gold-light); font-family: 'Minion Pro Bold'; font-size: 17px; }
+.when { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.35; }
+.scoreRow { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 8px; border-top: 1px solid var(--line); }
+.scoreText { flex: 1; min-width: 0; margin: 0; color: var(--text); font-size: 15px; line-height: 1.35; }
+.scoreText b { color: var(--gold-light); }
+.stepper { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.stepButton { width: 36px; height: 36px; border: 1px solid var(--gold); border-radius: 10px; background: none; color: var(--gold-light); font-size: 20px; line-height: 1; cursor: pointer; padding: 0; }
+.stepValue { min-width: 22px; text-align: center; color: var(--text); font-family: 'Minion Pro Bold'; font-size: 18px; }
+.check { width: 36px; height: 36px; border: 1.5px solid var(--gold); border-radius: 10px; background: none; color: #1a1608; cursor: pointer; padding: 0; font-size: 20px; line-height: 1; }
+.checkOn { background: var(--gold); }
+.table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.table th, .table td { padding: 6px 4px; text-align: center; color: var(--text); border-bottom: 1px solid var(--line); }
+.table th { color: var(--muted); font-weight: normal; }
+.table td:first-child, .table th:first-child { text-align: start; }
+.table tr.total td { color: var(--gold-light); font-family: 'Minion Pro Bold'; border-bottom: none; }
+.note { margin: 0; color: #e0a05c; font-size: 13px; }
+.muted { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.4; }
+.bottomBar { position: sticky; bottom: 0; z-index: 5; display: flex; gap: 8px; margin-top: 12px; padding: 10px 8px calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); background: rgba(23, 25, 28, 0.96); backdrop-filter: blur(6px); }
+.bottomBar .grow { flex: 1; }
+.bottomBar button { width: auto; }
+.bottomBar .grow button, .bottomBar button.grow { width: 100%; }
+.mapImage { width: 100%; height: auto; display: block; border-radius: 12px; border: 1px solid var(--border); background: #fff; cursor: zoom-in; }
+.zoom { position: fixed; inset: 0; z-index: 2000; display: flex; flex-direction: column; background: rgba(0,0,0,0.94); }
+.zoomBar { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; }
+.zoomTitle { color: var(--gold-light); font-family: 'Minion Pro Bold'; font-size: 16px; }
+.zoomClose { border: 1px solid var(--gold); border-radius: 10px; background: none; color: var(--gold-light); padding: 8px 14px; font-size: 15px; cursor: pointer; }
+.zoomScroll { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; }
+.zoomImage { display: block; background: #fff; }
+.result { text-align: center; }
+.resultTitle { margin: 0; color: var(--gold-light); font-family: 'Minion Pro Bold'; font-size: 22px; }
+.roundHead { display: flex; align-items: center; gap: 10px; width: 100%; padding: 0; border: none; background: none; cursor: pointer; text-align: start; }
+.roundTitle { flex: 1; color: var(--gold-light); font-family: 'Minion Pro Bold'; font-size: 17px; }
+.roundScore { color: var(--text); font-family: 'Minion Pro Bold'; font-size: 16px; }
+.chevron { flex: 0 0 auto; width: 9px; height: 9px; margin: 0 4px 3px 2px; border-right: 2px solid var(--gold); border-bottom: 2px solid var(--gold); transform: rotate(45deg); transition: transform 0.15s; }
+.chevronOpen { transform: rotate(-135deg); margin-bottom: -3px; }
+.playerBlock { display: flex; flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
+.playerHead { display: flex; flex-direction: column; gap: 2px; }
+.playerName { color: var(--text); font-family: 'Minion Pro Bold'; font-size: 16px; }
+.infoLink { align-self: flex-start; padding: 0; border: none; background: none; color: var(--muted); font-size: 13px; cursor: pointer; text-align: start; }
+.objective { display: flex; flex-direction: column; gap: 6px; padding: 10px; border-radius: 10px; background: var(--bg); }
+.objectiveTitle { margin: 0; color: var(--gold-light); font-family: 'Minion Pro Bold'; font-size: 15px; }
+
+.playerActive { padding: 10px; border: 2px solid var(--gold); border-radius: 14px; box-shadow: 0 0 0 3px rgba(200, 162, 75, 0.18); scroll-margin-top: 70px; }

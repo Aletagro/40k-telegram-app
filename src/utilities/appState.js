@@ -33,6 +33,15 @@ export const lists = {
     filters: {points_limit: 2000}
 }
 
+// Черновик новой партии для дашборда: режим, игроки и настройки до старта (см. dashboard/gameSetup.js)
+export const gameDraft = {
+    mode: null,
+    players: [],
+    setup: {},
+    // выбор армии вручную по игрокам: {factionId, detachmentIds, dispositionId, battleSizeId}
+    manual: {}
+}
+
 export const search = {
     value: '',
     Datasheets: [],

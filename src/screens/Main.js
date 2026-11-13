@@ -19,6 +19,7 @@ const Main = () => {
         </div>
         <div className={Styles.menu}>
             <Tile featured title={t('Builder')} text={t('Build and save your army lists')} navigateTo='userLists' />
+            <Tile featured title={t('Battle Dashboard')} text={t('Track a live game: score, CP, secondaries')} navigateTo='dashboard' />
             <div className={Styles.grid}>
                 <Tile compact title={t('Rules')} text={t('Armies and core rules')} navigateTo='mainRules' />
                 <Tile compact title={t('Community Lists')} text={t('Lists from other players')} navigateTo='lists' />

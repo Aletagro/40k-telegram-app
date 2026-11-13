@@ -46,6 +46,14 @@ import CommunityLists from './builder/CommunityLists'
 import CombatPatrol from './combatPatrol/CombatPatrol'
 import CombatPatrolArmies from './combatPatrol/CombatPatrolArmies'
 import CombatPatrolArmy from './combatPatrol/CombatPatrolArmy'
+import Dashboard from './dashboard/Dashboard'
+import GameArmies from './dashboard/GameArmies'
+import GameChooseArmy from './dashboard/GameChooseArmy'
+import GameMission from './dashboard/GameMission'
+import GameChooseMission from './dashboard/GameChooseMission'
+import GameChooseDetachments from './dashboard/GameChooseDetachments'
+import GameBattlefield from './dashboard/GameBattlefield'
+import Game from './dashboard/Game'
 
 import './App.css'
 
@@ -116,6 +124,14 @@ function App() {
       <Route path={'keyDocuments'} element={<KeyDocuments />} />
       <Route path={'ruleSections'} element={<RuleSections />} />
       <Route path={'rules'} element={<Rules />} />
+      <Route path={'dashboard'} element={<Dashboard />} />
+      <Route path={'gameArmies'} element={<GameArmies />} />
+      <Route path={'gameChooseArmy'} element={<GameChooseArmy />} />
+      <Route path={'gameMission'} element={<GameMission />} />
+      <Route path={'gameChooseMission'} element={<GameChooseMission />} />
+      <Route path={'gameChooseDetachments'} element={<GameChooseDetachments />} />
+      <Route path={'gameBattlefield'} element={<GameBattlefield />} />
+      <Route path={'game'} element={<Game />} />
       <Route path={'userLists'} element={<UserLists />} />
       <Route path={'chooseGrandFaction'} element={<ChooseGrandFaction />} />
       <Route path={'chooseFaction'} element={<ChooseFaction />} />

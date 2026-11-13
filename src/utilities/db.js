@@ -158,6 +158,12 @@ const loadDatabase = async (onProgress = () => {}) => {
       })
     })
   }
+  setDatabase(core, language)
+}
+
+// Подключает уже загруженную базу ({metadata, data} с английскими переводами и, при необходимости, переводами языка).
+// Используется загрузчиком выше, а также тестами, которые читают src/dataBase.json напрямую
+const setDatabase = (core, language = getLanguage()) => {
   localize(core.data, language)
   raw.metadata = core.metadata
   Object.assign(raw.data, core.data)
@@ -168,3 +174,4 @@ module.exports.LANGUAGES = LANGUAGES
 module.exports.getLanguage = getLanguage
 module.exports.setLanguage = setLanguage
 module.exports.loadDatabase = loadDatabase
+module.exports.setDatabase = setDatabase

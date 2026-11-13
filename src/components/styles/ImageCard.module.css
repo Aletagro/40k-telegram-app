@@ -111,3 +111,19 @@
   opacity: 0.4;
   filter: grayscale(0.6);
 }
+
+.titleBox {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.titleBox .title {
+  flex: none;
+}
+.subtitle {
+  color: var(--text);
+  font-size: 15px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}

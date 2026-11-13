@@ -6,7 +6,7 @@ import Styles from './styles/ImageCard.module.css'
 
 // Карточка с картинкой на фоне: название поверх тёмного градиента.
 // size: 'md' (армии) | 'lg' (группы армий). badge - небольшая метка рядом с названием.
-const ImageCard = ({title, image, badge, size = 'md', navigateTo, state, onClick, onAction, actionLabel = 'i', selected, disabled}) => {
+const ImageCard = ({title, subtitle, image, badge, size = 'md', navigateTo, state, onClick, onAction, actionLabel = 'i', selected, disabled}) => {
     const navigate = useNavigate()
     const [failed, setFailed] = useState(false)
 
@@ -26,7 +26,7 @@ const ImageCard = ({title, image, badge, size = 'md', navigateTo, state, onClick
         }
         <span className={Styles.shade} />
         <span className={Styles.content}>
-            <span className={Styles.title}>{title}</span>
+            <span className={Styles.titleBox}><span className={Styles.title}>{title}</span>{subtitle ? <span className={Styles.subtitle}>{subtitle}</span> : null}</span>
             {badge ? <span className={Styles.badge}>{badge}</span> : null}
             {onAction ? null : <span className={Styles.chevron} aria-hidden='true' />}
         </span>
