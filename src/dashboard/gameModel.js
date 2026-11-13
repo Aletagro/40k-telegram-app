@@ -23,7 +23,7 @@ export const DEFAULT_LIMITS = {primaryGame: 45, primaryRound: 15, secondaryGame:
 export const STATUS_PLAYING = 'playing'
 export const STATUS_FINISHED = 'finished'
 
-const EMPTY_SECONDARY = {mode: 'none', fixedIds: [], deck: [], active: [], used: [], redrawUsed: false}
+const EMPTY_SECONDARY = {mode: 'none', fixedIds: [], deck: [], active: [], used: [], redrawUsed: false, noFirstRound: [], lastDrawTurn: null, deckSource: 'digital', pool: [], pendingDraw: 0}
 
 const shuffle = (items, rng = Math.random) => {
     const result = [...items]
@@ -35,9 +35,14 @@ const shuffle = (items, rng = Math.random) => {
 }
 
 // Состояние вторичных миссий игрока: none (без них), fixed (две карты на всю битву) или tactical (колода из всех карт набора)
-export const makeSecondary = ({mode, fixedIds = [], allIds = []} = {}, rng) => {
+// noFirstRound: карты, которые нельзя оставить в первом раунде (при добеге они возвращаются в колоду, а вместо них берётся новая)
+// deckSource: digital (колоду тасует приложение) или physical (игрок тянет карты руками, а в приложении выбирает вытянутые)
+export const makeSecondary = ({mode, fixedIds = [], allIds = [], noFirstRound = [], deckSource = 'digital'} = {}, rng) => {
     if (mode === 'fixed') return {...EMPTY_SECONDARY, mode, fixedIds, active: [...fixedIds]}
-    if (mode === 'tactical') return {...EMPTY_SECONDARY, mode, deck: shuffle(allIds, rng)}
+    if (mode === 'tactical') {
+        const isPhysical = deckSource === 'physical'
+        return {...EMPTY_SECONDARY, mode, deckSource, pool: isPhysical ? [...allIds] : [], deck: isPhysical ? [] : shuffle(allIds, rng), noFirstRound}
+    }
     return {...EMPTY_SECONDARY}
 }
 
@@ -93,7 +98,7 @@ export const createGame = ({id, mode, setup = {}, players = [], now = Date.now()
     }
     // Стартовые CP и Core CP первого хода
     const withStart = map(game.players, player => ({...player, cp: player.startingCp ? [{round: 1, type: 'start', amount: player.startingCp}] : []}))
-    return addCoreCp({...game, players: withStart})
+    return autoDraw(addCoreCp({...game, players: withStart}))
 }
 
 // Номер хода turnIndex (0-9): раунд, порядок хода в раунде и индекс игрока, который ходит
@@ -124,7 +129,7 @@ export const advanceTurn = (game, now) => {
     const info = getTurnInfo(game)
     if (info.isEnd) return commit(game, {...game, status: STATUS_FINISHED}, now)
     if (info.isLast) return commit(game, {...game, turnIndex: game.turnIndex + 1}, now)
-    return commit(game, addCoreCp({...game, turnIndex: game.turnIndex + 1}), now)
+    return commit(game, autoDraw(addCoreCp({...game, turnIndex: game.turnIndex + 1})), now)
 }
 
 export const finishGame = (game, now) => game.status === STATUS_FINISHED ? game : commit(game, {...game, status: STATUS_FINISHED}, now)
@@ -232,15 +237,66 @@ export const adjustCp = (game, playerIndex, amount, now) => {
 // Смена режима вторичных миссий уже в ходе партии (обычно режим выбирается при настройке)
 export const setSecondaryMode = (game, playerIndex, config, rng, now) => commit(game, setPlayer(game, playerIndex, {secondary: makeSecondary(config, rng)}), now)
 
-const drawFrom = (secondary, count) => {
-    const drawn = secondary.deck.slice(0, count)
-    return {...secondary, deck: secondary.deck.slice(drawn.length), active: [...secondary.active, ...drawn]}
+// Берёт count карт с верха колоды. В первом раунде карты из noFirstRound возвращаются в случайное место колоды, вместо них берётся следующая
+const drawFrom = (secondary, count, round = 2, rng = Math.random) => {
+    const deck = [...secondary.deck]
+    const excluded = secondary.noFirstRound || []
+    const drawn = []
+    let attempts = 0
+    while (drawn.length < count && deck.length) {
+        const card = deck.shift()
+        if (round === 1 && excluded.includes(card) && deck.some(id => !excluded.includes(id)) && attempts++ < 50) {
+            deck.splice(Math.floor(rng() * (deck.length + 1)), 0, card)
+            continue
+        }
+        drawn.push(card)
+    }
+    return {...secondary, deck, active: [...secondary.active, ...drawn]}
+}
+
+export const isPhysicalDeck = (secondary) => secondary.mode === 'tactical' && secondary.deckSource === 'physical'
+
+// Карты, которые ещё можно вытянуть: у цифровой колоды это сама колода, у физической - все карты кроме активных и использованных
+export const getAvailableSecondary = (secondary) => isPhysicalDeck(secondary)
+    ? filter(secondary.pool, id => !secondary.active.includes(id) && !find(secondary.used, ['id', id]))
+    : secondary.deck
+
+// Игрок должен взять count карт: цифровая колода выдаёт их сама, для физической выставляется pendingDraw, и игрок выбирает вытянутые карты
+const startDraw = (secondary, count, round, turnIndex) => {
+    if (isPhysicalDeck(secondary)) return {...secondary, pendingDraw: Math.min(count, getAvailableSecondary(secondary).length), lastDrawTurn: turnIndex}
+    return {...drawFrom(secondary, count, round), lastDrawTurn: turnIndex}
+}
+
+// Автоматический добор в Command phase игрока, чей ход начинается (один раз за ход)
+const autoDraw = (game) => {
+    const info = getTurnInfo(game)
+    if (info.isEnd) return game
+    const secondary = game.players[info.playerIndex].secondary
+    if (secondary.mode !== 'tactical' || secondary.lastDrawTurn === info.turnIndex) return game
+    return setPlayer(game, info.playerIndex, {secondary: startDraw(secondary, TACTICAL_DRAW_COUNT, info.round, info.turnIndex)})
+}
+
+export const canDrawSecondary = (game, playerIndex) => {
+    const info = getTurnInfo(game)
+    const secondary = game.players[playerIndex].secondary
+    return !info.isEnd && info.playerIndex === playerIndex && secondary.mode === 'tactical' && secondary.lastDrawTurn !== info.turnIndex
+        && !secondary.pendingDraw && getAvailableSecondary(secondary).length > 0
+}
+
+// Игрок выбрал вытянутые физически карты (ровно pendingDraw штук из доступных)
+export const pickSecondary = (game, playerIndex, cardIds, now) => {
+    const secondary = game.players[playerIndex].secondary
+    const available = getAvailableSecondary(secondary)
+    const unique = [...new Set(cardIds)]
+    if (!isPhysicalDeck(secondary) || !secondary.pendingDraw || unique.length !== secondary.pendingDraw || !unique.every(id => available.includes(id))) return game
+    return commit(game, setPlayer(game, playerIndex, player => ({secondary: {...player.secondary, active: [...player.secondary.active, ...unique], pendingDraw: 0}})), now)
 }
 
 // Добор в начале Command phase (по правилам две карты)
 export const drawSecondary = (game, playerIndex, count = TACTICAL_DRAW_COUNT, now) => {
     if (game.players[playerIndex].secondary.mode !== 'tactical') return game
-    return commit(game, setPlayer(game, playerIndex, player => ({secondary: drawFrom(player.secondary, count)})), now)
+    const info = getTurnInfo(game)
+    return commit(game, setPlayer(game, playerIndex, player => ({secondary: startDraw(player.secondary, count, info.round, info.turnIndex)})), now)
 }
 
 // Карта выполнена: уходит в отбой (в тактическом режиме после получения очков)
@@ -267,7 +323,7 @@ export const discardSecondary = (game, playerIndex, cardId, now) => {
 
 export const canRedrawSecondary = (game, playerIndex) => {
     const secondary = game.players[playerIndex].secondary
-    return secondary.mode === 'tactical' && !secondary.redrawUsed && getCp(game, playerIndex) >= REDRAW_CP_COST && secondary.deck.length > 0
+    return secondary.mode === 'tactical' && !secondary.redrawUsed && !secondary.pendingDraw && getCp(game, playerIndex) >= REDRAW_CP_COST && getAvailableSecondary(secondary).length > 0
 }
 
 // Один раз за битву: 1 CP, сбросить одну активную карту и взять новую (без CP за сброс)
@@ -281,20 +337,20 @@ export const redrawSecondary = (game, playerIndex, cardId, now) => {
             used: [...player.secondary.used, {id: cardId, round, how: 'redrawn'}],
             redrawUsed: true
         }
-        return {secondary: drawFrom(discarded, 1), cp: [...player.cp, {round, type: 'spend', amount: -REDRAW_CP_COST, note: 'redraw'}]}
+        return {secondary: isPhysicalDeck(discarded) ? {...discarded, pendingDraw: 1} : drawFrom(discarded, 1, round), cp: [...player.cp, {round, type: 'spend', amount: -REDRAW_CP_COST, note: 'redraw'}]}
     }), now)
 }
 
 // Замена карты без траты CP, когда это разрешает условие самой карты (например, "When drawn: ... you can discard this card and draw a new one")
 export const replaceSecondary = (game, playerIndex, cardId, now) => {
     const secondary = game.players[playerIndex].secondary
-    if (!secondary.deck.length) return game
+    if (isPhysicalDeck(secondary) || !secondary.deck.length) return game
     const {round} = getTurnInfo(game)
     return commit(game, setPlayer(game, playerIndex, player => ({secondary: drawFrom({
         ...secondary,
         active: without(secondary.active, cardId),
         used: [...secondary.used, {id: cardId, round, how: 'replaced'}]
-    }, 1)})), now)
+    }, 1, round)})), now)
 }
 
 export const setPlayerInfo = (game, playerIndex, patch, now) => commit(game, setPlayer(game, playerIndex, patch), now)

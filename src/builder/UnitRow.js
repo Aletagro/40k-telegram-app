@@ -48,7 +48,7 @@ const UnitImage = ({src, alt}) => {
 
 // Один юнит в ростере: название, состав, очки, выбор размера отряда, Warlord и энхансмент.
 // Снаряжение выбирается на отдельном экране, здесь показывается только то, что отличается от набора по умолчанию
-const UnitRow = ({unit, issues, onChange, onLocate}) => {
+const UnitRow = ({unit, issues, onChange, onLocate, readOnly = false}) => {
     const navigate = useNavigate()
     const datasheet = find(dataBase.data.datasheet, ['id', unit.datasheetId])
     const type = getDatasheetType(unit.datasheetId)
@@ -56,7 +56,7 @@ const UnitRow = ({unit, issues, onChange, onLocate}) => {
     const compositions = getCompositions(unit.datasheetId)
     // Если вариантов состава много (больше трёх), по умолчанию показан только выбранный, остальные раскрываются по нажатию
     const [isCompositionsOpen, setIsCompositionsOpen] = useState(false)
-    const isCollapsible = size(compositions) > COMPOSITIONS_COLLAPSE_FROM
+    const isCollapsible = !readOnly && size(compositions) > COMPOSITIONS_COLLAPSE_FROM
     const enhancement = unit.enhancementId ? find(dataBase.data.enhancement, ['id', unit.enhancementId]) : null
     const hasEnhancements = type !== 'Epic Hero' && size(roster.detachmentIds) > 0 && (enhancement || size(getAvailableEnhancements(unit)) > 0)
     const total = getUnitTotalPoints(unit)
@@ -125,6 +125,7 @@ const UnitRow = ({unit, issues, onChange, onLocate}) => {
             key={composition.id}
             type='button'
             className={`${Styles.composition} ${isActive ? Styles.active : ''}`}
+            style={readOnly ? {pointerEvents: 'none'} : undefined}
             onClick={onClick}
             aria-expanded={isCollapsible && isActive ? isCompositionsOpen : undefined}
         >
@@ -136,12 +137,13 @@ const UnitRow = ({unit, issues, onChange, onLocate}) => {
         </button>
     }
 
-    const visibleCompositions = isCollapsible && !isCompositionsOpen ? filter(compositions, ['id', unit.compositionId]) : compositions
+    const visibleCompositions = readOnly || (isCollapsible && !isCompositionsOpen) ? filter(compositions, ['id', unit.compositionId]) : compositions
 
     // Диапазон моделей (например 5-9) выбирается шагом +/-
     const renderRange = ({miniature, min, max}) => {
         if (min === max) return null
         const value = unit.modelCounts?.[miniature.id] || min
+        if (readOnly) return <div key={miniature.id} className={Styles.stepper}><span>{miniature.name}</span><span className={Styles.count}>{value}</span></div>
         return <div key={miniature.id} className={Styles.stepper}>
             <span>{miniature.name}</span>
             <span className={Styles.stepperControls}>
@@ -180,8 +182,8 @@ const UnitRow = ({unit, issues, onChange, onLocate}) => {
                     </span>
                 </span>
             </button>
-            <button type='button' className={Styles.iconButton} disabled={!canCopy} onClick={handleCopy} aria-label={t('Copy')}><CopyIcon /></button>
-            <button type='button' className={`${Styles.iconButton} ${Styles.delete}`} onClick={handleDelete} aria-label={t('Delete')}><CloseIcon /></button>
+            {readOnly ? null : <button type='button' className={Styles.iconButton} disabled={!canCopy} onClick={handleCopy} aria-label={t('Copy')}><CopyIcon /></button>}
+            {readOnly ? null : <button type='button' className={`${Styles.iconButton} ${Styles.delete}`} onClick={handleDelete} aria-label={t('Delete')}><CloseIcon /></button>}
         </div>
         {size(compositions) > 1
             ? <div className={Styles.compositions}>{map(visibleCompositions, renderComposition)}</div>
@@ -209,20 +211,20 @@ const UnitRow = ({unit, issues, onChange, onLocate}) => {
             ? <div className={Styles.issues}>{map(issues, issue => <p key={issue}>{issue}</p>)}</div>
             : null
         }
-        {isCharacter || hasWargear || allegianceSelect
-            ? <div className={Styles.chips}>
-                {allegianceSelect
+        {(readOnly ? (unit.allegianceAbilityId || unit.isWarlord || enhancement) : (isCharacter || hasWargear || allegianceSelect))
+            ? <div className={Styles.chips} style={readOnly ? {pointerEvents: 'none'} : undefined}>
+                {allegianceSelect && (!readOnly || unit.allegianceAbilityId)
                     ? <button type='button' className={`${Styles.chip} ${unit.allegianceAbilityId ? Styles.active : ''}`} onClick={handleAllegiance}>
                         {find(allegianceSelect.abilities, ['id', unit.allegianceAbilityId])?.name || allegianceSelect.group.name}
                     </button>
                     : null
                 }
-                {hasWargear
+                {hasWargear && !readOnly
                     ? <button type='button' className={`${Styles.chip} ${size(loadoutChanges) ? Styles.active : ''}`} onClick={handleWargear}>{t('Wargear')}</button>
                     : null
                 }
-                {isCharacter ? <button type='button' className={`${Styles.chip} ${unit.isWarlord ? Styles.active : ''}`} onClick={handleWarlord}>{t('Warlord')}</button> : null}
-                {canAttach
+                {isCharacter && (!readOnly || unit.isWarlord) ? <button type='button' className={`${Styles.chip} ${unit.isWarlord ? Styles.active : ''}`} onClick={handleWarlord}>{t('Warlord')}</button> : null}
+                {canAttach && !readOnly
                     ? <button type='button' className={`${Styles.chip} ${leadTarget ? Styles.active : ''}`} onClick={handleAttach}>{leadTarget ? t('Change unit') : t('Attach to unit')}</button>
                     : null
                 }

@@ -88,3 +88,8 @@
   margin: 0 0 12px;
   color: var(--text);
 }
+
+.shareIcon {
+  right: auto;
+  left: 8px;
+}

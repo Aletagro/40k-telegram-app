@@ -21,6 +21,7 @@ const newDraftPlayer = (name = '') => ({
     // выбор основной миссии вручную (по умолчанию она определяется армиями)
     primaryMissionId: null,
     secondaryMode: 'tactical',
+    deckSource: 'digital',
     fixedIds: [],
     startingCp: 0,
     battleReady: false
@@ -125,7 +126,7 @@ export const startGame = () => {
             startingCp: Number(player.startingCp) || 0,
             battleReady: player.battleReady,
             secondary: gameDraft.mode === MODE_STANDARD
-                ? makeSecondary({mode: player.secondaryMode, fixedIds: player.fixedIds, allIds: allSecondaryIds})
+                ? makeSecondary({mode: player.secondaryMode, fixedIds: player.fixedIds, allIds: allSecondaryIds, deckSource: player.deckSource, noFirstRound: map(filter(getSecondaryMissions(MODE_STANDARD), mission => !mission.isScorableFirstTurn), 'id')})
                 : makeSecondary()
         }))
     })

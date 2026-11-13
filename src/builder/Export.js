@@ -5,6 +5,7 @@ import Constants from '../Constants'
 import {getRosterIssues, findAttachGroup} from '../utilities/rosterValidation'
 import {getUnitWargearByModel} from '../utilities/wargearModel'
 import {roster} from '../utilities/appState'
+import {encodeRosterCode, copyText} from '../utilities/rosterCode'
 import {getUsedDetachmentPoints, getRosterPoints, getUnitTotalPoints, getDatasheetType} from '../utilities/rosterModel'
 
 import map from 'lodash/map'
@@ -158,6 +159,12 @@ const Export = () => {
         setIsCopy(true)
     }
 
+    // Ссылка на сохранённый список: соперник вставляет её в дашборде или открывает приложение по ней
+    const handleShare = async () => {
+        const copied = await copyText(encodeRosterCode(roster.id))
+        toast[copied ? 'success' : 'error'](copied ? t('Code copied') : `${t('Could not copy the code')}: ${encodeRosterCode(roster.id)}`, Constants.toastParams)
+    }
+
     // На экране вместо роли («Attached as: Leader») показываем, кто к кому привязан; в скопированном тексте формат остаётся официальным
     const getLineText = (line, unit, group) => {
         if (!line.text.startsWith('Attached as:')) return line.text
@@ -181,6 +188,7 @@ const Export = () => {
     return <div id='column' className='Chapter'>
         <Button className={Styles.fullButton} onClick={handleCopy}>{isCopy ? t('Copied') : t('Copy List')}</Button>
         <Button type='secondary' className={Styles.fullButton} onClick={handleClickSaveButton}>{t('Save List')}</Button>
+        {roster.id ? <Button type='secondary' className={Styles.fullButton} onClick={handleShare}>{t('Share code')}</Button> : null}
         {size(issues)
             ? <div className={Styles.exportWarn}>
                 <b>{size(issues)} {size(issues) === 1 ? 'issue' : 'issues'} in the list</b>

@@ -1,6 +1,6 @@
 import {
     createGame, getTurnInfo, advanceTurn, setScore, getScoreCount, getPlayerTotals, getResult, getCp, addOtherCp, spendCp, adjustCp,
-    setSecondaryMode, makeSecondary, drawSecondary, achieveSecondary, discardSecondary, redrawSecondary, canRedrawSecondary, undo, canUndo, setBattleReady, STATUS_FINISHED
+    setSecondaryMode, makeSecondary, drawSecondary, achieveSecondary, discardSecondary, redrawSecondary, canRedrawSecondary, undo, canUndo, setBattleReady, STATUS_FINISHED, pickSecondary, getAvailableSecondary
 } from './gameModel'
 
 const rng = () => 0.5
@@ -193,5 +193,68 @@ describe('создание партии', () => {
         expect(game.players[0].secondary.mode).toBe('none')
         expect(game.players[1].secondary.mode).toBe('tactical')
         expect(game.players[1].secondary.deck).toHaveLength(2)
+    })
+})
+
+describe('автодобор тактических карт', () => {
+    const tactical = (extra = {}) => ({name: 'T', secondary: makeSecondary({mode: 'tactical', allIds: ['a', 'b', 'c', 'd', 'e', 'f'], ...extra}, rng)})
+
+    test('в начале хода своего Command phase игрок берёт две карты, соперник нет', () => {
+        let game = newGame({firstPlayer: 0}, [tactical(), tactical()])
+        expect(game.players[0].secondary.active).toHaveLength(2)
+        expect(game.players[1].secondary.active).toHaveLength(0)
+        game = advanceTurn(game)
+        expect(game.players[1].secondary.active).toHaveLength(2)
+        game = advanceTurn(game)
+        expect(game.players[0].secondary.active).toHaveLength(4)
+    })
+
+    test('карта "не для первого раунда" возвращается в колоду, берётся другая', () => {
+        const spy = jest.spyOn(Math, 'random').mockReturnValue(0.99)
+        const first = makeSecondary({mode: 'tactical', allIds: ['x', 'a', 'b', 'c'], noFirstRound: ['x']}, () => 0)
+        first.deck = ['x', 'a', 'b', 'c']
+        const game = newGame({firstPlayer: 0}, [{name: 'T', secondary: first}, {name: 'B'}])
+        spy.mockRestore()
+        expect(game.players[0].secondary.active).toEqual(['a', 'b'])
+        expect(game.players[0].secondary.deck).toContain('x')
+    })
+
+    test('отмена хода возвращает колоду и карты', () => {
+        const game = newGame({firstPlayer: 0}, [tactical(), tactical()])
+        const next = advanceTurn(game)
+        const back = undo(next)
+        expect(back.players[1].secondary.active).toHaveLength(0)
+        expect(back.players[1].secondary.deck).toHaveLength(6)
+    })
+})
+
+describe('физическая колода', () => {
+    const physical = () => ({name: 'P', secondary: makeSecondary({mode: 'tactical', deckSource: 'physical', allIds: ['a', 'b', 'c', 'd']}, rng)})
+
+    test('в начале хода нужно выбрать две вытянутые карты', () => {
+        let game = newGame({firstPlayer: 0}, [physical(), {name: 'B'}])
+        expect(game.players[0].secondary).toMatchObject({pendingDraw: 2, active: []})
+        expect(pickSecondary(game, 0, ['a'])).toBe(game)
+        game = pickSecondary(game, 0, ['a', 'c'])
+        expect(game.players[0].secondary).toMatchObject({pendingDraw: 0, active: ['a', 'c']})
+        expect(getAvailableSecondary(game.players[0].secondary)).toEqual(['b', 'd'])
+    })
+
+    test('обмен: карта сбрасывается, нужно выбрать одну новую, CP тратится', () => {
+        let game = newGame({firstPlayer: 0}, [physical(), {name: 'B'}])
+        game = pickSecondary(game, 0, ['a', 'b'])
+        game = redrawSecondary(game, 0, 'a')
+        expect(game.players[0].secondary).toMatchObject({pendingDraw: 1, redrawUsed: true, active: ['b']})
+        expect(getCp(game, 0)).toBe(0)
+        expect(getAvailableSecondary(game.players[0].secondary)).toEqual(['c', 'd'])
+        game = pickSecondary(game, 0, ['d'])
+        expect(game.players[0].secondary.active).toEqual(['b', 'd'])
+    })
+
+    test('следующий ход того же игрока снова требует выбора', () => {
+        let game = newGame({firstPlayer: 0}, [physical(), {name: 'B'}])
+        game = pickSecondary(game, 0, ['a', 'b'])
+        game = advanceTurn(advanceTurn(game))
+        expect(game.players[0].secondary.pendingDraw).toBe(2)
     })
 })

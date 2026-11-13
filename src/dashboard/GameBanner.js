@@ -10,7 +10,7 @@ import Styles from './styles/GameScreen.module.css'
 const dataBase = require('../utilities/db')
 
 // Баннер партии: две армии друг против друга, очки, CP, раунд. Ход игрока подчёркнут золотом
-const GameBanner = ({game, limits, onSpendCp, onGainCp, canGainCp}) => {
+const GameBanner = ({game, limits, onSpendCp, onGainCp, canGainCp, winner = null}) => {
     const turn = getTurnInfo(game)
     const finished = game.status === STATUS_FINISHED
 
@@ -18,27 +18,30 @@ const GameBanner = ({game, limits, onSpendCp, onGainCp, canGainCp}) => {
         const faction = find(dataBase.data.faction_keyword, ['id', player.army?.factionId])
         const image = faction?.moreInfoImage || faction?.armySelectionImage
         const isActive = !finished && turn.playerIndex === index
-        return <div className={`${Styles.side} ${isActive ? Styles.sideActive : ''}`} key={index}>
+        return <div className={`${Styles.side} ${isActive ? Styles.sideActive : ''} ${finished && winner === index ? Styles.sideWinner : ''}`} key={index}>
             {image ? <img className={Styles.sideImage} src={image} alt='' /> : null}
             <span className={Styles.sideShade} />
             <div className={Styles.sideContent}>
+                {finished && winner === index ? <span className={Styles.winnerLabel}>{t('Winner')}</span> : null}
                 <span className={Styles.sideName}>{player.name}</span>
                 <span className={Styles.sideArmy}>{player.army?.name || faction?.name}</span>
                 <span className={Styles.sideVp}>{getPlayerTotals(game, index, limits).total}</span>
                 <span className={Styles.sideVpLabel}>{t('VP')}</span>
                 <div className={Styles.cpRow}>
-                    <button type='button' className={Styles.cpButton} onClick={() => onSpendCp(index)} aria-label={t('Spend 1 CP')}>−</button>
+                    {finished ? null : <button type='button' className={Styles.cpButton} onClick={() => onSpendCp(index)} aria-label={t('Spend 1 CP')}>−</button>}
                     <span className={Styles.cpValue}>{getCp(game, index)} {t('CP')}</span>
-                    <button type='button' className={`${Styles.cpButton} ${canGainCp(index) ? '' : Styles.cpButtonDim}`} onClick={() => onGainCp(index)} aria-label={t('Gain 1 CP')}>+</button>
+                    {finished ? null : <button type='button' className={`${Styles.cpButton} ${canGainCp(index) ? '' : Styles.cpButtonDim}`} onClick={() => onGainCp(index)} aria-label={t('Gain 1 CP')}>+</button>}
                 </div>
             </div>
         </div>
     }
 
     return <div className={Styles.banner}>
-        <span className={Styles.round}>{finished ? t('Battle finished') : turn.isEnd ? t('End of battle') : t('Round {{round}} of {{max}}', {round: turn.round, max: 5})}</span>
-        {map(game.players, renderSide)}
-        <span className={Styles.vs}>{t('vs')}</span>
+        <div className={Styles.status}>{finished ? t('Battle finished') : turn.isEnd ? t('End of battle') : t('Round {{round}} of {{max}}', {round: turn.round, max: 5})}</div>
+        <div className={Styles.sides}>
+            {map(game.players, renderSide)}
+            <span className={Styles.vs}>{t('vs')}</span>
+        </div>
     </div>
 }
 

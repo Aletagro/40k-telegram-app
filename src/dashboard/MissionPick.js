@@ -24,8 +24,8 @@ export const TwistInfoModal = ({twist, onClose}) => <Modal visible={Boolean(twis
     </div> : null}
 </Modal>
 
-export const MissionInfoModal = ({mission, kind, onClose}) => {
-    const detail = mission ? (kind === 'primary' ? getPrimaryMissionDetail(mission.id) : getSecondaryMissionDetail(mission.id, 'fixed')) : null
+export const MissionInfoModal = ({mission, kind, secondaryMode = 'fixed', onClose}) => {
+    const detail = mission ? (kind === 'primary' ? getPrimaryMissionDetail(mission.id) : getSecondaryMissionDetail(mission.id, secondaryMode)) : null
     return <Modal visible={Boolean(mission)} title={mission?.name} onClose={onClose}>
         {detail ? <div className={Styles.scrollBox}>
             {detail.description ? <p className={Styles.infoCaption}>{replaceAsterisks(detail.description)}</p> : null}

@@ -6,6 +6,7 @@ import Constants from '../Constants'
 import {main, navigationState} from '../utilities/appState'
 import {fetchRostersByUser, deleteRoster} from '../utilities/api'
 import {hydrateRoster} from '../utilities/rosterModel'
+import {encodeRosterCode, copyText} from '../utilities/rosterCode'
 import {notifyHydrateReport} from './hydrateNotice'
 import {isSupporter, getSupportUntil, formatSupportDate, openSupportPage} from '../utilities/support'
 import Modal from '../components/Modal'
@@ -48,6 +49,11 @@ const UserLists = () => {
         navigate('/builder', {state: {faction: {id: list.faction_id, name: list.faction}}})
     }
 
+    const handleShare = async (list) => {
+        const copied = await copyText(encodeRosterCode(list.id))
+        toast[copied ? 'success' : 'error'](copied ? t('Code copied') : `${t('Could not copy the code')}: ${encodeRosterCode(list.id)}`, Constants.toastParams)
+    }
+
     const handleDelete = async () => {
         const list = toDelete
         setToDelete(null)
@@ -64,6 +70,9 @@ const UserLists = () => {
     const renderList = (list) => {
         const army = find(dataBase.data.faction_keyword, ['id', list.faction_id])
         return <div className={Styles.listContainer} key={list.id}>
+            <button type='button' className={`${Styles.closeIcon} ${Styles.shareIcon}`} onClick={() => handleShare(list)} aria-label={t('Share code')}>
+                <svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'><path d='M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1' /><path d='M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1' /></svg>
+            </button>
             <button type='button' className={Styles.closeIcon} onClick={() => setToDelete(list)} aria-label={t('Delete list')}>
                 <svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='3' strokeLinecap='round' aria-hidden='true'><path d='M6 6l12 12M18 6L6 18' /></svg>
             </button>

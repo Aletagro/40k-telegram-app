@@ -28,6 +28,7 @@ import UserLists from './builder/UserLists'
 import ChooseGrandFaction from './builder/ChooseGrandFaction'
 import ChooseFaction from './builder/ChooseFaction'
 import Builder from './builder/Builder'
+import ViewRoster from './builder/ViewRoster'
 import AddUnit from './builder/AddUnit'
 import ChooseDetachment from './builder/ChooseDetachment'
 import ChooseEnhancement from './builder/ChooseEnhancement'
@@ -72,6 +73,7 @@ if (process.env.NODE_ENV === 'development') {
 function App() {
   useSwipeBack()
 
+
   useEffect(() => {
     // Пользователь с бэкенда (если уже есть) нужен для сохранения списков
     if ((main.tgId || main.vkId) && !main.user) {
@@ -111,6 +113,7 @@ function App() {
       <Route path={'faq'} element={<FAQ />} />
       <Route path={'errata'} element={<Errata />} />
       <Route path={'builder'} element={<Builder />} />
+      <Route path={'viewRoster'} element={<ViewRoster />} />
       <Route path={'addUnit'} element={<AddUnit />} />
       <Route path={'chooseDetachment'} element={<ChooseDetachment />} />
       <Route path={'chooseEnhancement'} element={<ChooseEnhancement />} />

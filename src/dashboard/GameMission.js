@@ -70,7 +70,15 @@ const GameMission = () => {
                 {chip(t('Tactical'), player.secondaryMode === 'tactical', update(() => { player.secondaryMode = 'tactical' }))}
                 {chip(t('Fixed'), player.secondaryMode === 'fixed', update(() => { player.secondaryMode = 'fixed' }))}
             </div>
-            {player.secondaryMode === 'tactical' ? <p className={Styles.muted}>{t('A digital deck: two cards are drawn each Command phase')}</p> : null}
+            {player.secondaryMode === 'tactical' ? <>
+                <div className={Styles.chips}>
+                    {chip(t('Digital deck'), player.deckSource === 'digital', update(() => { player.deckSource = 'digital' }))}
+                    {chip(t('Physical deck'), player.deckSource === 'physical', update(() => { player.deckSource = 'physical' }))}
+                </div>
+                <p className={Styles.muted}>{player.deckSource === 'physical'
+                    ? t('You draw the cards by hand, and the app asks which ones you drew each Command phase')
+                    : t('A digital deck: two cards are drawn each Command phase')}</p>
+            </> : null}
             {player.secondaryMode === 'fixed' ? <>
                 <p className={showErrors && errors.fixed[index] ? Styles.errorText : Styles.muted}>{t('Choose two fixed secondary missions')}</p>
                 {map(fixed, mission => <MissionOption key={mission.id} mission={mission} active={includes(player.fixedIds, mission.id)}

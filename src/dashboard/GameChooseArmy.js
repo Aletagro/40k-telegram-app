@@ -10,6 +10,7 @@ import {fetchRostersByUser, fetchRoster} from '../utilities/api'
 import {getCombatPatrols} from '../utilities/utils'
 import {getForceDispositionOptions, getUsedDetachmentPoints} from '../utilities/rosterModel'
 import {listToArmy} from './gameSetup'
+import {decodeRosterCode} from '../utilities/rosterCode'
 import {MODE_COMBAT_PATROL} from './missionData'
 
 import map from 'lodash/map'
@@ -29,15 +30,6 @@ const dataBase = require('../utilities/db')
 const TAB_MINE = 'mine'
 const TAB_LINK = 'link'
 const TAB_MANUAL = 'manual'
-
-// Из ссылки или текста достаём id списка: UUID, параметр startapp или весь текст
-export const parseRosterId = (text) => {
-    const value = (text || '').trim()
-    const uuid = value.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i)
-    if (uuid) return uuid[0]
-    const param = value.match(/(?:startapp|start_param|roster)=([^&#\s]+)/i)
-    return (param ? param[1] : value).replace(/^roster[_-]?/i, '')
-}
 
 const getDefaultBattleSize = () => find(dataBase.data.battle_size, ['pointsLimit', 2000])
 
@@ -78,15 +70,18 @@ const GameChooseArmy = () => {
     }
 
     const handleLink = async () => {
-        const id = parseRosterId(linkText)
-        if (!id) return
+        const id = decodeRosterCode(linkText)
+        if (!id) {
+            setLinkError(t('Invalid roster code'))
+            return
+        }
         setLoading(true)
         setLinkError('')
         const data = await fetchRoster(id)
         setLoading(false)
         const list = data?.roster || data
         if (!list?.id) {
-            setLinkError(t('List not found. Check the link or ID'))
+            setLinkError(t('List not found. Check the code'))
             return
         }
         choose(listToArmy(list, 'link'))
@@ -120,10 +115,10 @@ const GameChooseArmy = () => {
     const renderLink = () => <div className={Styles.gap}>
         <div className={Styles.card}>
             <h3 className={Styles.cardTitle}>{t('How to share a list')}</h3>
-            <p className={Styles.muted}>{t('Your opponent opens the list in the app, taps Share and sends you the link. Paste it here, or just the list ID.')}</p>
+            <p className={Styles.muted}>{t('Your opponent opens a saved list and taps the share icon to copy its roster code. Paste the code here.')}</p>
             <p className={Styles.muted}>{t('The list is only read: it is not copied to your saved lists.')}</p>
         </div>
-        <input className={Styles.input} value={linkText} placeholder={t('Link or list ID')} onChange={event => setLinkText(event.target.value)} />
+        <input className={Styles.input} value={linkText} placeholder={t('Roster code')} onChange={event => setLinkText(event.target.value)} />
         {linkError ? <p className={Styles.errorText}>{linkError}</p> : null}
         <Button disabled={!linkText.trim() || loading} onClick={handleLink}>{loading ? t('Loading...') : t('Find list')}</Button>
     </div>
@@ -195,7 +190,7 @@ const GameChooseArmy = () => {
 
     return <div className={Styles.page}>
         <div className={Styles.tabs}>
-            {map([[TAB_MINE, t('My lists')], [TAB_LINK, t('By link or ID')], [TAB_MANUAL, t('Manually')]], ([id, label]) =>
+            {map([[TAB_MINE, t('My lists')], [TAB_LINK, t('By code')], [TAB_MANUAL, t('Manually')]], ([id, label]) =>
                 <button type='button' key={id} className={`${Styles.tab} ${tab === id ? Styles.tabActive : ''}`} onClick={() => setTab(id)}>{label}</button>)}
         </div>
         {tab === TAB_MINE ? renderMine() : tab === TAB_LINK ? renderLink() : renderManual()}

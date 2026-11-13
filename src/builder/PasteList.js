@@ -1,8 +1,12 @@
 import {t} from '../utilities/i18n'
 import React, {useState} from 'react'
 import {useNavigate} from 'react-router-dom'
-import {roster, navigationState} from '../utilities/appState'
+import {roster, main, navigationState} from '../utilities/appState'
 import {importRoster} from '../utilities/rosterImport'
+import {decodeRosterCode, looksLikeRosterCode} from '../utilities/rosterCode'
+import {fetchRoster} from '../utilities/api'
+import {hydrateRoster} from '../utilities/rosterModel'
+import {notifyHydrateReport} from './hydrateNotice'
 import Button from '../components/Button'
 import InfoNote from '../components/InfoNote'
 
@@ -24,7 +28,26 @@ const PasteList = () => {
         navigate('/builder', {state: {faction: {id: roster.factionId, name: roster.faction}}})
     }
 
+    // Код ростера: загружаем список по id и открываем как копию (чужой список не перезаписывается)
+    const importByCode = async () => {
+        const data = await fetchRoster(decodeRosterCode(text))
+        const list = data?.roster || data
+        if (!list?.id) {
+            setError(t('List not found. Check the code'))
+            return
+        }
+        hydrateRoster(list)
+        notifyHydrateReport()
+        if (!main.user?.id || list.user_id !== main.user.id) roster.id = undefined
+        navigationState.isBuilder = true
+        navigate('/builder', {state: {faction: {id: list.faction_id, name: list.faction}}})
+    }
+
     const handleImport = () => {
+        if (looksLikeRosterCode(text)) {
+            importByCode()
+            return
+        }
         const result = importRoster(text)
         if (!result.ok) {
             setError(result.error)
@@ -45,6 +68,7 @@ const PasteList = () => {
     return <div id='column' className='Chapter'>
         <InfoNote title={t('Paste your army list')}>
             <p>{t('Copy a list from the official Warhammer 40,000 app, Listhammer or from this app (Export → Copy List) and paste it below.')}</p>
+            <p>{t('You can also paste a roster code that another player shared.')}</p>
         </InfoNote>
         <textarea
             className={Styles.textarea}
