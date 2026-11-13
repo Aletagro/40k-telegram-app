@@ -1,9 +1,9 @@
 {
   "files": {
     "main.css": "/40k-telegram-app/static/css/main.1f533c8a.css",
-    "main.js": "/40k-telegram-app/static/js/main.a07ef684.js",
-    "static/css/136.2a239d61.chunk.css": "/40k-telegram-app/static/css/136.2a239d61.chunk.css",
-    "static/js/136.ca136e03.chunk.js": "/40k-telegram-app/static/js/136.ca136e03.chunk.js",
+    "main.js": "/40k-telegram-app/static/js/main.0b435958.js",
+    "static/css/136.e862771a.chunk.css": "/40k-telegram-app/static/css/136.e862771a.chunk.css",
+    "static/js/136.9f3747df.chunk.js": "/40k-telegram-app/static/js/136.9f3747df.chunk.js",
     "static/js/688.9eed7e4d.chunk.js": "/40k-telegram-app/static/js/688.9eed7e4d.chunk.js",
     "static/media/placeholder.png": "/40k-telegram-app/static/media/placeholder.816f67bc014b91894c3e.png",
     "static/media/MinionPro-Bold.woff": "/40k-telegram-app/static/media/MinionPro-Bold.e73f42dae2e6ae675375.woff",
@@ -19,13 +19,13 @@
     "index.html": "/40k-telegram-app/index.html",
     "static/media/weaponChoice.svg": "/40k-telegram-app/static/media/weaponChoice.e063d90eebe6fe8445bdd3d065d1d1cb.svg",
     "main.1f533c8a.css.map": "/40k-telegram-app/static/css/main.1f533c8a.css.map",
-    "main.a07ef684.js.map": "/40k-telegram-app/static/js/main.a07ef684.js.map",
-    "136.2a239d61.chunk.css.map": "/40k-telegram-app/static/css/136.2a239d61.chunk.css.map",
-    "136.ca136e03.chunk.js.map": "/40k-telegram-app/static/js/136.ca136e03.chunk.js.map",
+    "main.0b435958.js.map": "/40k-telegram-app/static/js/main.0b435958.js.map",
+    "136.e862771a.chunk.css.map": "/40k-telegram-app/static/css/136.e862771a.chunk.css.map",
+    "136.9f3747df.chunk.js.map": "/40k-telegram-app/static/js/136.9f3747df.chunk.js.map",
     "688.9eed7e4d.chunk.js.map": "/40k-telegram-app/static/js/688.9eed7e4d.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.1f533c8a.css",
-    "static/js/main.a07ef684.js"
+    "static/js/main.0b435958.js"
   ]
 }
