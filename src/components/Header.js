@@ -4,7 +4,6 @@ import {useNavigate, useLocation} from 'react-router-dom';
 import {search, lists, navigationState, isCollapseUnitsTypes} from '../utilities/appState'
 import Constants from '../Constants'
 import {isVkMobile} from '../utilities/platform'
-import {resetRoster} from '../utilities/rosterModel'
 import Search from '../icons/search.svg'
 import ArrowBack from '../icons/arrowBack.svg'
 import Export from '../icons/export.svg'
@@ -24,7 +23,7 @@ const Header = () => {
 
     const clearAppState = () => {
         if (pathname === '/builder') {
-            resetRoster()
+            // ростер не сбрасываем: при повторном входе в ту же армию список сохраняется
             navigationState.isBuilder = false
         } else if (pathname === '/search') {
             search.value = ''

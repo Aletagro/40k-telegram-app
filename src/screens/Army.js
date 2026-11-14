@@ -42,11 +42,14 @@ const Army = () => {
     }
 
     const handleClickBuilder = () => {
-        resetRoster()
-        roster.grandFaction = grandFaction
-        // в списке армия хранится по-английски, чтобы сохранённые списки не зависели от языка
-        roster.faction = faction.nameEn || faction.name
-        roster.factionId = faction.id
+        // та же армия - продолжаем прошлый список, другая - начинаем заново
+        if (roster.factionId !== faction.id) {
+            resetRoster()
+            roster.grandFaction = grandFaction
+            // в списке армия хранится по-английски, чтобы сохранённые списки не зависели от языка
+            roster.faction = faction.nameEn || faction.name
+            roster.factionId = faction.id
+        }
         navigationState.isBuilder = true
     }
 

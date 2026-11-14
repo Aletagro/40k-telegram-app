@@ -9,14 +9,27 @@ import {
 } from '../utilities/wargearModel'
 import Button from '../components/Button'
 import Modal from '../components/Modal'
+import {replaceAsterisks} from '../utilities/utils'
 
 import map from 'lodash/map'
 import find from 'lodash/find'
 import size from 'lodash/size'
 import filter from 'lodash/filter'
 import forEach from 'lodash/forEach'
+import keyBy from 'lodash/keyBy'
 
 import Styles from './styles/ChooseWargear.module.css'
+
+const dataBase = require('../utilities/db')
+
+let wargearIndex = null
+// Правило снаряжения-способности (силовое поле и т.п.), которое входит в вариант
+const getChoiceRules = (choice) => {
+    if (!wargearIndex) wargearIndex = keyBy(dataBase.data.wargear_item, 'id')
+    return choice.items
+        .map(({id}) => wargearIndex[id])
+        .filter(item => item?.wargearType === 'wargear' && item.ruleText)
+}
 
 // "1-4 models: 1", "5-9 models: 1", "10+ models: 2"
 const formatTiers = (tiers) => map(tiers, ({modelCount, choiceLimit}, index) => {
@@ -57,6 +70,11 @@ const ChooseWargear = () => {
     const handleDone = () => navigate(-1)
 
     const handleCloseInfo = () => setInfoSlot(null)
+
+    const renderChoiceRules = (choice) => map(getChoiceRules(choice), item => <details key={item.id} className={Styles.itemRule}>
+        <summary>{item.name}</summary>
+        <div>{replaceAsterisks(item.ruleText)}</div>
+    </details>)
 
     const renderRadioRow = (slot, choice, counts) => {
         const isSelected = counts[choice.id] > 0
@@ -102,7 +120,10 @@ const ChooseWargear = () => {
                     : null
                 }
             </div>
-            {map(slot.choices, choice => total === 1 ? renderRadioRow(slot, choice, counts) : renderStepperRow(slot, choice, counts))}
+            {map(slot.choices, choice => <React.Fragment key={choice.id}>
+                {total === 1 ? renderRadioRow(slot, choice, counts) : renderStepperRow(slot, choice, counts)}
+                {renderChoiceRules(choice)}
+            </React.Fragment>)}
         </div>
     }
 

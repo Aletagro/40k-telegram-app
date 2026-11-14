@@ -398,6 +398,7 @@ const dictionary = {
     "{{name}}: an attached unit can have only one enhancement or upgrade, now {{count}}": "{{name}}：合并的单位只能拥有一个强化或升级，目前有{{count}}个",
     "{{name}}: this unit option is not available in this army": "{{name}}：此单位选项在该军队中不可用",
     "{{name}}: a support unit must be attached to a unit": "{{name}}：支援单位必须并入某个单位",
+    "Wargear Abilities": "装备能力",
 }
 
 export default dictionary

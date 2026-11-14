@@ -292,7 +292,12 @@ const getComboUsage = (unit, limit, totalModels) => {
         const slot = find(slots, ['id', slotId])
         const models = slot ? getSlotCounts(unit, slot)[choiceId] || 0 : 0
         if (!models) return
-        forEach(find(slot.choices, ['id', choiceId])?.items, ({id, count}) => { if (relevant.has(id)) addTo(usage, id, count * models) })
+        // Считаем только то, что сверх набора по умолчанию: оружие, которое и так есть у каждой модели (Busta Rokkit Launcha у Tankbustas), лимит не тратит
+        const base = find(slot.choices, ['id', slot.defaultId])?.items || []
+        forEach(find(slot.choices, ['id', choiceId])?.items, ({id, count}) => {
+            const extra = count - (find(base, ['id', id])?.count || 0)
+            if (relevant.has(id) && extra > 0) addTo(usage, id, extra * models)
+        })
     })
     const allowed = getLimitValue(limit, totalModels)
     const used = coverCount(usage, limit.patterns, allowed)

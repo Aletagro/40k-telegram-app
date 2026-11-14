@@ -398,6 +398,7 @@ const dictionary = {
     "{{name}}: an attached unit can have only one enhancement or upgrade, now {{count}}": "{{name}}: 合流した部隊が持てるエンハンスメントまたはアップグレードは1つだけです（現在{{count}}）",
     "{{name}}: this unit option is not available in this army": "{{name}}: この部隊の編成はこの軍では選べません",
     "{{name}}: a support unit must be attached to a unit": "{{name}}: サポート部隊は部隊に合流させる必要があります",
+    "Wargear Abilities": "装備アビリティ",
 }
 
 export default dictionary

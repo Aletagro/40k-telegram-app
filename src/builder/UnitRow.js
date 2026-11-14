@@ -211,7 +211,7 @@ const UnitRow = ({unit, issues, onChange, onLocate, readOnly = false}) => {
             ? <div className={Styles.issues}>{map(issues, issue => <p key={issue}>{issue}</p>)}</div>
             : null
         }
-        {(readOnly ? (unit.allegianceAbilityId || unit.isWarlord || enhancement) : (isCharacter || hasWargear || allegianceSelect))
+        {(readOnly ? (unit.allegianceAbilityId || unit.isWarlord || enhancement) : (isCharacter || hasWargear || allegianceSelect || hasEnhancements))
             ? <div className={Styles.chips} style={readOnly ? {pointerEvents: 'none'} : undefined}>
                 {allegianceSelect && (!readOnly || unit.allegianceAbilityId)
                     ? <button type='button' className={`${Styles.chip} ${unit.allegianceAbilityId ? Styles.active : ''}`} onClick={handleAllegiance}>

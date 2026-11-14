@@ -187,3 +187,29 @@
   color: var(--muted);
   font-size: 13px;
 }
+
+.itemRule {
+  margin: 6px 0 12px 4px;
+  padding: 8px 12px;
+  border-radius: 0 8px 8px 0;
+  border-left: 3px solid var(--gold);
+  background: var(--card, transparent);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+.itemRule b {
+  color: inherit;
+}
+.itemRule ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+
+.itemRule summary {
+  cursor: pointer;
+  font-weight: bold;
+}
+.itemRule[open] summary {
+  margin-bottom: 4px;
+}

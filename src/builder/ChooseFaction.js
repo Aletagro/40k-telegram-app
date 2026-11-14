@@ -16,10 +16,13 @@ const ChooseFaction = () => {
     const {grandFaction} = useLocation().state
 
     const handleClick = ({faction}) => {
-        resetRoster()
-        roster.grandFaction = grandFaction.name
-        roster.faction = faction.name
-        roster.factionId = faction.id
+        // та же армия - продолжаем прошлый список, другая - начинаем заново
+        if (roster.factionId !== faction.id) {
+            resetRoster()
+            roster.grandFaction = grandFaction.name
+            roster.faction = faction.name
+            roster.factionId = faction.id
+        }
         navigationState.isBuilder = true
     }
 

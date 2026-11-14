@@ -398,6 +398,7 @@ const dictionary = {
     "{{name}}: an attached unit can have only one enhancement or upgrade, now {{count}}": "{{name}}: Eine angeschlossene Einheit kann nur eine Verbesserung oder Aufwertung haben, jetzt {{count}}",
     "{{name}}: this unit option is not available in this army": "{{name}}: Diese Einheitenoption ist in dieser Armee nicht verfügbar",
     "{{name}}: a support unit must be attached to a unit": "{{name}}: Eine Unterstützungseinheit muss einer Einheit angeschlossen werden",
+    "Wargear Abilities": "Ausrüstungsfähigkeiten",
 }
 
 export default dictionary

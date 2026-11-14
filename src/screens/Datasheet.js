@@ -17,6 +17,8 @@ import size from 'lodash/size'
 import filter from 'lodash/filter'
 import forEach from 'lodash/forEach'
 import upperCase from 'lodash/upperCase'
+import uniqBy from 'lodash/uniqBy'
+import flatten from 'lodash/flatten'
 
 import Styles from './styles/Datasheet.module.css'
 
@@ -36,6 +38,8 @@ const Datasheet = () => {
     const wargearOptionGroups = filter(dataBase.data.wargear_option_group, wargearOptionGroup => wargearOptionGroup.datasheetId === unit.id)
     const wargearOptions = map(wargearOptionGroups, wargearOptionGroup => filter(dataBase.data.wargear_option, wargearOption => wargearOption.wargearOptionGroupId === wargearOptionGroup.id))
     const wargearItems = map(wargearOptions, wargearOption => map(wargearOption, option => find(dataBase.data.wargear_item, wargearItem => wargearItem.id === option.wargearItemId)))
+    // Снаряжение-способности (силовое поле, ракеты одноразового действия): у них нет профиля оружия, только текст правила
+    const wargearAbilities = uniqBy(filter(flatten(wargearItems), item => item?.wargearType === 'wargear' && item.ruleText), 'id')
     const weapons = map(wargearItems, wargearItem => map(wargearItem, item => filter(dataBase.data.wargear_item_profile, weapon => weapon.wargearItemId === item.id)))
     let meleeWeapons = []
     let rangeWeapons = []
@@ -270,6 +274,13 @@ const Datasheet = () => {
                 ? <>
                     <SectionTitle>{t('Abilities')}</SectionTitle>
                     {map(datasheetAbilities, renderAbility)}
+                </>
+                : null
+            }
+            {size(wargearAbilities)
+                ? <>
+                    <SectionTitle>{t('Wargear Abilities')}</SectionTitle>
+                    {map(wargearAbilities, item => <Ability key={item.id} ability={{name: item.name, rules: item.ruleText}} />)}
                 </>
                 : null
             }
