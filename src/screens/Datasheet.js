@@ -45,13 +45,11 @@ const Datasheet = () => {
     let rangeWeapons = []
     forEach(weapons, (weapon, i) => {
         forEach(weapon, (profiles, index) => {
-            if(size(profiles)) {
-                if (profiles[0].type === 'melee') {
-                    forEach(profiles, profile => meleeWeapons.push({weaponName: wargearItems[i][index]?.name, ...profile}))
-                } else if (profiles[0].type === 'ranged') {
-                    forEach(profiles, profile => rangeWeapons.push({weaponName: wargearItems[i][index]?.name, ...profile}))
-                }
-            }
+            // У одного снаряжения бывают профили разных типов (например, копьё: стрельба и ближний бой), поэтому тип смотрим у каждого профиля
+            forEach(profiles, profile => {
+                const target = profile.type === 'melee' ? meleeWeapons : profile.type === 'ranged' ? rangeWeapons : null
+                if (target) target.push({weaponName: wargearItems[i][index]?.name, ...profile})
+            })
         })
     })
     meleeWeapons = sortByName(removeDuplicates(meleeWeapons), 'weaponName')
