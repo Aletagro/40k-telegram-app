@@ -264,8 +264,8 @@ const Constants = {
         'Swarm': false,
         'Fortification': false
     },
-    // Лимит сохранённых списков для игроков без поддержки (как в AoS)
-    listsMax: 4,
+    // Лимит сохранённых списков для игроков без поддержки
+    listsMax: 3,
     supportLinks: {
         telegram: 'https://t.me/tribute/app?startapp=dRhg',
         web: 'https://web.tribute.tg/d/Rhg'
