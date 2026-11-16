@@ -106,7 +106,13 @@ const UnitRow = ({unit, issues, onChange, onLocate, readOnly = false}) => {
 
     const handleComposition = (composition) => () => {
         setIsCompositionsOpen(false)
-        if (composition.id !== unit.compositionId) change({compositionId: composition.id, modelCounts: {}, loadouts: {}})
+        if (composition.id === unit.compositionId) return
+        // При выборе состава с диапазоном (например 8-9 моделей) сразу ставится максимум: так доступно всё снаряжение
+        const modelCounts = {}
+        forEach(getCompositionModels(composition.id), ({miniature, min, max}) => {
+            if (min !== max) modelCounts[miniature.id] = max
+        })
+        change({compositionId: composition.id, modelCounts, loadouts: {}})
     }
 
     const handleModelCount = (miniature, min, max, delta) => () => {

@@ -60,6 +60,8 @@ const dictionary = {
     "{{name}}: the unit it was attached to is not in the list": "{{name}}: отряд, к которому он был присоединён, отсутствует в списке",
     "{{name}} cannot be attached to {{target}}": "{{name}} нельзя присоединить к {{target}}",
     "{{name}} has more than one {{type}} attached": "К {{name}} присоединено больше одного: {{type}}",
+    "{{name}} has more than two {{type}} attached": "К {{name}} присоединено больше двух: {{type}}",
+    "{{name}} cannot have two Command Squads attached": "К {{name}} нельзя присоединить два Command Squad",
     "does not belong to the chosen detachment": "не относится к выбранному детачменту",
     "cannot be taken by an Epic Hero": "не может быть у Эпического героя",
     "can only be taken by a Character": "может быть только у Персонажа",

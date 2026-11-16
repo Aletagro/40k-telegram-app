@@ -60,6 +60,8 @@ const dictionary = {
     "{{name}}: the unit it was attached to is not in the list": "{{name}}: 붙어 있던 유닛이 리스트에 없습니다",
     "{{name}} cannot be attached to {{target}}": "{{name}}은(는) {{target}}에 붙을 수 없습니다",
     "{{name}} has more than one {{type}} attached": "{{name}}에 {{type}}이(가) 둘 이상 붙어 있습니다",
+    "{{name}} has more than two {{type}} attached": "{{name}}에 {{type}}이(가) 셋 이상 붙어 있습니다",
+    "{{name}} cannot have two Command Squads attached": "{{name}}에는 Command Squad 두 개를 붙일 수 없습니다",
     "does not belong to the chosen detachment": "선택한 디태치먼트에 속하지 않습니다",
     "cannot be taken by an Epic Hero": "에픽 히어로는 선택할 수 없습니다",
     "can only be taken by a Character": "캐릭터만 선택할 수 있습니다",

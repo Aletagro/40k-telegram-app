@@ -60,6 +60,8 @@ const dictionary = {
     "{{name}}: the unit it was attached to is not in the list": "{{name}} : l'unité à laquelle il était attaché n'est pas dans la liste",
     "{{name}} cannot be attached to {{target}}": "{{name}} ne peut pas être rattaché à {{target}}",
     "{{name}} has more than one {{type}} attached": "{{name}} a plus d'un {{type}} rattaché",
+    "{{name}} has more than two {{type}} attached": "{{name}} a plus de deux {{type}} rattachés",
+    "{{name}} cannot have two Command Squads attached": "{{name}} ne peut pas avoir deux Command Squads rattachés",
     "does not belong to the chosen detachment": "n'appartient pas au détachement choisi",
     "cannot be taken by an Epic Hero": "ne peut pas être pris par un Héros épique",
     "can only be taken by a Character": "ne peut être pris que par un Personnage",

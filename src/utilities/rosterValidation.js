@@ -17,6 +17,7 @@ import split from 'lodash/split'
 import uniqBy from 'lodash/uniqBy'
 import groupBy from 'lodash/groupBy'
 import forEach from 'lodash/forEach'
+import every from 'lodash/every'
 
 const dataBase = require('./db')
 
@@ -123,9 +124,30 @@ const matchGroup = (group, target) => {
 // Группа, по которой лидер может присоединиться к отряду (или undefined)
 export const findAttachGroup = (leader, target) => find(getLeaderGroups(leader.datasheetId, leader), group => matchGroup(group, target))
 
-// К отряду нельзя присоединить второго лидера (или поддержку) того же вида
-const hasSameTypeLeader = (leader, target, type) => some(roster.units, unit => unit.uid !== leader.uid && unit.attachedToUid === target.uid
-    && (findAttachGroup(unit, target)?.bodyguardType || 'leader') === type)
+// Отряды Astra Militarum (Cadian, Catachan, Krieg, Tempestus Scions) могут вести двух лидеров, но не двух Command Squad.
+// В базе это правило есть только текстом в описании состава
+const MULTI_LEADER_PATTERN = /up to two Leader units attached to it, provided no more than one of those units is a\W*COMMAND SQUAD/i
+
+const getCommandSquadKeywordId = () => find(dataBase.data.keyword, item => item.name?.toLowerCase() === 'command squad')?.id
+
+const allowsTwoLeaders = (datasheetId) => MULTI_LEADER_PATTERN.test(find(dataBase.data.datasheet, ['id', datasheetId])?.unitComposition || '')
+
+const isCommandSquad = (datasheetId) => {
+    const keywordId = getCommandSquadKeywordId()
+    return Boolean(keywordId) && some(getMiniatures(datasheetId), miniature => getMiniatureKeywords(miniature.id, datasheetId).has(keywordId))
+}
+
+// Лидеры, уже присоединённые к отряду
+const getAttachedLeaders = (target, exceptUid) => filter(roster.units, unit => unit.uid !== exceptUid && unit.attachedToUid === target.uid)
+
+// К отряду нельзя присоединить второго лидера (или поддержку) того же вида; исключение - отряды с правилом "два лидера"
+const hasSameTypeLeader = (leader, target, type) => {
+    const sameType = filter(getAttachedLeaders(target, leader.uid), unit => (findAttachGroup(unit, target)?.bodyguardType || 'leader') === type)
+    if (!sameType.length) return false
+    if (type !== 'leader' || !allowsTwoLeaders(target.datasheetId)) return true
+    if (sameType.length > 1) return true
+    return isCommandSquad(leader.datasheetId) && isCommandSquad(sameType[0].datasheetId)
+}
 
 // Отряды списка, к которым можно присоединить лидера (без отрядов, где такой лидер уже есть)
 export const getAttachTargets = (leader) => filter(roster.units, target => {
@@ -175,7 +197,14 @@ const getBodyguardIssues = () => {
         if (!target) return
         const byType = groupBy(leaders, leader => findAttachGroup(leader, target)?.bodyguardType || 'leader')
         forEach(byType, (list, type) => {
-            if (list.length > 1) {
+            const isTwoAllowed = type === 'leader' && allowsTwoLeaders(target.datasheetId)
+            if (isTwoAllowed) {
+                if (list.length > 2) {
+                    issues.push({uid: target.uid, message: t('{{name}} has more than two {{type}} attached', {name: getName(target.datasheetId), type: t(type)})})
+                } else if (list.length === 2 && every(list, unit => isCommandSquad(unit.datasheetId))) {
+                    issues.push({uid: target.uid, message: t('{{name}} cannot have two Command Squads attached', {name: getName(target.datasheetId)})})
+                }
+            } else if (list.length > 1) {
                 issues.push({uid: target.uid, message: t('{{name}} has more than one {{type}} attached', {name: getName(target.datasheetId), type: t(type)})})
             }
         })

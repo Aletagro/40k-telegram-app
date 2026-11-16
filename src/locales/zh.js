@@ -60,6 +60,8 @@ const dictionary = {
     "{{name}}: the unit it was attached to is not in the list": "{{name}}：所附属的单位不在列表中",
     "{{name}} cannot be attached to {{target}}": "{{name}} 不能附属于 {{target}}",
     "{{name}} has more than one {{type}} attached": "{{name}} 附属了多个{{type}}",
+    "{{name}} has more than two {{type}} attached": "{{name}} 附属了超过两个{{type}}",
+    "{{name}} cannot have two Command Squads attached": "{{name}} 不能同时附属两个 Command Squad",
     "does not belong to the chosen detachment": "不属于所选分队",
     "cannot be taken by an Epic Hero": "史诗英雄不能携带",
     "can only be taken by a Character": "只有角色可以携带",
